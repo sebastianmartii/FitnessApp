@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">FitnessApp</string>
+    <string name="welcome">Welcome</string>
+    <string name="introduce_yourself">Introduce Yourself Or Choose An</string>
+    <string name="existing_profile">Existing Profile</string>
+    <string name="introduction_done">Introduce Yourself</string>
 </resources>
