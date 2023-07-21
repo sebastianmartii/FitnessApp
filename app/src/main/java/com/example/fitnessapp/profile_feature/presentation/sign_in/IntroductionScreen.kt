@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -49,13 +48,13 @@ fun IntroductionScreen(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .padding(start = 48.dp, end = 48.dp, bottom = 128.dp)
-                .fillMaxHeight()
-                .fillMaxWidth()
+                .fillMaxSize()
         ) {
             Text(
                 text = stringResource(id = R.string.welcome),
                 style = MaterialTheme.typography.displayLarge,
                 textAlign = TextAlign.Start,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
@@ -63,16 +62,21 @@ fun IntroductionScreen(
                 onValueChange = {
                     name = it
                 },
+                label = {
+                    Text(text = stringResource(id = R.string.username))
+                },
                 modifier = Modifier.fillMaxWidth()
             )
             Text(
                 text = stringResource(id = R.string.introduce_yourself),
                 style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.fillMaxWidth()
             )
             Text(
                 text = stringResource(id = R.string.existing_profile),
                 style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground,
                 textDecoration = TextDecoration.Underline,
                 textAlign = TextAlign.End,
                 modifier = Modifier
@@ -102,7 +106,7 @@ fun IntroductionScreen(
 
 @Preview
 @Composable
-fun IntroductionScreenPreview() {
+private fun IntroductionScreenPreview() {
     FitnessAppTheme {
         IntroductionScreen(onIntroductionDone = {})
     }
