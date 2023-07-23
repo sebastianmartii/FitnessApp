@@ -21,4 +21,9 @@
     <string name="expand">Expand</string>
     <string name="calculate_hint">If You Don\'t Know Your Goal, CALCULATE IT</string>
     <string name="activity_calories_done">Activity And Calories Done</string>
+    <string name="go_back">Go Back</string>
+    <string name="profile_male">Profile Male Avatar</string>
+    <string name="profile_female">Profile Female Avatar</string>
+    <string name="hint_icon">Hint Icon</string>
+    <string name="valid_username_text">Username Must Be Longer Then 3 Characters</string>
 </resources>

@@ -34,7 +34,7 @@ import com.example.fitnessapp.ui.theme.FitnessAppTheme
 fun CaloriesGoalListScreen(
     calculatedCalories: List<CalculatedCalories>,
     onCaloriesGoalChosen: (Int) -> Unit,
-    goBack: () -> Unit,
+    onGoBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -49,7 +49,7 @@ fun CaloriesGoalListScreen(
                 .fillMaxWidth()
         ) {
             Button(
-                onClick = goBack,
+                onClick = onGoBack,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     contentColor = MaterialTheme.colorScheme.onBackground
@@ -122,14 +122,14 @@ private fun CalculatedCaloriesItem(
                 when {
                     weightLose != null && weightGain == null -> {
                         Text(
-                            text = "-$weightLose",
+                            text = "-$weightLose kg",
                             style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.error
                         )
                     }
                     weightLose == null && weightGain != null -> {
                         Text(
-                            text = "+$weightGain",
+                            text = "+$weightGain kg",
                             style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.error
                         )
@@ -156,6 +156,6 @@ private fun CaloriesGoalListScreenPreview() {
             ),
             onCaloriesGoalChosen = {
             },
-            goBack = { /*TODO*/ })
+            onGoBack = { /*TODO*/ })
     }
 }

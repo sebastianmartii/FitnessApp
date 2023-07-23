@@ -32,7 +32,7 @@ import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
 @Composable
 fun MeasurementsScreen(
-    goBack: () -> Unit,
+    onGoBack: () -> Unit,
     onMeasurementsDone: (height: Float, weight: Float, age: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -56,7 +56,7 @@ fun MeasurementsScreen(
                 .fillMaxWidth()
         ) {
             Button(
-                onClick = goBack,
+                onClick = onGoBack,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     contentColor = MaterialTheme.colorScheme.onBackground
@@ -65,7 +65,7 @@ fun MeasurementsScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.ChevronLeft,
-                    contentDescription = stringResource(id = R.string.introduction_done),
+                    contentDescription = stringResource(id = R.string.go_back),
                 )
             }
         }
@@ -138,6 +138,7 @@ fun MeasurementsScreen(
                     onClick = {
                         onMeasurementsDone(height.toFloat(), weight.toFloat(), age.toInt())
                     },
+                    enabled = Validators.isHeightValid(height) && Validators.isWeightValid(weight) && Validators.isAgeValid(age),
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {
                     Icon(
@@ -157,7 +158,7 @@ private fun MeasurementsScreenPreview() {
         MeasurementsScreen(
             onMeasurementsDone = { _, _, _ ->
             },
-            goBack = { /*TODO*/ }
+            onGoBack = { /*TODO*/ }
         )
     }
 }

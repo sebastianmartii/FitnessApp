@@ -44,7 +44,7 @@ import com.example.fitnessapp.ui.theme.FitnessAppTheme
 fun ActivityLevelAndCaloriesGoalScreen(
     onActivityLevelAndCaloriesGoalProvided: (activityLevel: ActivityLevel, caloriesGoal: Int) -> Unit,
     onCalculate: () -> Unit,
-    goBack: () -> Unit,
+    onGoBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var activityLevel by remember {
@@ -67,7 +67,7 @@ fun ActivityLevelAndCaloriesGoalScreen(
                 .fillMaxWidth()
         ) {
             Button(
-                onClick = goBack,
+                onClick = onGoBack,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     contentColor = MaterialTheme.colorScheme.onBackground
@@ -76,26 +76,10 @@ fun ActivityLevelAndCaloriesGoalScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.ChevronLeft,
-                    contentDescription = stringResource(id = R.string.introduction_done),
+                    contentDescription = stringResource(id = R.string.go_back),
                 )
             }
         }
-        DropdownMenu(
-            expanded = menuExpanded,
-            onDismissRequest = { menuExpanded = !menuExpanded },
-            content = {
-                activityLevels.onEach {
-                    DropdownMenuItem(
-                        text = {
-                            Text(text = it.toActivityLevelString())
-                        },
-                        onClick = {
-                            activityLevel = it
-                        }
-                    )
-                }
-            }
-        )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -146,9 +130,29 @@ fun ActivityLevelAndCaloriesGoalScreen(
                     Icon(
                         imageVector = Icons.Filled.ArrowDropDown,
                         contentDescription = stringResource(id = R.string.expand),
-                        modifier = Modifier.clickable {  }
+                        modifier = Modifier.clickable {
+                            menuExpanded = true
+                        }
                     )
-                }    
+                }
+                DropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false },
+                    content = {
+                        activityLevels.onEach {
+                            DropdownMenuItem(
+                                text = {
+                                    Text(text = it.toActivityLevelString())
+                                },
+                                onClick = {
+                                    activityLevel = it
+                                    menuExpanded = false
+                                }
+                            )
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
             Text(
                 text = stringResource(id = R.string.whats_your),
@@ -213,6 +217,6 @@ private fun ActivityLevelAndCaloriesGoalScreenPreview() {
 
             },
             onCalculate = {},
-            goBack = { /*TODO*/ })
+            onGoBack = { /*TODO*/ })
     }
 }
