@@ -8,10 +8,6 @@ import retrofit2.http.Query
 
 interface CaloriesGoalApi {
 
-    @Headers(
-        "X-RapidAPI-Key: 1217c0f6bamshdafb907a91cdb2cp173d5fjsnfb704dcd522b",
-        "X-RapidAPI-Host: fitness-calculator.p.rapidapi.com"
-    )
     @GET("/dailycalorie")
     suspend fun getCaloriesRequirements(
         @Query("age") age: Int,
