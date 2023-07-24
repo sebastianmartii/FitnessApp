@@ -13,14 +13,23 @@ object Validators {
     }
 
     fun isHeightValid(height: String): Boolean {
-        return !height.toFloat().isNaN()
+        if (height.isBlank()) {
+            return false
+        }
+        return !height.toFloat().isNaN() && height.toFloat() > 0
     }
 
     fun isWeightValid(weight: String): Boolean {
-        return !weight.toFloat().isNaN()
+        if (weight.isBlank()) {
+            return false
+        }
+        return !weight.toFloat().isNaN() && weight.toFloat() > 0
     }
 
     fun isAgeValid(age: String): Boolean {
-        return !age.toFloat().isNaN()
+        if (age.isBlank()) {
+            return false
+        }
+        return !age.toFloat().isNaN() && age.toFloat() > 0
     }
 }

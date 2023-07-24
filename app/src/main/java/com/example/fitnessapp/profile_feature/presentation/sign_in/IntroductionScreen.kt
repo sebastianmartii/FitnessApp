@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -83,25 +84,27 @@ fun IntroductionScreen(
                     Text(text = stringResource(id = R.string.username))
                 },
                 modifier = Modifier
-                    .padding(bottom = 16.dp)
                     .fillMaxWidth()
+                    .padding(bottom = 2.dp)
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.Start,
                 modifier = Modifier
                     .height(16.dp)
                     .fillMaxWidth()
             ) {
                 Icon(
                     imageVector = Icons.Default.Info,
-                    contentDescription = stringResource(id = R.string.hint_icon)
+                    contentDescription = stringResource(id = R.string.hint_icon),
+                    modifier = Modifier.padding(end = 8.dp)
                 )
                 Text(
                     text = stringResource(id = R.string.valid_username_text),
                     style = MaterialTheme.typography.labelMedium
                 )
             }
+            Spacer(modifier = Modifier.height(12.dp))
             Box(
                 modifier = Modifier
                     .height(56.dp)
@@ -150,7 +153,9 @@ fun IntroductionScreen(
                             )
                         }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
             }
             Text(

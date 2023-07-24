@@ -37,13 +37,13 @@ fun MeasurementsScreen(
     modifier: Modifier = Modifier
 ) {
     var height by remember {
-        mutableStateOf("")
+        mutableStateOf("0")
     }
     var weight by remember {
-        mutableStateOf("")
+        mutableStateOf("0")
     }
     var age by remember {
-        mutableStateOf("")
+        mutableStateOf("0")
     }
     Column(
         modifier = modifier
