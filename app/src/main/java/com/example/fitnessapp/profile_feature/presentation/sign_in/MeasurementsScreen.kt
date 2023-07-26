@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
@@ -17,13 +18,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,19 +30,16 @@ import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
 @Composable
 fun MeasurementsScreen(
+    age: String,
+    height: String,
+    weight: String,
+    onAgeChange: (String) -> Unit,
+    onHeightChange: (String) -> Unit,
+    onWeightChange: (String) -> Unit,
+    onNavigateToActivityLevelAndCaloriesGoalScreen: () -> Unit,
     onGoBack: () -> Unit,
-    onMeasurementsDone: (height: Float, weight: Float, age: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var height by remember {
-        mutableStateOf("0")
-    }
-    var weight by remember {
-        mutableStateOf("0")
-    }
-    var age by remember {
-        mutableStateOf("0")
-    }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -93,11 +88,17 @@ fun MeasurementsScreen(
             OutlinedTextField(
                 value = height,
                 onValueChange = {
-                    height = it
+                    onHeightChange(it)
                 },
                 label = {
                     Text(text = stringResource(id = R.string.height))
                 },
+                suffix = {
+                    Text(text = "cm")
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal
+                ),
                 modifier = Modifier
                     .padding(bottom = 8.dp)
                     .fillMaxWidth()
@@ -105,11 +106,17 @@ fun MeasurementsScreen(
             OutlinedTextField(
                 value = weight,
                 onValueChange = {
-                    weight = it
+                    onWeightChange(it)
                 },
                 label = {
                     Text(text = stringResource(id = R.string.weight))
                 },
+                suffix = {
+                    Text(text = "kg")
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal
+                ),
                 modifier = Modifier
                     .padding(bottom = 8.dp)
                     .fillMaxWidth()
@@ -124,11 +131,14 @@ fun MeasurementsScreen(
             OutlinedTextField(
                 value = age,
                 onValueChange = {
-                    age = it
+                    onAgeChange(it)
                 },
                 label = {
                     Text(text = stringResource(id = R.string.age))
                 },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal
+                ),
                 modifier = Modifier
                     .padding(bottom = 8.dp)
                     .fillMaxWidth()
@@ -136,9 +146,9 @@ fun MeasurementsScreen(
             Box(modifier = Modifier.fillMaxWidth()) {
                 Button(
                     onClick = {
-                        onMeasurementsDone(height.toFloat(), weight.toFloat(), age.toInt())
+                        onNavigateToActivityLevelAndCaloriesGoalScreen()
                     },
-                    enabled = Validators.isHeightValid(height) && Validators.isWeightValid(weight) && Validators.isAgeValid(age),
+                    enabled = Validators.isAgeValid(age) && Validators.isHeightValid(height) && Validators.isWeightValid(weight),
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {
                     Icon(
@@ -156,9 +166,13 @@ fun MeasurementsScreen(
 private fun MeasurementsScreenPreview() {
     FitnessAppTheme {
         MeasurementsScreen(
-            onMeasurementsDone = { _, _, _ ->
-            },
-            onGoBack = { /*TODO*/ }
-        )
+            age = "",
+            height = "",
+            weight = "",
+            onAgeChange = {},
+            onHeightChange = {},
+            onWeightChange = {},
+            onNavigateToActivityLevelAndCaloriesGoalScreen = { /*TODO*/ },
+            onGoBack = { /*TODO*/ })
     }
 }

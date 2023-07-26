@@ -1,15 +1,25 @@
 package com.example.fitnessapp.profile_feature.data.repository
 
+import android.net.http.HttpException
+import android.os.Build
+import androidx.annotation.RequiresExtension
 import com.example.fitnessapp.core.database.dao.CurrentUserDao
 import com.example.fitnessapp.core.database.entity.CurrentUser
+import com.example.fitnessapp.core.util.Resource
+import com.example.fitnessapp.profile_feature.data.mappers.toCalculatedCaloriesList
 import com.example.fitnessapp.profile_feature.data.mappers.toGenderString
 import com.example.fitnessapp.profile_feature.data.mappers.toUserProfile
 import com.example.fitnessapp.profile_feature.data.remote.CaloriesGoalApi
+import com.example.fitnessapp.profile_feature.data.remote.dto.CaloriesRequirementsDto
 import com.example.fitnessapp.profile_feature.domain.model.Gender
 import com.example.fitnessapp.profile_feature.domain.model.UserProfile
 import com.example.fitnessapp.profile_feature.domain.repository.ProfileRepository
 import com.example.fitnessapp.profile_feature.presentation.sign_in.ActivityLevel
 import com.example.fitnessapp.profile_feature.presentation.sign_in.toActivityLevelString
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import java.io.IOException
+import java.lang.Exception
 
 class ProfileRepositoryImpl(
     private val currentUserDao: CurrentUserDao,
@@ -42,19 +52,19 @@ class ProfileRepositoryImpl(
         return currentUserDao.getAllUsers().map { it.toUserProfile() }
     }
 
-    override suspend fun getCaloriesGoals(
+    override fun getCaloriesGoals(
         age: Int,
         height: Float,
         weight: Float,
         gender: Gender,
         activityLevel: ActivityLevel
-    ) {
-        caloriesGoalApi.getCaloriesRequirements(
-            age = age,
-            gender = gender.toGenderString(),
-            height = height,
-            weight = weight,
-            activityLevel = activityLevel.name.lowercase()
-        )
+    ): Flow<Resource<CaloriesRequirementsDto>> = flow {
+        emit(Resource.Loading())
+
+        try {
+
+        } catch (e: Exception) {
+            emit(Resource.Error(message = "$e"))
+        }
     }
 }

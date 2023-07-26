@@ -2,69 +2,117 @@ package com.example.fitnessapp.profile_feature.presentation.sign_in
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fitnessapp.core.util.Resource
+import com.example.fitnessapp.profile_feature.data.mappers.toCalculatedCaloriesList
+import com.example.fitnessapp.profile_feature.data.remote.CaloriesGoalApi
+import com.example.fitnessapp.profile_feature.domain.model.Gender
 import com.example.fitnessapp.profile_feature.domain.repository.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val repo: ProfileRepository
+    private val repo: ProfileRepository,
+    private val caloriesGoalApi: CaloriesGoalApi
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SignInState())
     val state = _state.asStateFlow()
 
+    fun calculateCalories() {
+        viewModelScope.launch {
+            println("calculate calories called")
+            try {
+                val response = caloriesGoalApi.getCaloriesRequirements(
+                    21,
+                    "male",
+                    176,
+                    67,
+                    "level_3"
+                )
+                if (response.isSuccessful){
+                    _state.update {
+                        it.copy(
+                            calculatedCaloriesList = response.body()?.toCalculatedCaloriesList()
+                                ?: emptyList()
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                println("$e lolololoolololol")
+            }
+        }
+    }
+
     fun onEvent(event: ProfileEvent) {
         when(event) {
-            is ProfileEvent.IntroductionDone -> {
+            is ProfileEvent.OnNameChange -> {
                 _state.update {
                     it.copy(
-                        name = event.name,
-                        gender = event.gender,
+                        name = event.name
+                    )
+                }
+            }
+            is ProfileEvent.OnGenderChange -> {
+                _state.update {
+                    it.copy(
+                        gender = event.gender
+                    )
+                }
+            }
+            is ProfileEvent.OnAgeChange -> {
+                _state.update {
+                    it.copy(
+                        age = event.age
+                    )
+                }
+            }
+            is ProfileEvent.OnHeightChange -> {
+                _state.update {
+                    it.copy(
+                        height = event.height
+                    )
+                }
+            }
+            is ProfileEvent.OnWeightChange -> {
+                _state.update {
+                    it.copy(
+                        weight = event.weight
+                    )
+                }
+            }
+            is ProfileEvent.OnActivityLevelChange -> {
+                _state.update {
+                    it.copy(
+                        activityLevel = event.activityLevel
+                    )
+                }
+            }
+            is ProfileEvent.OnCaloriesGoalChange -> {
+                _state.update {
+                    it.copy(
+                        caloriesGoal = event.caloriesGoal
+                    )
+                }
+            }
+            ProfileEvent.OnIntroductionDone -> {
+                _state.update {
+                    it.copy(
                         signInProgress = SignInProgress.Measurements
                     )
                 }
             }
-            is ProfileEvent.MeasurementsProvided -> {
+            ProfileEvent.OnMeasurementsTaken -> {
                 _state.update {
                     it.copy(
-                        height = event.height,
-                        weight = event.weight,
-                        age = event.age,
                         signInProgress = SignInProgress.ActivityLevelAndCaloriesGoal
                     )
                 }
-            }
-            is ProfileEvent.CaloriesGoalChosen -> {
-                _state.update {
-                    it.copy(
-                        caloriesGoal = event.caloriesGoal
-                    )
-                }
-            }
-            is ProfileEvent.SignInCompleted -> {
-                _state.update {
-                    it.copy(
-                        activityLevel = event.activityLevel,
-                        caloriesGoal = event.caloriesGoal
-                    )
-                }
-                viewModelScope.launch {
-                    repo.addUser(
-                        name = _state.value.name,
-                        age = _state.value.age,
-                        height = _state.value.height,
-                        weight = _state.value.weight,
-                        gender = _state.value.gender,
-                        activityLevel = _state.value.activityLevel,
-                        caloriesGoal = _state.value.caloriesGoal
-                    )
-                }
-                TODO("navigate from sign in")
             }
             ProfileEvent.OnCalculateCalories -> {
                 _state.update {
@@ -73,15 +121,48 @@ class SignInViewModel @Inject constructor(
                     )
                 }
             }
-            ProfileEvent.OnChooseProfile -> {
-                _state.update {
-                    it.copy(
-                        signInProgress = SignInProgress.ProfileList
+            ProfileEvent.OnSignInComplete -> {
+                viewModelScope.launch {
+                    repo.addUser(
+                        _state.value.name,
+                        _state.value.age.toInt(),
+                        _state.value.height.toFloat(),
+                        _state.value.weight.toFloat(),
+                        _state.value.gender,
+                        _state.value.activityLevel,
+                        _state.value.caloriesGoal,
                     )
                 }
             }
-            is ProfileEvent.ProfileChosen -> {
-                TODO("navigate from sign in")
+            is ProfileEvent.OnGenderMenuExpandedChange -> {
+                _state.update {
+                    it.copy(
+                        genderMenuExpanded = event.expanded
+                    )
+                }
+            }
+            is ProfileEvent.OnActivityLevelMenuExpandedChange -> {
+                _state.update {
+                    it.copy(
+                        activityLevelMenuExpanded = event.expanded
+                    )
+                }
+            }
+            ProfileEvent.OnProfileSelect -> {
+                _state.update {
+                    it.copy(
+                        signInProgress = SignInProgress.ProfileList,
+                    )
+                }
+                viewModelScope.launch {
+                    repo.getUserProfiles().also { userProfileList ->
+                        _state.update {
+                            it.copy(
+                                profileList = userProfileList
+                            )
+                        }
+                    }
+                }
             }
             is ProfileEvent.OnGoBack -> {
                 val previousProgress = when(event.currentProgress) {
@@ -97,6 +178,7 @@ class SignInViewModel @Inject constructor(
                     )
                 }
             }
+
         }
     }
 }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ChevronLeft
@@ -25,14 +26,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,20 +40,17 @@ import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
 @Composable
 fun ActivityLevelAndCaloriesGoalScreen(
-    onActivityLevelAndCaloriesGoalProvided: (activityLevel: ActivityLevel, caloriesGoal: Int) -> Unit,
+    activityLevel: ActivityLevel,
+    caloriesGoal: Int,
+    menuExpanded: Boolean,
+    onActivityLevelChange: (ActivityLevel) -> Unit,
+    onCaloriesGoalChange: (Int) -> Unit,
+    onMenuExpandedChange: (Boolean) -> Unit,
     onCalculate: () -> Unit,
+    onNavigateToOverviewScreen: () -> Unit,
     onGoBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var activityLevel by remember {
-        mutableStateOf(ActivityLevel.LEVEL_6)
-    }
-    var menuExpanded by remember {
-        mutableStateOf(false)
-    }
-    var caloriesGoal by remember {
-        mutableStateOf("")
-    }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -112,6 +107,9 @@ fun ActivityLevelAndCaloriesGoalScreen(
                         MaterialTheme.colorScheme.outline,
                         MaterialTheme.shapes.extraSmall
                     )
+                    .clickable {
+                        onMenuExpandedChange(true)
+                    }
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -130,14 +128,11 @@ fun ActivityLevelAndCaloriesGoalScreen(
                     Icon(
                         imageVector = Icons.Filled.ArrowDropDown,
                         contentDescription = stringResource(id = R.string.expand),
-                        modifier = Modifier.clickable {
-                            menuExpanded = true
-                        }
                     )
                 }
                 DropdownMenu(
                     expanded = menuExpanded,
-                    onDismissRequest = { menuExpanded = false },
+                    onDismissRequest = { onMenuExpandedChange(false) },
                     content = {
                         activityLevels.onEach {
                             DropdownMenuItem(
@@ -145,13 +140,12 @@ fun ActivityLevelAndCaloriesGoalScreen(
                                     Text(text = it.toActivityLevelString())
                                 },
                                 onClick = {
-                                    activityLevel = it
-                                    menuExpanded = false
+                                    onActivityLevelChange(it)
+                                    onMenuExpandedChange(false)
                                 }
                             )
                         }
-                    },
-                    modifier = Modifier.fillMaxWidth()
+                    }
                 )
             }
             Text(
@@ -171,15 +165,21 @@ fun ActivityLevelAndCaloriesGoalScreen(
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
-                value = caloriesGoal,
+                value = caloriesGoal.toString(),
                 onValueChange = {
-                    caloriesGoal = it
+                    onCaloriesGoalChange(it.toInt())
                 },
                 trailingIcon = {
                     TextButton(onClick = onCalculate) {
                         Text(text = stringResource(id = R.string.calculate))
                     }
                 },
+                suffix = {
+                    Text(text = "kcal")
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal
+                ),
                 modifier = Modifier
                     .padding(bottom = 8.dp)
                     .fillMaxWidth()
@@ -194,7 +194,7 @@ fun ActivityLevelAndCaloriesGoalScreen(
             Box(modifier = Modifier.fillMaxWidth()) {
                 Button(
                     onClick = {
-                        onActivityLevelAndCaloriesGoalProvided(activityLevel, caloriesGoal.toInt())
+                        onNavigateToOverviewScreen()
                     },
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {
@@ -213,10 +213,14 @@ fun ActivityLevelAndCaloriesGoalScreen(
 private fun ActivityLevelAndCaloriesGoalScreenPreview() {
     FitnessAppTheme {
         ActivityLevelAndCaloriesGoalScreen(
-            onActivityLevelAndCaloriesGoalProvided = { _, _ ->
-
-            },
-            onCalculate = {},
+            activityLevel = ActivityLevel.LEVEL_4,
+            caloriesGoal = 2300,
+            menuExpanded = false,
+            onActivityLevelChange = {},
+            onCaloriesGoalChange = {},
+            onMenuExpandedChange = {},
+            onCalculate = { /*TODO*/ },
+            onNavigateToOverviewScreen = { /*TODO*/ },
             onGoBack = { /*TODO*/ })
     }
 }

@@ -19,7 +19,11 @@ class MainActivity : ComponentActivity() {
             FitnessAppTheme {
                 val viewModel = hiltViewModel<SignInViewModel>()
                 val state by viewModel.state.collectAsStateWithLifecycle()
-                SignInScreen(state = state, onEvent = viewModel::onEvent)
+                SignInScreen(
+                    state = state,
+                    onEvent = viewModel::onEvent,
+                    calculate = viewModel::calculateCalories
+                )
             }
         }
     }

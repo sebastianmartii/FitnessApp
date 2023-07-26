@@ -1,8 +1,11 @@
 package com.example.fitnessapp.profile_feature.domain.repository
 
+import com.example.fitnessapp.core.util.Resource
+import com.example.fitnessapp.profile_feature.data.remote.dto.CaloriesRequirementsDto
 import com.example.fitnessapp.profile_feature.domain.model.Gender
 import com.example.fitnessapp.profile_feature.domain.model.UserProfile
 import com.example.fitnessapp.profile_feature.presentation.sign_in.ActivityLevel
+import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {
 
@@ -10,5 +13,5 @@ interface ProfileRepository {
 
     suspend fun getUserProfiles(): List<UserProfile>
 
-    suspend fun getCaloriesGoals(age: Int, height: Float, weight: Float, gender: Gender, activityLevel: ActivityLevel)
+    fun getCaloriesGoals(age: Int, height: Float, weight: Float, gender: Gender, activityLevel: ActivityLevel): Flow<Resource<CaloriesRequirementsDto>>
 }

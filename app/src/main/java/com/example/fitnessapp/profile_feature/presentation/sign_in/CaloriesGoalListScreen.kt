@@ -2,6 +2,7 @@ package com.example.fitnessapp.profile_feature.presentation.sign_in
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,9 +36,13 @@ import com.example.fitnessapp.ui.theme.FitnessAppTheme
 fun CaloriesGoalListScreen(
     calculatedCalories: List<CalculatedCalories>,
     onCaloriesGoalChosen: (Int) -> Unit,
+    calculate: () -> Unit,
     onGoBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LaunchedEffect(key1 = true) {
+        calculate()
+    }
     Column(
         verticalArrangement = Arrangement.Top,
         modifier = modifier
@@ -77,7 +83,10 @@ fun CaloriesGoalListScreen(
                         typeOfGoal = it.toString(),
                         calories = it.calories,
                         weightLose = it.weightLose,
-                        weightGain = it.weightGain
+                        weightGain = it.weightGain,
+                        modifier = Modifier.clickable {
+                            onCaloriesGoalChosen(it.calories)
+                        }
                     )
                 }
             }
@@ -156,6 +165,7 @@ private fun CaloriesGoalListScreenPreview() {
             ),
             onCaloriesGoalChosen = {
             },
+            calculate = {},
             onGoBack = { /*TODO*/ })
     }
 }

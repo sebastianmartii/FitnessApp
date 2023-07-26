@@ -7,15 +7,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -24,10 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -44,18 +39,16 @@ import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
 @Composable
 fun IntroductionScreen(
-    onIntroductionDone: (name: String, gender: Gender) -> Unit,
+    name: String,
+    gender: Gender,
+    menuExpanded: Boolean,
+    onNameChange: (String) -> Unit,
+    onGenderChange: (Gender) -> Unit,
+    onMenuExpandedChange: (Boolean) -> Unit,
+    onNavigateToMeasurementsScreen: () -> Unit,
+    onNavigateToProfileListScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var name by remember {
-        mutableStateOf("")
-    }
-    var gender by remember {
-        mutableStateOf(Gender.NONE)
-    }
-    var menuExpanded by remember {
-        mutableStateOf(false)
-    }
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -78,42 +71,34 @@ fun IntroductionScreen(
             OutlinedTextField(
                 value = name,
                 onValueChange = {
-                    name = it
+                    onNameChange(it)
                 },
                 label = {
                     Text(text = stringResource(id = R.string.username))
                 },
+                supportingText = {
+                    Text(
+                        text = stringResource(id = R.string.valid_username_text),
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 2.dp)
+                    .padding(bottom = 16.dp)
             )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
-                modifier = Modifier
-                    .height(16.dp)
-                    .fillMaxWidth()
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Info,
-                    contentDescription = stringResource(id = R.string.hint_icon),
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text(
-                    text = stringResource(id = R.string.valid_username_text),
-                    style = MaterialTheme.typography.labelMedium
-                )
-            }
-            Spacer(modifier = Modifier.height(12.dp))
             Box(
                 modifier = Modifier
                     .height(56.dp)
                     .fillMaxWidth()
+                    .wrapContentWidth()
                     .border(
                         1.dp,
                         MaterialTheme.colorScheme.outline,
                         MaterialTheme.shapes.extraSmall
                     )
+                    .clickable {
+                        onMenuExpandedChange(true)
+                    }
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -132,30 +117,26 @@ fun IntroductionScreen(
                     Icon(
                         imageVector = Icons.Filled.ArrowDropDown,
                         contentDescription = stringResource(id = R.string.expand),
-                        modifier = Modifier.clickable {
-                            menuExpanded = true
-                        }
                     )
                 }
                 DropdownMenu(
                     expanded = menuExpanded,
-                    onDismissRequest = { menuExpanded = false },
+                    onDismissRequest = {
+                        onMenuExpandedChange(false)
+                    },
                     content = {
-                        genderList.onEach {
+                        genderList.onEach { gender ->
                             DropdownMenuItem(
                                 text = {
-                                    Text(text = it.toGenderString())
+                                    Text(text = gender.toGenderString())
                                 },
                                 onClick = {
-                                    gender = it
-                                    menuExpanded = false
+                                    onGenderChange(gender)
+                                    onMenuExpandedChange(false)
                                 }
                             )
                         }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                    }
                 )
             }
             Text(
@@ -174,15 +155,15 @@ fun IntroductionScreen(
                     .fillMaxWidth()
                     .padding(bottom = 8.dp)
                     .clickable {
-
+                        onNavigateToProfileListScreen()
                     }
             )
             Box(modifier = Modifier.fillMaxWidth()) {
                 Button(
                     onClick = {
-                        onIntroductionDone(name, gender)
+                        onNavigateToMeasurementsScreen()
                     },
-                    enabled = Validators.isUserNameValid(name) &&  Validators.isGenderValid(gender),
+                    enabled = Validators.isUserNameValid(name) && Validators.isGenderValid(gender),
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {
                     Icon(
@@ -200,8 +181,14 @@ fun IntroductionScreen(
 @Composable
 private fun IntroductionScreenPreview() {
     FitnessAppTheme {
-        IntroductionScreen(onIntroductionDone = { _, _ ->
-
-        })
+        IntroductionScreen(
+            name = "",
+            gender = Gender.NONE,
+            menuExpanded = false,
+            onNameChange = {},
+            onGenderChange = {},
+            onMenuExpandedChange = {},
+            onNavigateToProfileListScreen = {},
+            onNavigateToMeasurementsScreen = { /*TODO*/ })
     }
 }

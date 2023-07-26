@@ -73,6 +73,9 @@ fun ProfileListScreen(
             profileList.onEach {
                 ProfileItem(name = it.name, gender = it.gender)
             }
+            if (profileList.isEmpty()) {
+                ProfileItem(name = "no previous profiles available", gender = Gender.MALE)
+            }
         }
     }
 }

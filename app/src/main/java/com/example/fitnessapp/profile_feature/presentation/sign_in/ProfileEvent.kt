@@ -4,19 +4,19 @@ import com.example.fitnessapp.profile_feature.domain.model.Gender
 
 sealed interface ProfileEvent {
 
-    data class IntroductionDone(val name: String, val gender: Gender) : ProfileEvent
-
-    data class MeasurementsProvided(val age: Int, val height: Float, val weight: Float) : ProfileEvent
-
-    data class CaloriesGoalChosen(val caloriesGoal: Int) : ProfileEvent
-
-    data class SignInCompleted(val activityLevel: ActivityLevel, val caloriesGoal: Int) : ProfileEvent
-
+    data class OnNameChange(val name: String) : ProfileEvent
+    data class OnGenderChange(val gender: Gender) : ProfileEvent
+    data class OnAgeChange(val age: String) : ProfileEvent
+    data class OnHeightChange(val height: String) : ProfileEvent
+    data class OnWeightChange(val weight: String) : ProfileEvent
+    data class OnCaloriesGoalChange(val caloriesGoal: Int) : ProfileEvent
+    data class OnActivityLevelChange(val activityLevel: ActivityLevel) : ProfileEvent
+    object OnIntroductionDone : ProfileEvent
+    object OnProfileSelect : ProfileEvent
+    object OnMeasurementsTaken : ProfileEvent
+    object OnSignInComplete : ProfileEvent
     object OnCalculateCalories : ProfileEvent
-
-    object OnChooseProfile : ProfileEvent
-
-    data class ProfileChosen(val profileName: String) : ProfileEvent
-
+    data class OnGenderMenuExpandedChange(val expanded: Boolean) : ProfileEvent
+    data class OnActivityLevelMenuExpandedChange(val expanded: Boolean) : ProfileEvent
     data class OnGoBack(val currentProgress: SignInProgress) : ProfileEvent
 }
