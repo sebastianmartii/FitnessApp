@@ -11,7 +11,7 @@ data class SignInState(
     val height: String = "",
     val weight: String = "",
     val activityLevel: ActivityLevel = ActivityLevel.LEVEL_1,
-    val caloriesGoal: Int = 0,
+    val caloriesGoal: Double = 0.0,
     val calculatedCaloriesList: List<CalculatedCalories> = emptyList(),
     val profileList: List<UserProfile> = emptyList(),
     val genderMenuExpanded: Boolean = false,

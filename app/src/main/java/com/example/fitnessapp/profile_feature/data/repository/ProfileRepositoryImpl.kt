@@ -1,8 +1,5 @@
 package com.example.fitnessapp.profile_feature.data.repository
 
-import android.net.http.HttpException
-import android.os.Build
-import androidx.annotation.RequiresExtension
 import com.example.fitnessapp.core.database.dao.CurrentUserDao
 import com.example.fitnessapp.core.database.entity.CurrentUser
 import com.example.fitnessapp.core.util.Resource
@@ -10,16 +7,14 @@ import com.example.fitnessapp.profile_feature.data.mappers.toCalculatedCaloriesL
 import com.example.fitnessapp.profile_feature.data.mappers.toGenderString
 import com.example.fitnessapp.profile_feature.data.mappers.toUserProfile
 import com.example.fitnessapp.profile_feature.data.remote.CaloriesGoalApi
-import com.example.fitnessapp.profile_feature.data.remote.dto.CaloriesRequirementsDto
 import com.example.fitnessapp.profile_feature.domain.model.Gender
 import com.example.fitnessapp.profile_feature.domain.model.UserProfile
 import com.example.fitnessapp.profile_feature.domain.repository.ProfileRepository
 import com.example.fitnessapp.profile_feature.presentation.sign_in.ActivityLevel
+import com.example.fitnessapp.profile_feature.presentation.sign_in.CalculatedCalories
 import com.example.fitnessapp.profile_feature.presentation.sign_in.toActivityLevelString
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.io.IOException
-import java.lang.Exception
 
 class ProfileRepositoryImpl(
     private val currentUserDao: CurrentUserDao,
@@ -54,15 +49,26 @@ class ProfileRepositoryImpl(
 
     override fun getCaloriesGoals(
         age: Int,
-        height: Float,
-        weight: Float,
+        height: Int,
+        weight: Int,
         gender: Gender,
         activityLevel: ActivityLevel
-    ): Flow<Resource<CaloriesRequirementsDto>> = flow {
+    ): Flow<Resource<List<CalculatedCalories>>> = flow {
         emit(Resource.Loading())
 
         try {
-
+            val response = caloriesGoalApi.getCaloriesRequirements(
+                age,
+                gender.toGenderString(),
+                height,
+                weight,
+                activityLevel.name.lowercase()
+            )
+            if (response.isSuccessful) {
+                emit(Resource.Success(data = response.body()!!.toCalculatedCaloriesList()))
+            } else {
+                emit(Resource.Error(message = "Request was unsuccessful"))
+            }
         } catch (e: Exception) {
             emit(Resource.Error(message = "$e"))
         }

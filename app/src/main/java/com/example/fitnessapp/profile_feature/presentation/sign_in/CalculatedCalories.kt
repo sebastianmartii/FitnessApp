@@ -2,9 +2,9 @@ package com.example.fitnessapp.profile_feature.presentation.sign_in
 
 data class CalculatedCalories(
     val typeOfGoal: TypeOfGoal,
-    val calories: Int,
-    val weightLose: Float? = null,
-    val weightGain: Float? = null
+    val calories: Double,
+    val weightLose: String? = null,
+    val weightGain: String? = null
 ) {
     override fun toString(): String {
         return when(this.typeOfGoal) {

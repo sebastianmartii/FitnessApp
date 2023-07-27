@@ -9,7 +9,7 @@ sealed interface ProfileEvent {
     data class OnAgeChange(val age: String) : ProfileEvent
     data class OnHeightChange(val height: String) : ProfileEvent
     data class OnWeightChange(val weight: String) : ProfileEvent
-    data class OnCaloriesGoalChange(val caloriesGoal: Int) : ProfileEvent
+    data class OnCaloriesGoalChange(val caloriesGoal: Double) : ProfileEvent
     data class OnActivityLevelChange(val activityLevel: ActivityLevel) : ProfileEvent
     object OnIntroductionDone : ProfileEvent
     object OnProfileSelect : ProfileEvent

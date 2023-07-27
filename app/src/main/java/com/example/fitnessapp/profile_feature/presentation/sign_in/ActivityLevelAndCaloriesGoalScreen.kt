@@ -41,10 +41,10 @@ import com.example.fitnessapp.ui.theme.FitnessAppTheme
 @Composable
 fun ActivityLevelAndCaloriesGoalScreen(
     activityLevel: ActivityLevel,
-    caloriesGoal: Int,
+    caloriesGoal: Double,
     menuExpanded: Boolean,
     onActivityLevelChange: (ActivityLevel) -> Unit,
-    onCaloriesGoalChange: (Int) -> Unit,
+    onCaloriesGoalChange: (Double) -> Unit,
     onMenuExpandedChange: (Boolean) -> Unit,
     onCalculate: () -> Unit,
     onNavigateToOverviewScreen: () -> Unit,
@@ -167,7 +167,7 @@ fun ActivityLevelAndCaloriesGoalScreen(
             OutlinedTextField(
                 value = caloriesGoal.toString(),
                 onValueChange = {
-                    onCaloriesGoalChange(it.toInt())
+                    onCaloriesGoalChange(it.toDouble())
                 },
                 trailingIcon = {
                     TextButton(onClick = onCalculate) {
@@ -214,7 +214,7 @@ private fun ActivityLevelAndCaloriesGoalScreenPreview() {
     FitnessAppTheme {
         ActivityLevelAndCaloriesGoalScreen(
             activityLevel = ActivityLevel.LEVEL_4,
-            caloriesGoal = 2300,
+            caloriesGoal = 2300.0,
             menuExpanded = false,
             onActivityLevelChange = {},
             onCaloriesGoalChange = {},

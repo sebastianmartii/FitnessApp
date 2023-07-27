@@ -3,14 +3,11 @@ package com.example.fitnessapp.profile_feature.presentation.sign_in
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.core.util.Resource
-import com.example.fitnessapp.profile_feature.data.mappers.toCalculatedCaloriesList
-import com.example.fitnessapp.profile_feature.data.remote.CaloriesGoalApi
-import com.example.fitnessapp.profile_feature.domain.model.Gender
 import com.example.fitnessapp.profile_feature.domain.repository.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,7 +15,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val repo: ProfileRepository,
-    private val caloriesGoalApi: CaloriesGoalApi
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SignInState())
@@ -26,25 +22,36 @@ class SignInViewModel @Inject constructor(
 
     fun calculateCalories() {
         viewModelScope.launch {
-            println("calculate calories called")
-            try {
-                val response = caloriesGoalApi.getCaloriesRequirements(
-                    21,
-                    "male",
-                    176,
-                    67,
-                    "level_3"
-                )
-                if (response.isSuccessful){
-                    _state.update {
-                        it.copy(
-                            calculatedCaloriesList = response.body()?.toCalculatedCaloriesList()
-                                ?: emptyList()
-                        )
+            repo.getCaloriesGoals(
+                _state.value.age.toInt(),
+                _state.value.height.toInt(),
+                _state.value.weight.toInt(),
+                _state.value.gender,
+                _state.value.activityLevel
+            ).collectLatest { result ->
+                when(result) {
+                    is Resource.Error -> {
+                        _state.update {
+                            it.copy(
+                                calculatedCaloriesList = result.data ?: emptyList()
+                            )
+                        }
+                    }
+                    is Resource.Loading -> {
+                        _state.update {
+                            it.copy(
+                                calculatedCaloriesList = result.data ?: emptyList()
+                            )
+                        }
+                    }
+                    is Resource.Success -> {
+                        _state.update {
+                            it.copy(
+                                calculatedCaloriesList = result.data ?: emptyList()
+                            )
+                        }
                     }
                 }
-            } catch (e: Exception) {
-                println("$e lolololoolololol")
             }
         }
     }
@@ -130,7 +137,7 @@ class SignInViewModel @Inject constructor(
                         _state.value.weight.toFloat(),
                         _state.value.gender,
                         _state.value.activityLevel,
-                        _state.value.caloriesGoal,
+                        _state.value.caloriesGoal.toInt(),
                     )
                 }
             }

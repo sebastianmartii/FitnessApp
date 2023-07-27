@@ -35,7 +35,7 @@ import com.example.fitnessapp.ui.theme.FitnessAppTheme
 @Composable
 fun CaloriesGoalListScreen(
     calculatedCalories: List<CalculatedCalories>,
-    onCaloriesGoalChosen: (Int) -> Unit,
+    onCaloriesGoalChosen: (Double) -> Unit,
     calculate: () -> Unit,
     onGoBack: () -> Unit,
     modifier: Modifier = Modifier
@@ -97,10 +97,10 @@ fun CaloriesGoalListScreen(
 @Composable
 private fun CalculatedCaloriesItem(
     typeOfGoal: String,
-    calories: Int,
+    calories: Double,
     modifier: Modifier = Modifier,
-    weightLose: Float? = null,
-    weightGain: Float? = null
+    weightLose: String? = null,
+    weightGain: String? = null
 ) {
     Surface(
         shape = MaterialTheme.shapes.medium,
@@ -131,14 +131,14 @@ private fun CalculatedCaloriesItem(
                 when {
                     weightLose != null && weightGain == null -> {
                         Text(
-                            text = "-$weightLose kg",
+                            text = "-$weightLose",
                             style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.error
                         )
                     }
                     weightLose == null && weightGain != null -> {
                         Text(
-                            text = "+$weightGain kg",
+                            text = "+$weightGain",
                             style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.error
                         )
@@ -155,13 +155,13 @@ private fun CaloriesGoalListScreenPreview() {
     FitnessAppTheme {
         CaloriesGoalListScreen(
             calculatedCalories = listOf(
-                CalculatedCalories(TypeOfGoal.MAINTAIN_WEIGHT, 2046),
-                CalculatedCalories(TypeOfGoal.MILD_WEIGHT_LOSE, 1796, weightLose = 0.25F),
-                CalculatedCalories(TypeOfGoal.WEIGHT_LOSE, 1546, weightLose = 0.5F),
-                CalculatedCalories(TypeOfGoal.EXTREME_WEIGHT_LOSE, 1046, weightLose = 1F),
-                CalculatedCalories(TypeOfGoal.MILD_WEIGHT_GAIN, 2296, weightGain = 0.25F),
-                CalculatedCalories(TypeOfGoal.WEIGHT_GAIN, 2546, weightGain = 0.5F),
-                CalculatedCalories(TypeOfGoal.EXTREME_WEIGHT_GAIN, 3046, weightGain = 1F),
+                CalculatedCalories(TypeOfGoal.MAINTAIN_WEIGHT, 2046.0),
+                CalculatedCalories(TypeOfGoal.MILD_WEIGHT_LOSE, 1796.0, weightLose = "0.25 kg"),
+                CalculatedCalories(TypeOfGoal.WEIGHT_LOSE, 1546.0, weightLose = "0.5 kg"),
+                CalculatedCalories(TypeOfGoal.EXTREME_WEIGHT_LOSE, 1046.0, weightLose = "1 kg"),
+                CalculatedCalories(TypeOfGoal.MILD_WEIGHT_GAIN, 2296.0, weightGain = "0.25 kg"),
+                CalculatedCalories(TypeOfGoal.WEIGHT_GAIN, 2546.0, weightGain = "0.5 kg"),
+                CalculatedCalories(TypeOfGoal.EXTREME_WEIGHT_GAIN, 3046.0, weightGain = "1 kg"),
             ),
             onCaloriesGoalChosen = {
             },
