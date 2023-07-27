@@ -38,32 +38,32 @@ fun CaloriesRequirementsDto.toCalculatedCaloriesList(): List<CalculatedCalories>
         CalculatedCalories(
             typeOfGoal = TypeOfGoal.EXTREME_WEIGHT_LOSE,
             calories = this.data.goals.extremeWeightLoss.calories,
-            weightLose = this.data.goals.extremeWeightLoss.lossWeight.toFloat()
+            weightLose = this.data.goals.extremeWeightLoss.lossWeight
         ),
         CalculatedCalories(
             typeOfGoal = TypeOfGoal.WEIGHT_LOSE,
             calories = this.data.goals.weightLoss.calories,
-            weightLose = this.data.goals.weightLoss.lossWeight.toFloat()
+            weightLose = this.data.goals.weightLoss.lossWeight 
         ),
         CalculatedCalories(
             typeOfGoal = TypeOfGoal.MILD_WEIGHT_LOSE,
             calories = this.data.goals.mildWeightLoss.calories,
-            weightLose = this.data.goals.mildWeightLoss.lossWeight.toFloat()
+            weightLose = this.data.goals.mildWeightLoss.lossWeight 
         ),
         CalculatedCalories(
             typeOfGoal = TypeOfGoal.EXTREME_WEIGHT_GAIN,
             calories = this.data.goals.extremeWeightGain.calories,
-            weightGain = this.data.goals.extremeWeightGain.gainWeight.toFloat()
+            weightGain = this.data.goals.extremeWeightGain.gainWeight 
         ),
         CalculatedCalories(
             typeOfGoal = TypeOfGoal.WEIGHT_GAIN,
             calories = this.data.goals.weightGain.calories,
-            weightGain = this.data.goals.weightGain.gainWeight.toFloat()
+            weightGain = this.data.goals.weightGain.gainWeight 
         ),
         CalculatedCalories(
             typeOfGoal = TypeOfGoal.MILD_WEIGHT_GAIN,
             calories = this.data.goals.mildWeightGain.calories,
-            weightGain = this.data.goals.mildWeightGain.gainWeight.toFloat()
+            weightGain = this.data.goals.mildWeightGain.gainWeight 
         ),
     )
 }

@@ -1,11 +1,13 @@
 package com.example.fitnessapp.profile_feature.data.remote.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class Goals(
-    val extremeWeightGain: ExtremeWeightGain,
-    val extremeWeightLoss: ExtremeWeightLoss,
-    val mildWeightGain: MildWeightGain,
-    val mildWeightLoss: MildWeightLoss,
-    val weightGain: WeightGain,
-    val weightLoss: WeightLoss,
-    val maintainWeight: Int
+    @SerializedName("maintain weight") val maintainWeight: Double,
+    @SerializedName("Mild weight loss") val mildWeightLoss: CaloriesGoal,
+    @SerializedName("Weight loss") val weightLoss: CaloriesGoal,
+    @SerializedName("Extreme weight loss") val extremeWeightLoss: CaloriesGoal,
+    @SerializedName("Mild weight gain") val mildWeightGain: CaloriesGoal,
+    @SerializedName("Weight gain") val weightGain: CaloriesGoal,
+    @SerializedName("Extreme weight gain") val extremeWeightGain: CaloriesGoal
 )
