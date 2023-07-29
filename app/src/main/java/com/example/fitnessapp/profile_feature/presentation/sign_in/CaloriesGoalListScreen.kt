@@ -1,26 +1,27 @@
 package com.example.fitnessapp.profile_feature.presentation.sign_in
 
-import androidx.compose.foundation.BorderStroke
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,11 +31,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.fitnessapp.R
+import com.example.fitnessapp.profile_feature.data.mappers.toCaloriesString
+import com.example.fitnessapp.profile_feature.domain.model.CalculatedCalories
+import com.example.fitnessapp.profile_feature.domain.model.TypeOfGoal
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
 @Composable
 fun CaloriesGoalListScreen(
-    calculatedCalories: List<CalculatedCalories>,
+    weightGainGoals: List<CalculatedCalories>,
+    weightLoseGoals: List<CalculatedCalories>,
+    maintainWeightGoal: CalculatedCalories,
     onCaloriesGoalChosen: (Double) -> Unit,
     calculate: () -> Unit,
     onGoBack: () -> Unit,
@@ -68,26 +74,48 @@ fun CaloriesGoalListScreen(
                 )
             }
         }
-        Box(
-            contentAlignment = Alignment.Center,
+        Column(
+            horizontalAlignment = Alignment.Start,
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.8f)
-        ){
-            LazyColumn(
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            Text(
+                text = stringResource(id = R.string.pick_calories_goal),
+                style = MaterialTheme.typography.displayMedium,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
-                    .fillMaxHeight(0.5f)
+                    .padding(start = 8.dp)
+            )
+            CalculatedCaloriesItem(typeOfGoal = maintainWeightGoal.toString(), calories = maintainWeightGoal.calories)
+            Text(
+                text = stringResource(id = R.string.weight_lose_goals),
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .padding(start = 8.dp)
+            )
+            Row(
+                modifier = Modifier
+                    .horizontalScroll(rememberScrollState())
             ) {
-                items(calculatedCalories) {
-                    CalculatedCaloriesItem(
-                        typeOfGoal = it.toString(),
-                        calories = it.calories,
-                        weightLose = it.weightLose,
-                        weightGain = it.weightGain,
-                        modifier = Modifier.clickable {
-                            onCaloriesGoalChosen(it.calories)
-                        }
-                    )
+                weightLoseGoals.onEach { goal ->
+                    CalculatedCaloriesItem(typeOfGoal = goal.toString(), calories = goal.calories, weightLose = goal.weightLose)
+                }
+            }
+            Text(
+                text = stringResource(id = R.string.weight_gain_goals),
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .padding(start = 8.dp)
+            )
+            Row(
+                modifier = Modifier
+                    .horizontalScroll(rememberScrollState())
+            ) {
+                weightGainGoals.onEach { goal ->
+                    CalculatedCaloriesItem(typeOfGoal = goal.toString(), calories = goal.calories, weightGain = goal.weightGain)
                 }
             }
         }
@@ -102,46 +130,63 @@ private fun CalculatedCaloriesItem(
     weightLose: String? = null,
     weightGain: String? = null
 ) {
-    Surface(
+    Card(
         shape = MaterialTheme.shapes.medium,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+        ),
         modifier = modifier
-            .padding(horizontal = 32.dp, vertical = 4.dp)
-            .height(120.dp)
-            .fillMaxWidth()
+            .padding(8.dp)
     ) {
         Column(
-            verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalAlignment = Alignment.Start,
-            modifier = Modifier.fillMaxSize()
+            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier
+                .padding(8.dp)
+                .width(160.dp)
+                .height(110.dp)
         ) {
             Text(
                 text = typeOfGoal,
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                style = MaterialTheme.typography.titleLarge
             )
             Row(
-                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom,
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 4.dp)
-                    .fillMaxWidth()
+                    .fillMaxSize()
             ) {
-                Text(text = calories.toString(), style = MaterialTheme.typography.headlineMedium)
-                when {
-                    weightLose != null && weightGain == null -> {
-                        Text(
-                            text = "-$weightLose",
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    }
-                    weightLose == null && weightGain != null -> {
-                        Text(
-                            text = "+$weightGain",
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.error
-                        )
+                Column {
+                    Text(
+                        text = stringResource(id = R.string.calories),
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                    Text(
+                        text = calories.toCaloriesString(),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+                Column {
+                    when {
+                        weightLose == null && weightGain != null -> {
+                            Text(
+                                text = stringResource(id = R.string.weekly),
+                                style = MaterialTheme.typography.labelSmall
+                            )
+                            Text(
+                                text = "+$weightGain",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                        weightLose != null && weightGain == null -> {
+                            Text(
+                                text = stringResource(id = R.string.weekly),
+                                style = MaterialTheme.typography.labelSmall
+                            )
+                            Text(
+                                text = "-$weightLose",
+                                style = MaterialTheme.typography.titleMedium,
+                            )
+                        }
                     }
                 }
             }
@@ -154,15 +199,17 @@ private fun CalculatedCaloriesItem(
 private fun CaloriesGoalListScreenPreview() {
     FitnessAppTheme {
         CaloriesGoalListScreen(
-            calculatedCalories = listOf(
-                CalculatedCalories(TypeOfGoal.MAINTAIN_WEIGHT, 2046.0),
+            weightLoseGoals = listOf(
                 CalculatedCalories(TypeOfGoal.MILD_WEIGHT_LOSE, 1796.0, weightLose = "0.25 kg"),
                 CalculatedCalories(TypeOfGoal.WEIGHT_LOSE, 1546.0, weightLose = "0.5 kg"),
                 CalculatedCalories(TypeOfGoal.EXTREME_WEIGHT_LOSE, 1046.0, weightLose = "1 kg"),
+            ),
+            weightGainGoals = listOf(
                 CalculatedCalories(TypeOfGoal.MILD_WEIGHT_GAIN, 2296.0, weightGain = "0.25 kg"),
                 CalculatedCalories(TypeOfGoal.WEIGHT_GAIN, 2546.0, weightGain = "0.5 kg"),
                 CalculatedCalories(TypeOfGoal.EXTREME_WEIGHT_GAIN, 3046.0, weightGain = "1 kg"),
             ),
+            maintainWeightGoal = CalculatedCalories(TypeOfGoal.MAINTAIN_WEIGHT, 2106.0),
             onCaloriesGoalChosen = {
             },
             calculate = {},

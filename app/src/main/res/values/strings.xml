@@ -26,4 +26,9 @@
     <string name="profile_female">Profile Female Avatar</string>
     <string name="hint_icon">Hint Icon</string>
     <string name="valid_username_text">Longer Then 3 Characters</string>
+    <string name="pick_calories_goal">Pick Your Calories Goal</string>
+    <string name="weight_lose_goals">Weight Lose Goals</string>
+    <string name="weight_gain_goals">Weight Gain Goals</string>
+    <string name="calories">Calories</string>
+    <string name="weekly">Weekly</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.fitnessapp.profile_feature.presentation.sign_in
+package com.example.fitnessapp.profile_feature.domain.model
 
 data class CalculatedCalories(
     val typeOfGoal: TypeOfGoal,

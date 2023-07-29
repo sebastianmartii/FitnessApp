@@ -19,6 +19,7 @@ fun SignInScreen(
     ) { values ->
         AnimatedContent(
             targetState = state.signInProgress,
+            label = "",
             modifier = Modifier
                 .padding(values)
         ) { progress ->
@@ -93,7 +94,9 @@ fun SignInScreen(
                 }
                 SignInProgress.CaloriesGoalList -> {
                     CaloriesGoalListScreen(
-                        calculatedCalories = state.calculatedCaloriesList,
+                        weightGainGoals = state.weightGainGoals,
+                        weightLoseGoals = state.weightLossGoals,
+                        maintainWeightGoal = state.maintainWeightGoal,
                         onCaloriesGoalChosen = { caloriesGoal ->
                             onEvent(ProfileEvent.OnCaloriesGoalChange(caloriesGoal))
                         },
