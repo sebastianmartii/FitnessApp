@@ -2,7 +2,6 @@ package com.example.fitnessapp.profile_feature.presentation.sign_in
 
 import com.example.fitnessapp.profile_feature.domain.model.CalculatedCalories
 import com.example.fitnessapp.profile_feature.domain.model.Gender
-import com.example.fitnessapp.profile_feature.domain.model.TypeOfGoal
 import com.example.fitnessapp.profile_feature.domain.model.UserProfile
 
 data class SignInState(
@@ -14,9 +13,7 @@ data class SignInState(
     val weight: String = "",
     val activityLevel: ActivityLevel = ActivityLevel.LEVEL_1,
     val caloriesGoal: Double = 0.0,
-    val weightLossGoals: List<CalculatedCalories> = emptyList(),
-    val weightGainGoals: List<CalculatedCalories> = emptyList(),
-    val maintainWeightGoal: CalculatedCalories = CalculatedCalories(TypeOfGoal.MAINTAIN_WEIGHT, 0.0),
+    val calculatedCalories: List<CalculatedCalories> = emptyList(),
     val profileList: List<UserProfile> = emptyList(),
     val genderMenuExpanded: Boolean = false,
     val activityLevelMenuExpanded: Boolean = false,

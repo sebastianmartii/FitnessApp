@@ -3,11 +3,7 @@ package com.example.fitnessapp.profile_feature.presentation.sign_in
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.core.util.Resource
-import com.example.fitnessapp.profile_feature.data.mappers.toMaintainWeightGoal
-import com.example.fitnessapp.profile_feature.data.mappers.toWeightGainGoals
-import com.example.fitnessapp.profile_feature.data.mappers.toWeightLossGoals
-import com.example.fitnessapp.profile_feature.domain.model.CalculatedCalories
-import com.example.fitnessapp.profile_feature.domain.model.TypeOfGoal
+import com.example.fitnessapp.profile_feature.data.mappers.toCalculatedCaloriesList
 import com.example.fitnessapp.profile_feature.domain.repository.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,27 +34,21 @@ class SignInViewModel @Inject constructor(
                     is Resource.Error -> {
                         _state.update {
                             it.copy(
-                                weightGainGoals = result.data?.toWeightGainGoals() ?: emptyList(),
-                                weightLossGoals = result.data?.toWeightLossGoals() ?: emptyList(),
-                                maintainWeightGoal = result.data?.toMaintainWeightGoal() ?: CalculatedCalories(TypeOfGoal.MAINTAIN_WEIGHT, 0.0)
+                                calculatedCalories = result.data?.toCalculatedCaloriesList() ?: emptyList()
                             )
                         }
                     }
                     is Resource.Loading -> {
                         _state.update {
                             it.copy(
-                                weightGainGoals = result.data?.toWeightGainGoals() ?: emptyList(),
-                                weightLossGoals = result.data?.toWeightLossGoals() ?: emptyList(),
-                                maintainWeightGoal = result.data?.toMaintainWeightGoal() ?: CalculatedCalories(TypeOfGoal.MAINTAIN_WEIGHT, 0.0)
+                                calculatedCalories = result.data?.toCalculatedCaloriesList() ?: emptyList()
                             )
                         }
                     }
                     is Resource.Success -> {
                         _state.update {
                             it.copy(
-                                weightGainGoals = result.data?.toWeightGainGoals() ?: emptyList(),
-                                weightLossGoals = result.data?.toWeightLossGoals() ?: emptyList(),
-                                maintainWeightGoal = result.data?.toMaintainWeightGoal() ?: CalculatedCalories(TypeOfGoal.MAINTAIN_WEIGHT, 0.0)
+                                calculatedCalories = result.data?.toCalculatedCaloriesList() ?: emptyList()
                             )
                         }
                     }

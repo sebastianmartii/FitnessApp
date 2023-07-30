@@ -1,6 +1,13 @@
 package com.example.fitnessapp.profile_feature.presentation.sign_in
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -20,6 +27,118 @@ fun SignInScreen(
         AnimatedContent(
             targetState = state.signInProgress,
             label = "",
+            transitionSpec = {
+                when {
+                    targetState == SignInProgress.Introduction && initialState == SignInProgress.Measurements -> {
+                        (slideInHorizontally(
+                            keyframes {
+                                durationMillis = 200
+                            }
+                        ) { fullWidth -> -fullWidth } + fadeIn()).togetherWith(
+                            slideOutHorizontally(
+                                keyframes {
+                                    durationMillis = 200
+                                }
+                            ) { fullWidth -> fullWidth } + fadeOut())
+                    }
+                    targetState == SignInProgress.Introduction && initialState == SignInProgress.ProfileList -> {
+                        (slideInHorizontally(
+                            keyframes {
+                                durationMillis = 200
+                            }
+                        ) { fullWidth -> -fullWidth } + fadeIn()).togetherWith(
+                            slideOutHorizontally(
+                                keyframes {
+                                    durationMillis = 200
+                                }
+                            ) { fullWidth -> fullWidth } + fadeOut())
+                    }
+                    targetState == SignInProgress.Measurements && initialState == SignInProgress.Introduction -> {
+                        (slideInHorizontally(
+                            keyframes {
+                                durationMillis = 200
+                            }
+                        ) { fullWidth -> fullWidth } + fadeIn()).togetherWith(
+                            slideOutHorizontally(
+                                keyframes {
+                                    durationMillis = 200
+                                }
+                            ) { fullWidth -> -fullWidth } + fadeOut())
+                    }
+                    targetState == SignInProgress.Measurements && initialState == SignInProgress.ActivityLevelAndCaloriesGoal -> {
+                        (slideInHorizontally(
+                            keyframes {
+                                durationMillis = 200
+                            }
+                        ) { fullWidth -> -fullWidth } + fadeIn()).togetherWith(
+                            slideOutHorizontally(
+                                keyframes {
+                                    durationMillis = 200
+                                }
+                            ) { fullWidth -> fullWidth } + fadeOut())
+                    }
+                    targetState == SignInProgress.ActivityLevelAndCaloriesGoal && initialState == SignInProgress.Measurements -> {
+                        (slideInHorizontally(
+                            keyframes {
+                                durationMillis = 200
+                            }
+                        ) { fullWidth -> fullWidth } + fadeIn()).togetherWith(
+                            slideOutHorizontally(
+                                keyframes {
+                                    durationMillis = 200
+                                }
+                            ) { fullWidth -> -fullWidth } + fadeOut())
+                    }
+                    targetState == SignInProgress.ActivityLevelAndCaloriesGoal && initialState == SignInProgress.CaloriesGoalList -> {
+                        (slideInHorizontally(
+                            keyframes {
+                                durationMillis = 200
+                            }
+                        ) { fullWidth -> -fullWidth } + fadeIn()).togetherWith(
+                            slideOutHorizontally(
+                                keyframes {
+                                    durationMillis = 200
+                                }
+                            ) { fullWidth -> fullWidth } + fadeOut())
+                    }
+                    targetState == SignInProgress.CaloriesGoalList -> {
+                        (slideInHorizontally(
+                            keyframes {
+                                durationMillis = 200
+                            }
+                        ) { fullWidth -> fullWidth } + fadeIn()).togetherWith(
+                            slideOutHorizontally(
+                                keyframes {
+                                    durationMillis = 200
+                                }
+                            ) { fullWidth -> -fullWidth } + fadeOut())
+                    }
+                    targetState == SignInProgress.ProfileList -> {
+                        (slideInHorizontally(
+                            keyframes {
+                                durationMillis = 200
+                            }
+                        ) { fullWidth -> fullWidth } + fadeIn()).togetherWith(
+                            slideOutHorizontally(
+                                keyframes {
+                                    durationMillis = 200
+                                }
+                            ) { fullWidth -> -fullWidth } + fadeOut())
+                    }
+                    else -> {
+                        (slideInHorizontally(
+                            keyframes {
+                                durationMillis = 150
+                            }
+                        ) { fullWidth -> fullWidth } + fadeIn()).togetherWith(
+                            slideOutHorizontally(
+                                keyframes {
+                                    durationMillis = 150
+                                }
+                            ) { fullWidth -> -fullWidth } + fadeOut())
+                    }
+                }.using(SizeTransform(clip = false))
+            },
             modifier = Modifier
                 .padding(values)
         ) { progress ->
@@ -94,9 +213,8 @@ fun SignInScreen(
                 }
                 SignInProgress.CaloriesGoalList -> {
                     CaloriesGoalListScreen(
-                        weightGainGoals = state.weightGainGoals,
-                        weightLoseGoals = state.weightLossGoals,
-                        maintainWeightGoal = state.maintainWeightGoal,
+                        calories = state.caloriesGoal,
+                        calculatedCaloriesList = state.calculatedCalories,
                         onCaloriesGoalChosen = { caloriesGoal ->
                             onEvent(ProfileEvent.OnCaloriesGoalChange(caloriesGoal))
                         },

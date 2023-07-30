@@ -2,10 +2,10 @@ package com.example.fitnessapp.profile_feature.data.mappers
 
 import com.example.fitnessapp.core.database.entity.CurrentUser
 import com.example.fitnessapp.profile_feature.data.remote.dto.CaloriesRequirementsDto
-import com.example.fitnessapp.profile_feature.domain.model.Gender
-import com.example.fitnessapp.profile_feature.domain.model.UserProfile
 import com.example.fitnessapp.profile_feature.domain.model.CalculatedCalories
+import com.example.fitnessapp.profile_feature.domain.model.Gender
 import com.example.fitnessapp.profile_feature.domain.model.TypeOfGoal
+import com.example.fitnessapp.profile_feature.domain.model.UserProfile
 
 fun CurrentUser.toUserProfile(): UserProfile {
     return UserProfile(
@@ -29,8 +29,12 @@ fun Gender.toGenderString(): String {
     }
 }
 
-fun CaloriesRequirementsDto.toWeightLossGoals(): List<CalculatedCalories> {
+fun CaloriesRequirementsDto.toCalculatedCaloriesList(): List<CalculatedCalories> {
     return listOf(
+        CalculatedCalories(
+            typeOfGoal = TypeOfGoal.MAINTAIN_WEIGHT,
+            calories = this.data.goals.maintainWeight,
+        ),
         CalculatedCalories(
             typeOfGoal = TypeOfGoal.EXTREME_WEIGHT_LOSE,
             calories = this.data.goals.extremeWeightLoss.calories,
@@ -45,12 +49,7 @@ fun CaloriesRequirementsDto.toWeightLossGoals(): List<CalculatedCalories> {
             typeOfGoal = TypeOfGoal.MILD_WEIGHT_LOSE,
             calories = this.data.goals.mildWeightLoss.calories,
             weightLose = this.data.goals.mildWeightLoss.lossWeight
-        )
-    )
-}
-
-fun CaloriesRequirementsDto.toWeightGainGoals(): List<CalculatedCalories> {
-    return listOf(
+        ),
         CalculatedCalories(
             typeOfGoal = TypeOfGoal.EXTREME_WEIGHT_GAIN,
             calories = this.data.goals.extremeWeightGain.calories,
@@ -66,13 +65,6 @@ fun CaloriesRequirementsDto.toWeightGainGoals(): List<CalculatedCalories> {
             calories = this.data.goals.mildWeightGain.calories,
             weightGain = this.data.goals.mildWeightGain.gainWeight
         )
-    )
-}
-
-fun CaloriesRequirementsDto.toMaintainWeightGoal(): CalculatedCalories {
-    return CalculatedCalories(
-        typeOfGoal = TypeOfGoal.MAINTAIN_WEIGHT,
-        calories = this.data.goals.maintainWeight,
     )
 }
 
