@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.fitnessapp.R
+import com.example.fitnessapp.profile_feature.data.mappers.toCaloriesString
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
 @Composable
@@ -165,7 +166,7 @@ fun ActivityLevelAndCaloriesGoalScreen(
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
-                value = caloriesGoal.toString(),
+                value = caloriesGoal.toCaloriesString(),
                 onValueChange = {
                     onCaloriesGoalChange(it.toDouble())
                 },
