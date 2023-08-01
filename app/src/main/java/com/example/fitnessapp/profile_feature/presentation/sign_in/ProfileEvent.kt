@@ -16,7 +16,6 @@ sealed interface ProfileEvent {
     object OnMeasurementsTaken : ProfileEvent
     object OnSignInComplete : ProfileEvent
     object OnCalculateCalories : ProfileEvent
-    data class OnGenderMenuExpandedChange(val expanded: Boolean) : ProfileEvent
     data class OnActivityLevelMenuExpandedChange(val expanded: Boolean) : ProfileEvent
     data class OnGoBack(val currentProgress: SignInProgress) : ProfileEvent
 }

@@ -147,15 +147,11 @@ fun SignInScreen(
                     IntroductionScreen(
                         name = state.name,
                         gender = state.gender,
-                        menuExpanded = state.genderMenuExpanded,
                         onNameChange = { name ->
                             onEvent(ProfileEvent.OnNameChange(name))
                         },
                         onGenderChange = { gender ->
                             onEvent(ProfileEvent.OnGenderChange(gender))
-                        },
-                        onMenuExpandedChange = { expanded ->
-                            onEvent(ProfileEvent.OnGenderMenuExpandedChange(expanded))
                         },
                         onNavigateToProfileListScreen = {
                             onEvent(ProfileEvent.OnProfileSelect)

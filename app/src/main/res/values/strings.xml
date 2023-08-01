@@ -33,4 +33,6 @@
     <string name="weekly">Weekly</string>
     <string name="select_calories">Select Calories</string>
     <string name="calories_item_leading_icon">Calories Goal Arrow</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
 </resources>
