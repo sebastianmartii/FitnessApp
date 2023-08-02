@@ -16,20 +16,20 @@ object Validators {
         if (height.isBlank()) {
             return false
         }
-        return !height.toFloat().isNaN() && height.toFloat() > 0 && height.toFloat() < 300
+        return !height.toFloat().isNaN() && height.toFloat() > 129 && height.toFloat() < 231
     }
 
     fun isWeightValid(weight: String): Boolean {
         if (weight.isBlank()) {
             return false
         }
-        return !weight.toFloat().isNaN() && weight.toFloat() > 0 && weight.toFloat() < 500
+        return !weight.toFloat().isNaN() && weight.toFloat() > 39 && weight.toFloat() < 161
     }
 
     fun isAgeValid(age: String): Boolean {
         if (age.isBlank()) {
             return false
         }
-        return !age.toFloat().isNaN() && age.toFloat() > 0 && age.toInt() < 110
+        return !age.toFloat().isNaN() && age.toFloat() > 0 && age.toInt() < 81
     }
 }

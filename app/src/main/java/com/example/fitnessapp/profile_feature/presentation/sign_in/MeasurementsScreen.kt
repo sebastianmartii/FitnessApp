@@ -96,6 +96,15 @@ fun MeasurementsScreen(
                 suffix = {
                     Text(text = "cm")
                 },
+                isError = !Validators.isHeightValid(height) && height.isNotEmpty(),
+                supportingText = {
+                    if (!Validators.isHeightValid(height) && height.isNotEmpty()) {
+                        Text(
+                            text = stringResource(id = R.string.height_error_text),
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
+                },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal
                 ),
@@ -113,6 +122,15 @@ fun MeasurementsScreen(
                 },
                 suffix = {
                     Text(text = "kg")
+                },
+                isError = !Validators.isWeightValid(weight) && weight.isNotEmpty(),
+                supportingText = {
+                    if (!Validators.isWeightValid(weight) && weight.isNotEmpty()) {
+                        Text(
+                            text = stringResource(id = R.string.weight_error_text),
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal
@@ -135,6 +153,15 @@ fun MeasurementsScreen(
                 },
                 label = {
                     Text(text = stringResource(id = R.string.age))
+                },
+                isError = !Validators.isAgeValid(age) && age.isNotEmpty(),
+                supportingText = {
+                    if (!Validators.isAgeValid(age) && age.isNotEmpty()) {
+                        Text(
+                            text = stringResource(id = R.string.age_error_text),
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal

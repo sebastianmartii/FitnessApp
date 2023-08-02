@@ -35,4 +35,9 @@
     <string name="calories_item_leading_icon">Calories Goal Arrow</string>
     <string name="gender_male">Male</string>
     <string name="gender_female">Female</string>
+    <string name="select_text">Select</string>
+    <string name="activity_level_selection_hint">Hold For More Details</string>
+    <string name="height_error_text">Height Must Be Between 130cm to 230cm</string>
+    <string name="weight_error_text">Weight Must Be Between 40kg to 80kg</string>
+    <string name="age_error_text">Age Must Be Between 0 to 80</string>
 </resources>
