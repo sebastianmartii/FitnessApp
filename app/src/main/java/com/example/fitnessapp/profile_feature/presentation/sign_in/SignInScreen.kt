@@ -187,15 +187,11 @@ fun SignInScreen(
                     ActivityLevelAndCaloriesGoalScreen(
                         activityLevel = state.activityLevel,
                         caloriesGoal = state.caloriesGoal,
-                        menuExpanded = state.activityLevelMenuExpanded,
                         onActivityLevelChange = { activityLevel ->
                             onEvent(ProfileEvent.OnActivityLevelChange(activityLevel))
                         },
                         onCaloriesGoalChange = { calories ->
                             onEvent(ProfileEvent.OnCaloriesGoalChange(calories))
-                        },
-                        onMenuExpandedChange = { expanded ->
-                            onEvent(ProfileEvent.OnActivityLevelMenuExpandedChange(expanded))
                         },
                         onCalculate = {
                             onEvent(ProfileEvent.OnCalculateCalories)

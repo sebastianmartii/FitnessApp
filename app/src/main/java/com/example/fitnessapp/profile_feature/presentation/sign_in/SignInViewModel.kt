@@ -142,13 +142,6 @@ class SignInViewModel @Inject constructor(
                     )
                 }
             }
-            is ProfileEvent.OnActivityLevelMenuExpandedChange -> {
-                _state.update {
-                    it.copy(
-                        activityLevelMenuExpanded = event.expanded
-                    )
-                }
-            }
             ProfileEvent.OnProfileSelect -> {
                 _state.update {
                     it.copy(

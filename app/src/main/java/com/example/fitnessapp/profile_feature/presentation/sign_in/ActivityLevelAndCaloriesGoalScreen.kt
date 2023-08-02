@@ -1,28 +1,31 @@
 package com.example.fitnessapp.profile_feature.presentation.sign_in
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RichTooltipBox
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -32,21 +35,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.fitnessapp.R
 import com.example.fitnessapp.profile_feature.data.mappers.toCaloriesString
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ActivityLevelAndCaloriesGoalScreen(
     activityLevel: ActivityLevel,
     caloriesGoal: Double,
-    menuExpanded: Boolean,
     onActivityLevelChange: (ActivityLevel) -> Unit,
     onCaloriesGoalChange: (Double) -> Unit,
-    onMenuExpandedChange: (Boolean) -> Unit,
     onCalculate: () -> Unit,
     onNavigateToOverviewScreen: () -> Unit,
     onGoBack: () -> Unit,
@@ -96,58 +97,54 @@ fun ActivityLevelAndCaloriesGoalScreen(
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Start,
                 modifier = Modifier
-                    .padding(bottom = 4.dp)
+                    .padding(bottom = 12.dp)
                     .fillMaxWidth()
             )
-            Box(
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.Start,
                 modifier = Modifier
-                    .height(56.dp)
                     .fillMaxWidth()
-                    .border(
-                        1.dp,
-                        MaterialTheme.colorScheme.outline,
-                        MaterialTheme.shapes.extraSmall
-                    )
-                    .clickable {
-                        onMenuExpandedChange(true)
-                    }
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxSize()
-                ) {
-                    Text(
-                        text = activityLevel.toActivityLevelString(),
-                        color = MaterialTheme.colorScheme.onSurface,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        modifier = Modifier.fillMaxWidth(0.9f)
-                    )
-                    Icon(
-                        imageVector = Icons.Filled.ArrowDropDown,
-                        contentDescription = stringResource(id = R.string.expand),
-                    )
-                }
-                DropdownMenu(
-                    expanded = menuExpanded,
-                    onDismissRequest = { onMenuExpandedChange(false) },
-                    content = {
-                        activityLevels.onEach {
-                            DropdownMenuItem(
-                                text = {
-                                    Text(text = it.toActivityLevelString())
-                                },
-                                onClick = {
-                                    onActivityLevelChange(it)
-                                    onMenuExpandedChange(false)
-                                }
-                            )
-                        }
-                    }
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = stringResource(id = R.string.hint_icon),
+                    modifier = Modifier.size(16.dp)
                 )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(id = R.string.activity_level_selection_hint),
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
+            FlowRow(
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                activityLevels.onEach {
+                    RichTooltipBox(
+                        title = {
+                            Text(text = it.toActivityLevelString())
+                        },
+                        text = {
+                            Text(text = it.toActivityLevelToolTipHint())
+                        }
+                    ) {
+                        FilterChip(
+                            selected = activityLevel == it,
+                            onClick = {
+                                onActivityLevelChange(it)
+                            },
+                            label = {
+                                Text(text = it.toActivityLevelString())
+                            },
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                                .tooltipTrigger()
+                        )
+                    }
+                }
             }
             Text(
                 text = stringResource(id = R.string.whats_your),
@@ -216,10 +213,8 @@ private fun ActivityLevelAndCaloriesGoalScreenPreview() {
         ActivityLevelAndCaloriesGoalScreen(
             activityLevel = ActivityLevel.LEVEL_4,
             caloriesGoal = 2300.0,
-            menuExpanded = false,
             onActivityLevelChange = {},
             onCaloriesGoalChange = {},
-            onMenuExpandedChange = {},
             onCalculate = { /*TODO*/ },
             onNavigateToOverviewScreen = { /*TODO*/ },
             onGoBack = { /*TODO*/ })
