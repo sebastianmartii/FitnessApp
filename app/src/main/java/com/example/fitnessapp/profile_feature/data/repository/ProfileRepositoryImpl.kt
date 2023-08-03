@@ -72,4 +72,8 @@ class ProfileRepositoryImpl(
             emit(Resource.Error(message = "$e"))
         }
     }
+
+    override suspend fun updateIsUserSignIn(isSignedIn: Boolean, userID: Int) {
+        currentUserDao.updateIsUserSignedIn(isSignedIn, userID)
+    }
 }

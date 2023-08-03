@@ -40,4 +40,5 @@
     <string name="height_error_text">Height Must Be Between 130cm to 230cm</string>
     <string name="weight_error_text">Weight Must Be Between 40kg to 80kg</string>
     <string name="age_error_text">Age Must Be Between 0 to 80</string>
+    <string name="no_profiles">No Profiles Available</string>
 </resources>

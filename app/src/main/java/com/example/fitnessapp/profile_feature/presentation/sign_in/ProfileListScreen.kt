@@ -3,6 +3,7 @@ package com.example.fitnessapp.profile_feature.presentation.sign_in
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,7 +39,7 @@ import com.example.fitnessapp.ui.theme.FitnessAppTheme
 @Composable
 fun ProfileListScreen(
     profileList: List<UserProfile>,
-    onProfileChosen: (String) -> Unit,
+    onProfileChosen: (Int) -> Unit,
     onGoBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -71,10 +72,16 @@ fun ProfileListScreen(
             modifier = Modifier.align(Alignment.Center)
         ) {
             profileList.onEach {
-                ProfileItem(name = it.name, gender = it.gender)
+                ProfileItem(
+                    name = it.name,
+                    gender = it.gender,
+                    modifier = Modifier.clickable {
+                        onProfileChosen(it.userID)
+                    }
+                )
             }
             if (profileList.isEmpty()) {
-                ProfileItem(name = "no previous profiles available", gender = Gender.MALE)
+                ProfileItem(name = stringResource(id = R.string.no_profiles), gender = Gender.MALE)
             }
         }
     }
@@ -139,9 +146,9 @@ private fun ProfileListScreenPreview() {
     FitnessAppTheme {
         ProfileListScreen(
             profileList = listOf(
-                UserProfile("Sebastian", Gender.MALE),
-                UserProfile("Marek", Gender.MALE),
-                UserProfile("Ania", Gender.FEMALE),
+                UserProfile(0,"Sebastian", Gender.MALE),
+                UserProfile(1,"Marek", Gender.MALE),
+                UserProfile(2,"Ania", Gender.FEMALE),
             ),
             onProfileChosen = {},
             onGoBack = { /*TODO*/ }

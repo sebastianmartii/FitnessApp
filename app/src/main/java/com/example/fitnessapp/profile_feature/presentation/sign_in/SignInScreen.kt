@@ -196,8 +196,8 @@ fun SignInScreen(
                         onCalculate = {
                             onEvent(ProfileEvent.OnCalculateCalories)
                         },
-                        onNavigateToOverviewScreen = {
-
+                        onUserCreated = {
+                            onEvent(ProfileEvent.OnSignInComplete)
                         },
                         onGoBack = {
                             onEvent(ProfileEvent.OnGoBack(SignInProgress.ActivityLevelAndCaloriesGoal))
@@ -219,7 +219,8 @@ fun SignInScreen(
                 SignInProgress.ProfileList -> {
                     ProfileListScreen(
                         profileList = state.profileList,
-                        onProfileChosen = { profileName ->
+                        onProfileChosen = { userID ->
+                            onEvent(ProfileEvent.OnProfileChosen(userID))
                         },
                         onGoBack = {
                             onEvent(ProfileEvent.OnGoBack(SignInProgress.ProfileList))

@@ -17,4 +17,5 @@ sealed interface ProfileEvent {
     object OnSignInComplete : ProfileEvent
     object OnCalculateCalories : ProfileEvent
     data class OnGoBack(val currentProgress: SignInProgress) : ProfileEvent
+    data class OnProfileChosen(val userID: Int) : ProfileEvent
 }

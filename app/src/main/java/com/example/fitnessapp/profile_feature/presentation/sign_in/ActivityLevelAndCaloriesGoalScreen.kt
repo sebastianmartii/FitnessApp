@@ -49,7 +49,7 @@ fun ActivityLevelAndCaloriesGoalScreen(
     onActivityLevelChange: (ActivityLevel) -> Unit,
     onCaloriesGoalChange: (Double) -> Unit,
     onCalculate: () -> Unit,
-    onNavigateToOverviewScreen: () -> Unit,
+    onUserCreated: () -> Unit,
     onGoBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -192,7 +192,7 @@ fun ActivityLevelAndCaloriesGoalScreen(
             Box(modifier = Modifier.fillMaxWidth()) {
                 Button(
                     onClick = {
-                        onNavigateToOverviewScreen()
+                        onUserCreated()
                     },
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {
@@ -216,7 +216,7 @@ private fun ActivityLevelAndCaloriesGoalScreenPreview() {
             onActivityLevelChange = {},
             onCaloriesGoalChange = {},
             onCalculate = { /*TODO*/ },
-            onNavigateToOverviewScreen = { /*TODO*/ },
+            onUserCreated = { /*TODO*/ },
             onGoBack = { /*TODO*/ })
     }
 }
