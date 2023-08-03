@@ -9,6 +9,7 @@ import com.example.fitnessapp.profile_feature.domain.model.UserProfile
 
 fun CurrentUser.toUserProfile(): UserProfile {
     return UserProfile(
+        userID = this.userID ?: 0,
         name = this.name,
         gender = this.gender.toGender()
     )

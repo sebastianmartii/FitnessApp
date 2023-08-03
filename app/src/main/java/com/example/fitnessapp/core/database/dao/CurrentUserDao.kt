@@ -36,12 +36,12 @@ interface CurrentUserDao {
     @Query("UPDATE CurrentUser SET activity_level = :newActivityLevel WHERE user_id = :userID")
     suspend fun updateActivityLevel(newActivityLevel: String, userID: Int)
 
-    @Query("SELECT * FROM CurrentUser WHERE name = :currentUserName")
-    suspend fun getCurrentUser(currentUserName: String): CurrentUser
-
-    @Query("SELECT name FROM CurrentUser")
-    suspend fun getUsersNames(): List<String>
+    @Query("SELECT * FROM CurrentUser WHERE is_signed_in = 1")
+    suspend fun getCurrentUser(): CurrentUser
 
     @Query("SELECT * FROM CurrentUser")
     suspend fun getAllUsers(): List<CurrentUser>
+
+    @Query("UPDATE CurrentUser SET is_signed_in = :isSignedIn WHERE user_id = :userID")
+    suspend fun updateIsUserSignedIn(isSignedIn: Boolean, userID: Int)
 }

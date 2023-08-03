@@ -15,4 +15,5 @@ data class CurrentUser(
     val weight: Float,
     val height: Float,
     @ColumnInfo(name = "activity_level") val activityLevel: String,
+    @ColumnInfo(name = "is_signed_in") val isSignedIn: Boolean = true,
 )
