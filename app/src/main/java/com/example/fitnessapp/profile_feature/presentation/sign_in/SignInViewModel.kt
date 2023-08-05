@@ -108,27 +108,6 @@ class SignInViewModel @Inject constructor(
                     )
                 }
             }
-            ProfileEvent.OnIntroductionDone -> {
-                _state.update {
-                    it.copy(
-                        signInProgress = SignInProgress.Measurements
-                    )
-                }
-            }
-            ProfileEvent.OnMeasurementsTaken -> {
-                _state.update {
-                    it.copy(
-                        signInProgress = SignInProgress.ActivityLevelAndCaloriesGoal
-                    )
-                }
-            }
-            ProfileEvent.OnCalculateCalories -> {
-                _state.update {
-                    it.copy(
-                        signInProgress = SignInProgress.CaloriesGoalList
-                    )
-                }
-            }
             ProfileEvent.OnSignInComplete -> {
                 viewModelScope.launch {
                     repo.addUser(
@@ -143,11 +122,6 @@ class SignInViewModel @Inject constructor(
                 }
             }
             ProfileEvent.OnProfileSelect -> {
-                _state.update {
-                    it.copy(
-                        signInProgress = SignInProgress.ProfileList,
-                    )
-                }
                 viewModelScope.launch {
                     repo.getUserProfiles().also { userProfileList ->
                         _state.update {
@@ -156,20 +130,6 @@ class SignInViewModel @Inject constructor(
                             )
                         }
                     }
-                }
-            }
-            is ProfileEvent.OnGoBack -> {
-                val previousProgress = when(event.currentProgress) {
-                    SignInProgress.ActivityLevelAndCaloriesGoal -> SignInProgress.Measurements
-                    SignInProgress.CaloriesGoalList -> SignInProgress.ActivityLevelAndCaloriesGoal
-                    SignInProgress.Introduction -> SignInProgress.Introduction
-                    SignInProgress.Measurements -> SignInProgress.Introduction
-                    SignInProgress.ProfileList -> SignInProgress.Introduction
-                }
-                _state.update {
-                    it.copy(
-                        signInProgress = previousProgress
-                    )
                 }
             }
             is ProfileEvent.OnProfileChosen -> {

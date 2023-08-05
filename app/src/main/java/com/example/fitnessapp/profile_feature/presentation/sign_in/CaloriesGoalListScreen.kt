@@ -1,20 +1,17 @@
 package com.example.fitnessapp.profile_feature.presentation.sign_in
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.North
 import androidx.compose.material.icons.filled.NorthEast
 import androidx.compose.material.icons.filled.RadioButtonChecked
@@ -24,12 +21,14 @@ import androidx.compose.material.icons.filled.SouthEast
 import androidx.compose.material.icons.filled.TrendingDown
 import androidx.compose.material.icons.filled.TrendingFlat
 import androidx.compose.material.icons.filled.TrendingUp
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -43,66 +42,68 @@ import com.example.fitnessapp.profile_feature.domain.model.CalculatedCalories
 import com.example.fitnessapp.profile_feature.domain.model.TypeOfGoal
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CaloriesGoalListScreen(
-    calories: Double,
+    calories: String,
     calculatedCaloriesList: List<CalculatedCalories>,
-    onCaloriesGoalChosen: (Double) -> Unit,
+    onEvent: (ProfileEvent) -> Unit,
     calculate: () -> Unit,
-    onGoBack: () -> Unit,
+    onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LaunchedEffect(key1 = true) {
         calculate()
     }
-    Column(
-        verticalArrangement = Arrangement.Top,
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = stringResource(
+                                id = R.string.back_button
+                            )
+                        )
+                    }
+                },
+                title = {
+                    Text(text = "")
+                }
+            )
+        },
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        Box(
+    ) { paddingValues ->
+        Column(
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth()
+                .padding(paddingValues)
         ) {
-            Button(
-                onClick = onGoBack,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.onBackground
-                ),
-                modifier = Modifier.align(Alignment.CenterStart)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ChevronLeft,
-                    contentDescription = stringResource(id = R.string.introduction_done),
+            calculatedCaloriesList.onEach {
+                CalculatedCaloriesItem(
+                    calories = calories,
+                    calculatedCaloriesItem = it,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .clickable {
+                            onEvent(ProfileEvent.OnCaloriesGoalChange(it.calories.toCaloriesString()))
+                        }
+                )
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outline,
+                    modifier = Modifier.padding(horizontal = 4.dp)
                 )
             }
-        }
-        Spacer(modifier = Modifier.height(128.dp))
-        calculatedCaloriesList.onEach {
-            CalculatedCaloriesItem(
-                calories = calories,
-                calculatedCaloriesItem = it,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .clickable {
-                        onCaloriesGoalChosen(it.calories)
-                    }
-            )
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.outline,
-                modifier = Modifier.padding(horizontal = 4.dp)
-            )
         }
     }
 }
 
 @Composable
 private fun CalculatedCaloriesItem(
-    calories: Double,
+    calories: String,
     calculatedCaloriesItem: CalculatedCalories,
     modifier: Modifier = Modifier,
 ) {
@@ -116,7 +117,7 @@ private fun CalculatedCaloriesItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = if (calories == calculatedCaloriesItem.calories) {
+                imageVector = if (calories == calculatedCaloriesItem.calories.toCaloriesString()) {
                     Icons.Default.RadioButtonChecked
                 } else {
                     Icons.Default.RadioButtonUnchecked
@@ -220,7 +221,7 @@ private fun LeadingCaloriesItemIcon(
 private fun CaloriesGoalListScreenPreview() {
     FitnessAppTheme {
         CaloriesGoalListScreen(
-            calories = 0.0,
+            calories = "0.0",
             calculatedCaloriesList = listOf(
                 CalculatedCalories(TypeOfGoal.MAINTAIN_WEIGHT, 2106.0),
                 CalculatedCalories(TypeOfGoal.MILD_WEIGHT_LOSE, 1796.0, weightLose = "0.25 kg"),
@@ -230,9 +231,8 @@ private fun CaloriesGoalListScreenPreview() {
                 CalculatedCalories(TypeOfGoal.WEIGHT_GAIN, 2546.0, weightGain = "0.5 kg"),
                 CalculatedCalories(TypeOfGoal.EXTREME_WEIGHT_GAIN, 3046.0, weightGain = "1 kg"),
             ),
-            onCaloriesGoalChosen = {
-            },
+            onEvent = {},
             calculate = {},
-            onGoBack = { /*TODO*/ })
+            onNavigateBack = {})
     }
 }

@@ -2,7 +2,6 @@ package com.example.fitnessapp.profile_feature.presentation.sign_in
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,18 +9,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronLeft
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,53 +35,57 @@ import com.example.fitnessapp.profile_feature.domain.model.Gender
 import com.example.fitnessapp.profile_feature.domain.model.UserProfile
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileListScreen(
     profileList: List<UserProfile>,
-    onProfileChosen: (Int) -> Unit,
-    onGoBack: () -> Unit,
+    onEvent: (ProfileEvent) -> Unit,
+    onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back_button)
+                        )
+                    }
+                },
+                title = {
+                    Text(text = "")
+                }
+            )
+        },
         modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
+    ) { paddingValues ->
         Box(
             modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth()
-        ) {
-            Button(
-                onClick = onGoBack,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.onBackground
-                ),
-                modifier = Modifier.align(Alignment.CenterStart)
+                .padding(paddingValues)
+                .fillMaxSize()
+        ){
+            FlowRow(
+                maxItemsInEachRow = 2,
+                modifier = Modifier
+                    .align(Alignment.Center)
             ) {
-                Icon(
-                    imageVector = Icons.Default.ChevronLeft,
-                    contentDescription = stringResource(id = R.string.go_back),
-                )
-            }
-        }
-        FlowRow(
-            maxItemsInEachRow = 2,
-            modifier = Modifier.align(Alignment.Center)
-        ) {
-            profileList.onEach {
-                ProfileItem(
-                    name = it.name,
-                    gender = it.gender,
-                    modifier = Modifier.clickable {
-                        onProfileChosen(it.userID)
-                    }
-                )
-            }
-            if (profileList.isEmpty()) {
-                ProfileItem(name = stringResource(id = R.string.no_profiles), gender = Gender.MALE)
+                profileList.onEach {
+                    ProfileItem(
+                        name = it.name,
+                        gender = it.gender,
+                        modifier = Modifier.clickable {
+                            onEvent(ProfileEvent.OnProfileChosen(it.userID))
+                        }
+                    )
+                }
+                if (profileList.isEmpty()) {
+                    ProfileItem(
+                        name = stringResource(id = R.string.no_profiles),
+                        gender = Gender.MALE
+                    )
+                }
             }
         }
     }
@@ -150,8 +154,8 @@ private fun ProfileListScreenPreview() {
                 UserProfile(1,"Marek", Gender.MALE),
                 UserProfile(2,"Ania", Gender.FEMALE),
             ),
-            onProfileChosen = {},
-            onGoBack = { /*TODO*/ }
+            onEvent = {},
+            onNavigateBack = {}
         )
     }
 }

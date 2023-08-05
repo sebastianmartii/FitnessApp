@@ -1,9 +1,6 @@
 package com.example.fitnessapp.profile_feature.di
 
-import android.content.Context
-import androidx.room.Room
 import com.example.fitnessapp.core.database.FitnessDatabase
-import com.example.fitnessapp.core.database.dao.CurrentUserDao
 import com.example.fitnessapp.core.util.Endpoints
 import com.example.fitnessapp.profile_feature.data.remote.CaloriesGoalApi
 import com.example.fitnessapp.profile_feature.data.remote.CaloriesGoalInterceptor
@@ -12,7 +9,6 @@ import com.example.fitnessapp.profile_feature.domain.repository.ProfileRepositor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -42,18 +38,6 @@ object ProfileModule {
             currentUserDao = db.currentUserDao,
             caloriesGoalApi = caloriesGoalApi
         )
-    }
-
-    @Provides
-    @Singleton
-    fun provideFitnessDatabase(
-        @ApplicationContext context: Context
-    ): FitnessDatabase {
-        return Room.databaseBuilder(
-            context,
-            FitnessDatabase::class.java,
-            "db"
-        ).build()
     }
 
     @Provides

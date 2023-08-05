@@ -76,4 +76,6 @@ class ProfileRepositoryImpl(
     override suspend fun updateIsUserSignIn(isSignedIn: Boolean, userID: Int) {
         currentUserDao.updateIsUserSignedIn(isSignedIn, userID)
     }
+
+    override fun getCurrentUser(): Flow<CurrentUser?> = currentUserDao.getCurrentUser()
 }

@@ -1,5 +1,6 @@
 package com.example.fitnessapp.profile_feature.domain.repository
 
+import com.example.fitnessapp.core.database.entity.CurrentUser
 import com.example.fitnessapp.core.util.Resource
 import com.example.fitnessapp.profile_feature.data.remote.dto.CaloriesRequirementsDto
 import com.example.fitnessapp.profile_feature.domain.model.Gender
@@ -16,4 +17,6 @@ interface ProfileRepository {
     fun getCaloriesGoals(age: Int, height: Int, weight: Int, gender: Gender, activityLevel: ActivityLevel): Flow<Resource<CaloriesRequirementsDto>>
 
     suspend fun updateIsUserSignIn(isSignedIn: Boolean, userID: Int)
+
+    fun getCurrentUser(): Flow<CurrentUser?>
 }
