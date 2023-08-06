@@ -173,6 +173,12 @@ fun ActivityLevelAndCaloriesGoalScreen(
                             Text(text = stringResource(id = R.string.calculate))
                         }
                     },
+                    isError = !Validators.areCaloriesValid(caloriesGoal) && caloriesGoal.isNotEmpty(),
+                    supportingText = {
+                        if (!Validators.areCaloriesValid(caloriesGoal) && caloriesGoal.isNotEmpty()) {
+                            Text(text = stringResource(id = R.string.calories_error_text))
+                        }
+                    },
                     suffix = {
                         Text(text = "kcal")
                     },
@@ -196,6 +202,7 @@ fun ActivityLevelAndCaloriesGoalScreen(
                             onEvent(ProfileEvent.OnSignInComplete)
                             onNavigateToOverviewScreen()
                         },
+                        enabled = Validators.areCaloriesValid(caloriesGoal) && activityLevel != ActivityLevel.LEVEL_0,
                         modifier = Modifier.align(Alignment.CenterEnd)
                     ) {
                         Icon(

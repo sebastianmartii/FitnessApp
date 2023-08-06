@@ -44,4 +44,8 @@
     <string name="overview_title">Overview</string>
     <string name="navigation_drawer_icon">Navigation Drawer</string>
     <string name="back_button">Navigate Back</string>
+    <string name="calories_error_text">Provide valid calories</string>
+    <string name="meals_text">Meals</string>
+    <string name="add_meal_button">Add Meal</string>
+    <string name="app_icon">App Icon</string>
 </resources>
