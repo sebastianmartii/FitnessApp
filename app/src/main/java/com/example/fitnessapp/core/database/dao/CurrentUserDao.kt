@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.fitnessapp.core.database.entity.CurrentUser
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CurrentUserDao {
@@ -37,11 +38,14 @@ interface CurrentUserDao {
     suspend fun updateActivityLevel(newActivityLevel: String, userID: Int)
 
     @Query("SELECT * FROM CurrentUser WHERE is_signed_in = 1")
-    suspend fun getCurrentUser(): CurrentUser
+    fun getCurrentUser(): Flow<CurrentUser?>
 
     @Query("SELECT * FROM CurrentUser")
     suspend fun getAllUsers(): List<CurrentUser>
 
     @Query("UPDATE CurrentUser SET is_signed_in = :isSignedIn WHERE user_id = :userID")
     suspend fun updateIsUserSignedIn(isSignedIn: Boolean, userID: Int)
+
+    @Query("SELECT calories_goal FROM CurrentUser WHERE is_signed_in = 1")
+    fun getCurrentUserCaloriesRequirements(): Flow<Int>
 }
