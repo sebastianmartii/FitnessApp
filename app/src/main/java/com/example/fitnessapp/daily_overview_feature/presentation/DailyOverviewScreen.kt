@@ -39,6 +39,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.fitnessapp.R
 import com.example.fitnessapp.core.navigation_drawer.DrawerContent
+import com.example.fitnessapp.core.navigation_drawer.DrawerAction
+import com.example.fitnessapp.core.navigation_drawer.DrawerEvent
+import com.example.fitnessapp.core.navigation_drawer.DrawerItem
 import com.example.fitnessapp.core.util.drawerItemList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -47,17 +50,19 @@ import kotlinx.coroutines.flow.collectLatest
 fun DailyOverviewScreen(
     drawerState: DrawerState,
     state: OverviewState,
-    eventFlow: Flow<DailyOverviewViewModel.UiEvent>,
+    selectedDrawerItem: DrawerItem?,
+    eventFlow: Flow<DrawerAction>,
     onEvent: (OverviewEvent) -> Unit,
+    onDrawerEvent: (DrawerEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LaunchedEffect(key1 = true) {
         eventFlow.collectLatest { event ->
             when(event) {
-                DailyOverviewViewModel.UiEvent.CloseNavigationDrawer -> {
+                DrawerAction.CloseNavigationDrawer -> {
                     drawerState.close()
                 }
-                DailyOverviewViewModel.UiEvent.OpenNavigationDrawer -> {
+                DrawerAction.OpenNavigationDrawer -> {
                     drawerState.open()
                 }
             }
@@ -67,11 +72,11 @@ fun DailyOverviewScreen(
         drawerState = drawerState,
         drawerContent = {
             DrawerContent(
-                selectedDrawerItem = state.selectedDrawerItem,
+                selectedDrawerItem = selectedDrawerItem,
                 drawerItemList = drawerItemList,
                 onDrawerItemSelect = { selectedDrawerItem ->
-                    onEvent(OverviewEvent.OnDrawerItemSelect(selectedDrawerItem))
-                    onEvent(OverviewEvent.CloseDrawer)
+                    onDrawerEvent(DrawerEvent.OnDrawerItemSelect(selectedDrawerItem))
+                    onDrawerEvent(DrawerEvent.CloseDrawer)
                 },
             )
         },
@@ -81,7 +86,7 @@ fun DailyOverviewScreen(
                 currentCaloriesCount = state.currentCaloriesCount,
                 progress = state.progress,
                 onDrawerOpen = {
-                    onEvent(OverviewEvent.OpenDrawer)
+                    onDrawerEvent(DrawerEvent.OpenDrawer)
                 },
                 onMealAdd = {
                     onEvent(OverviewEvent.AddMeal)
