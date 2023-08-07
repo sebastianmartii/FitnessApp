@@ -11,6 +11,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewScreen
 import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewViewModel
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionScreen
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionViewModel
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.TabRowItem
 
 fun NavGraphBuilder.mainNavGraph(
     navController: NavController
@@ -24,12 +27,35 @@ fun NavGraphBuilder.mainNavGraph(
         ) {
             val viewModel = hiltViewModel<DailyOverviewViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
+            val selectedDrawerItem by viewModel.selectedDrawerItem.collectAsStateWithLifecycle()
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
             DailyOverviewScreen(
                 drawerState = drawerState,
                 state = state,
-                eventFlow = viewModel.eventFlow,
-                onEvent = viewModel::onEvent
+                selectedDrawerItem = selectedDrawerItem,
+                eventFlow = viewModel.drawerEventFlow,
+                onEvent = viewModel::onEvent,
+                onDrawerEvent = viewModel::onDrawerEvent
+            )
+        }
+        composable(
+            route = MainDestinations.Nutrition.route
+        ) {
+            val viewModel = hiltViewModel<NutritionViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            val selectedDrawerItem by viewModel.selectedDrawerItem.collectAsStateWithLifecycle()
+            val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+            NutritionScreen(
+                state = state,
+                tabRowItems = listOf(
+                    TabRowItem.NUTRITION_CALCULATOR,
+                    TabRowItem.RECIPES,
+                    TabRowItem.MEAL_PLAN
+                ),
+                selectedDrawerItem = selectedDrawerItem,
+                drawerState = drawerState,
+                onEvent = viewModel::onEvent,
+                onDrawerEvent = viewModel::onDrawerEvent
             )
         }
     }
