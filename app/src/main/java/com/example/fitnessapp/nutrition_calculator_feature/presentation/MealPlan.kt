@@ -1,23 +1,31 @@
 package com.example.fitnessapp.nutrition_calculator_feature.presentation
 
+import androidx.compose.ui.res.stringResource
+
 sealed interface MealPlan {
-    data class ThreeMealPlan(
+    data class FiveMealsPlan(
+        val type: MealPlanType = MealPlanType.FIVE_MEALS,
         val breakfast: String,
         val secondBreakfast: String,
         val lunch: String,
         val snack: String,
         val dinner: String
     ) : MealPlan
-    data class FourDayMealPlan(
+    data class FourMealsPlan(
+        val type: MealPlanType = MealPlanType.FOUR_MEALS,
         val breakfast: String,
         val secondBreakfast: String,
         val lunch: String,
         val dinner: String
     ) : MealPlan
-    data class FiveDayMealPlan(
+    data class ThreeMealsPlan(
+        val type: MealPlanType = MealPlanType.THREE_MEALS,
         val breakfast: String,
         val lunch: String,
         val dinner: String
     ) : MealPlan
-    data class CustomMealPlan(val customMealList: List<String>) : MealPlan
+    data class CustomMealsPlan(
+        val type: MealPlanType = MealPlanType.CUSTOM_PLAN,
+        val customMealList: List<String>
+    ) : MealPlan
 }
