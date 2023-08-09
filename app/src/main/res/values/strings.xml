@@ -21,7 +21,6 @@
     <string name="expand">Expand</string>
     <string name="calculate_hint">If You Don\'t Know Your Goal, CALCULATE IT</string>
     <string name="activity_calories_done">Activity And Calories Done</string>
-    <string name="go_back">Go Back</string>
     <string name="profile_male">Profile Male Avatar</string>
     <string name="profile_female">Profile Female Avatar</string>
     <string name="hint_icon">Hint Icon</string>
@@ -48,4 +47,29 @@
     <string name="meals_text">Meals</string>
     <string name="add_meal_button">Add Meal</string>
     <string name="app_icon">App Icon</string>
+    <string name="custom_text">Custom</string>
+    <string name="add_custom_meal_plan">Add Custom Meal Plan</string>
+    <string name="edit_meal">Edit Meal</string>
+    <string name="delete_meal">Delete Meal</string>
+    <string name="delete_meal_plan">Delete Meal Plan</string>
+    <string name="save_meal_plan">Save Meal Plan</string>
+    <string name="rename_meal_plan">Rename Meal Plan</string>
+    <string name="five_meals_plan">
+        <item>Breakfast</item>
+        <item>Second BreakFast</item>
+        <item>Lunch</item>
+        <item>Snack</item>
+        <item>Dinner</item>
+    </string>
+    <string name="four_meals_plan">
+        <item>Breakfast</item>
+        <item>Second Breakfast</item>
+        <item>Lunch</item>
+        <item>Dinner</item>
+    </string>
+    <string name="three_meals_plan">
+        <item>Breakfast</item>
+        <item>Lunch</item>
+        <item>Dinner</item>
+    </string>
 </resources>
