@@ -90,7 +90,7 @@ private fun NutritionScreenContent(
                         RecipesScreen()
                     }
                     TabRowItem.MEAL_PLAN -> {
-                        MealPlanScreen()
+                        MealPlanScreen(mealPlanTypeList = emptyList(), onCustomMealPLan = {})
                     }
                 }
             }

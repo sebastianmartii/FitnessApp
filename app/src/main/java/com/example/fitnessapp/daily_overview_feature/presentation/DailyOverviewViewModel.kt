@@ -40,7 +40,7 @@ class DailyOverviewViewModel @Inject constructor(
 
     fun onEvent(event: OverviewEvent) {
         when(event) {
-            OverviewEvent.AddMeal -> {
+            OverviewEvent.OnAddMeal -> {
                 _currentCaloriesCount.value = _currentCaloriesCount.value + 500
             }
         }

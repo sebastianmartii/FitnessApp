@@ -89,7 +89,7 @@ fun DailyOverviewScreen(
                     onDrawerEvent(DrawerEvent.OpenDrawer)
                 },
                 onMealAdd = {
-                    onEvent(OverviewEvent.AddMeal)
+                    onEvent(OverviewEvent.OnAddMeal)
                 }
             )
         },
