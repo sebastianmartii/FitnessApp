@@ -35,6 +35,7 @@ android {
         properties.load(project.rootProject.file("local.properties").newDataInputStream())
 
         buildConfigField "String", "FITNESS_CALCULATOR_API_KEY", "\"${properties.getProperty("FITNESS_CALCULATOR_API_KEY")}\""
+        buildConfigField "String", "NUTRITION_CALCULATOR_API_KEY", "\"${properties.getProperty("NUTRITION_CALCULATOR_API_KEY")}\""
     }
 
     sourceSets {
