@@ -1,8 +1,12 @@
 package com.example.fitnessapp.nutrition_calculator_feature.di
 
+import com.example.fitnessapp.core.database.FitnessDatabase
 import com.example.fitnessapp.core.util.Endpoints
+import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.MealDao
 import com.example.fitnessapp.nutrition_calculator_feature.data.remote.NutritionCalculatorApi
 import com.example.fitnessapp.nutrition_calculator_feature.data.remote.NutritionCalculatorInterceptor
+import com.example.fitnessapp.nutrition_calculator_feature.data.repository.CustomMealPlanCreatorRepositoryImpl
+import com.example.fitnessapp.nutrition_calculator_feature.domain.repository.CustomMealPlanCreatorRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,6 +19,22 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NutritionModule {
+
+    @Provides
+    @Singleton
+    fun provideCustomMealPlanCreatorRepository(
+        mealDao: MealDao
+    ): CustomMealPlanCreatorRepository {
+        return CustomMealPlanCreatorRepositoryImpl(mealDao)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideMealDao(db: FitnessDatabase): MealDao {
+        return db.mealDao
+    }
+
 
     @Provides
     @Singleton
