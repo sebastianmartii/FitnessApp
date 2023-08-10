@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.room.Room
 import com.example.fitnessapp.core.database.FitnessDatabase
 import com.example.fitnessapp.core.database.dao.CurrentUserDao
+import com.example.fitnessapp.core.util.GsonParser
+import com.example.fitnessapp.nutrition_calculator_feature.data.local.MealConverters
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,6 +35,7 @@ class CoreModule {
             context,
             FitnessDatabase::class.java,
             "db"
-        ).build()
+        ).addTypeConverter(MealConverters(GsonParser(Gson())))
+            .build()
     }
 }
