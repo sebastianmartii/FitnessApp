@@ -1,7 +1,5 @@
 package com.example.fitnessapp.nutrition_calculator_feature.presentation
 
-import androidx.compose.ui.res.stringResource
-
 sealed interface MealPlan {
     data class FiveMealsPlan(
         val type: MealPlanType = MealPlanType.FIVE_MEALS,
@@ -25,6 +23,7 @@ sealed interface MealPlan {
         val dinner: String
     ) : MealPlan
     data class CustomMealsPlan(
+        val name: String,
         val type: MealPlanType = MealPlanType.CUSTOM_PLAN,
         val customMealList: List<String>
     ) : MealPlan
