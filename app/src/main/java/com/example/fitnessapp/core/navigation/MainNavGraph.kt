@@ -14,6 +14,8 @@ import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewV
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionScreen
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.TabRowItem
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.custom_meal_plan_creator.CustomMealPlanCreatorScreen
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.custom_meal_plan_creator.CustomMealPlanCreatorViewModel
 
 fun NavGraphBuilder.mainNavGraph(
     navController: NavController
@@ -56,6 +58,19 @@ fun NavGraphBuilder.mainNavGraph(
                 drawerState = drawerState,
                 onEvent = viewModel::onEvent,
                 onDrawerEvent = viewModel::onDrawerEvent
+            )
+        }
+        composable(
+            route = MainDestinations.CustomMealPlanCreator.route
+        ) {
+            val viewModel = hiltViewModel<CustomMealPlanCreatorViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            CustomMealPlanCreatorScreen(
+                state = state,
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onEvent = viewModel::onEvent
             )
         }
     }
