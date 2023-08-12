@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -91,14 +92,6 @@ fun CustomMealPlanCreatorScreen(
                         )
                     }
                     IconButton(onClick = {
-                        onEvent(CustomMealPlanCreatorEvent.OnSaveMealPlan)
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            contentDescription = stringResource(id = R.string.save_meal_plan)
-                        )
-                    }
-                    IconButton(onClick = {
                         onEvent(CustomMealPlanCreatorEvent.OnDeleteMealPlan)
                     }) {
                         Icon(
@@ -108,6 +101,16 @@ fun CustomMealPlanCreatorScreen(
                     }
                 }
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                onEvent(CustomMealPlanCreatorEvent.OnSaveMealPlan)
+            }) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = stringResource(id = R.string.save_meal_plan)
+                )
+            }
         },
         modifier = modifier
     ) { paddingValues ->

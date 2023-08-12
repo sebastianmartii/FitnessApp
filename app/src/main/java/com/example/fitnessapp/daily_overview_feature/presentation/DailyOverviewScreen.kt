@@ -54,6 +54,7 @@ fun DailyOverviewScreen(
     eventFlow: Flow<DrawerAction>,
     onEvent: (OverviewEvent) -> Unit,
     onDrawerEvent: (DrawerEvent) -> Unit,
+    onNavigateToNutritionScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LaunchedEffect(key1 = true) {
@@ -90,6 +91,7 @@ fun DailyOverviewScreen(
                 },
                 onMealAdd = {
                     onEvent(OverviewEvent.OnAddMeal)
+                    onNavigateToNutritionScreen()
                 }
             )
         },

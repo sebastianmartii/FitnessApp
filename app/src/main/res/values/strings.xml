@@ -54,6 +54,14 @@
     <string name="delete_meal_plan">Delete Meal Plan</string>
     <string name="save_meal_plan">Save Meal Plan</string>
     <string name="rename_meal_plan">Rename Meal Plan</string>
+    <string name="calculate_nutrition">Calculate Nutrition</string>
+    <string name="add_product">Add Product Manually</string>
+    <string name="food_item_supporting_text">Nutrition per %1$a: Calories %2$b, Carbs %3$c, Fat %4$d, Protein %5$e</string>
+    <string name="food_item_supporting_text_expanded">
+        Nutrition per %1$a: Calories %2$b, Carbs %3$c, Fat %4$d, Protein %5$e, Saturated Fat %6$f, Sugar %7$g, Fiber %8$h
+    </string>
+    <string name="collapse">Collapse</string>
+    <string name="add_food_item">Add Food Item</string>
     <string name="five_meals_plan">
         <item>Breakfast</item>
         <item>Second BreakFast</item>

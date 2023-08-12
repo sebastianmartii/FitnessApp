@@ -16,6 +16,9 @@ import com.example.fitnessapp.core.navigation_drawer.DrawerEvent
 import com.example.fitnessapp.core.navigation_drawer.DrawerItem
 import com.example.fitnessapp.core.util.drawerItemList
 import com.example.fitnessapp.nutrition_calculator_feature.data.mappers.toTabTitle
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.NutritionCalculatorEvent
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.NutritionCalculatorScreen
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.NutritionCalculatorState
 
 @Composable
 fun NutritionScreen(
@@ -23,6 +26,8 @@ fun NutritionScreen(
     tabRowItems: List<TabRowItem>,
     selectedDrawerItem: DrawerItem?,
     drawerState: DrawerState,
+    nutritionCalculatorState: NutritionCalculatorState,
+    onNutritionCalculatorEvent: (NutritionCalculatorEvent) -> Unit,
     onEvent: (NutritionEvent) -> Unit,
     onDrawerEvent: (DrawerEvent) -> Unit,
     modifier: Modifier = Modifier
@@ -44,6 +49,8 @@ fun NutritionScreen(
                 selectedTabIndex = state.selectedTabIndex,
                 currentTabRowItem = state.currentTabRowItem,
                 tabRowItems = tabRowItems,
+                nutritionCalculatorState = nutritionCalculatorState,
+                onNutritionCalculatorEvent = onNutritionCalculatorEvent,
                 onTabChange = { tabRowItem ->
                     onEvent(NutritionEvent.OnTabChange(tabRowItem))
                 }
@@ -58,6 +65,8 @@ private fun NutritionScreenContent(
     selectedTabIndex: Int,
     currentTabRowItem: TabRowItem,
     tabRowItems: List<TabRowItem>,
+    nutritionCalculatorState: NutritionCalculatorState,
+    onNutritionCalculatorEvent: (NutritionCalculatorEvent) -> Unit,
     onTabChange: (TabRowItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -84,7 +93,13 @@ private fun NutritionScreenContent(
             AnimatedContent(targetState = currentTabRowItem, label = "") { tabRowItem ->
                 when(tabRowItem) {
                     TabRowItem.NUTRITION_CALCULATOR -> {
-                        NutritionCalculatorScreen()
+                        NutritionCalculatorScreen(
+                            state = nutritionCalculatorState,
+                            onEvent = onNutritionCalculatorEvent,
+                            onNavigateToAddProductScreen = {
+
+                            }
+                        )
                     }
                     TabRowItem.RECIPES -> {
                         RecipesScreen()

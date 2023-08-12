@@ -18,6 +18,6 @@ interface MealDao {
     @Query("SELECT * FROM MealPlanEntity WHERE id = 1")
     fun getMealPLan(): Flow<MealPlanEntity>
 
-    @Query("SELECT planName FROM MealPlanEntity WHERE id = 1")
+    @Query("SELECT plan_name FROM MealPlanEntity WHERE id = 1")
     fun getMealPLanName(): Flow<String>
 }
