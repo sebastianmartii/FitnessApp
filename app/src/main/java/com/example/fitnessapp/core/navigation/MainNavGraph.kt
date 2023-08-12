@@ -16,6 +16,9 @@ import com.example.fitnessapp.nutrition_calculator_feature.presentation.Nutritio
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.TabRowItem
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.custom_meal_plan_creator.CustomMealPlanCreatorScreen
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.custom_meal_plan_creator.CustomMealPlanCreatorViewModel
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.NutritionCalculatorViewModel
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.food_item_creator.FoodItemCreatorScreen
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.food_item_creator.FoodItemCreatorViewModel
 
 fun NavGraphBuilder.mainNavGraph(
     navController: NavController
@@ -37,7 +40,10 @@ fun NavGraphBuilder.mainNavGraph(
                 selectedDrawerItem = selectedDrawerItem,
                 eventFlow = viewModel.drawerEventFlow,
                 onEvent = viewModel::onEvent,
-                onDrawerEvent = viewModel::onDrawerEvent
+                onDrawerEvent = viewModel::onDrawerEvent,
+                onNavigateToNutritionScreen = {
+                    navController.navigate(MainDestinations.Nutrition.route)
+                }
             )
         }
         composable(
@@ -47,6 +53,10 @@ fun NavGraphBuilder.mainNavGraph(
             val state by viewModel.state.collectAsStateWithLifecycle()
             val selectedDrawerItem by viewModel.selectedDrawerItem.collectAsStateWithLifecycle()
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+            val nutritionCalculatorViewModel = hiltViewModel<NutritionCalculatorViewModel>()
+            val nutritionCalculatorState by nutritionCalculatorViewModel.state.collectAsStateWithLifecycle()
+
             NutritionScreen(
                 state = state,
                 tabRowItems = listOf(
@@ -56,6 +66,8 @@ fun NavGraphBuilder.mainNavGraph(
                 ),
                 selectedDrawerItem = selectedDrawerItem,
                 drawerState = drawerState,
+                nutritionCalculatorState = nutritionCalculatorState,
+                onNutritionCalculatorEvent = nutritionCalculatorViewModel::onEvent,
                 onEvent = viewModel::onEvent,
                 onDrawerEvent = viewModel::onDrawerEvent
             )
@@ -71,6 +83,21 @@ fun NavGraphBuilder.mainNavGraph(
                     navController.popBackStack()
                 },
                 onEvent = viewModel::onEvent
+            )
+        }
+        composable(
+            route = MainDestinations.FoodItemCreator.route
+        ) {
+            val viewModel = hiltViewModel<FoodItemCreatorViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+
+            FoodItemCreatorScreen(
+                name = state.name,
+                foodComponents = state.foodComponents,
+                onEvent = viewModel::onEvent,
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
             )
         }
     }
