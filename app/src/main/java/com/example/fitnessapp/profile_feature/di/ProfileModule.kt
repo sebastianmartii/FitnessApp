@@ -3,7 +3,6 @@ package com.example.fitnessapp.profile_feature.di
 import com.example.fitnessapp.core.database.FitnessDatabase
 import com.example.fitnessapp.core.util.Endpoints
 import com.example.fitnessapp.profile_feature.data.remote.CaloriesGoalApi
-import com.example.fitnessapp.profile_feature.data.remote.CaloriesGoalInterceptor
 import com.example.fitnessapp.profile_feature.data.repository.ProfileRepositoryImpl
 import com.example.fitnessapp.profile_feature.domain.repository.ProfileRepository
 import dagger.Module
@@ -18,14 +17,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object ProfileModule {
-
-    @Provides
-    @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder().apply {
-            addInterceptor(CaloriesGoalInterceptor())
-        }.build()
-    }
 
     @Provides
     @Singleton

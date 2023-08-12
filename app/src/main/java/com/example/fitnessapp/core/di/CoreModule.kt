@@ -6,17 +6,30 @@ import com.example.fitnessapp.core.database.FitnessDatabase
 import com.example.fitnessapp.core.database.dao.CurrentUserDao
 import com.example.fitnessapp.core.util.GsonParser
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.MealConverters
+import com.example.fitnessapp.nutrition_calculator_feature.data.remote.NutritionCalculatorInterceptor
+import com.example.fitnessapp.profile_feature.data.remote.CaloriesGoalInterceptor
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class CoreModule {
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder().apply {
+            addInterceptor(NutritionCalculatorInterceptor())
+            addInterceptor(CaloriesGoalInterceptor())
+        }.build()
+    }
+
 
     @Provides
     @Singleton

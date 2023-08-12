@@ -2,11 +2,13 @@ package com.example.fitnessapp.nutrition_calculator_feature.di
 
 import com.example.fitnessapp.core.database.FitnessDatabase
 import com.example.fitnessapp.core.util.Endpoints
+import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.FoodItemDao
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.MealDao
 import com.example.fitnessapp.nutrition_calculator_feature.data.remote.NutritionCalculatorApi
-import com.example.fitnessapp.nutrition_calculator_feature.data.remote.NutritionCalculatorInterceptor
 import com.example.fitnessapp.nutrition_calculator_feature.data.repository.CustomMealPlanCreatorRepositoryImpl
+import com.example.fitnessapp.nutrition_calculator_feature.data.repository.NutritionCalculatorRepositoryImpl
 import com.example.fitnessapp.nutrition_calculator_feature.domain.repository.CustomMealPlanCreatorRepository
+import com.example.fitnessapp.nutrition_calculator_feature.domain.repository.NutritionCalculatorRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,6 +21,24 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NutritionModule {
+
+
+    @Provides
+    @Singleton
+    fun provideNutritionCalculatorRepository(
+        foodItemDao: FoodItemDao,
+        nutritionCalculatorApi: NutritionCalculatorApi
+    ): NutritionCalculatorRepository {
+        return NutritionCalculatorRepositoryImpl(foodItemDao, nutritionCalculatorApi)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideFoodItemDao(db: FitnessDatabase): FoodItemDao {
+        return db.foodItemDao
+    }
+
 
     @Provides
     @Singleton
@@ -35,14 +55,6 @@ object NutritionModule {
         return db.mealDao
     }
 
-
-    @Provides
-    @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder().apply {
-            addInterceptor(NutritionCalculatorInterceptor())
-        }.build()
-    }
 
     @Provides
     @Singleton
