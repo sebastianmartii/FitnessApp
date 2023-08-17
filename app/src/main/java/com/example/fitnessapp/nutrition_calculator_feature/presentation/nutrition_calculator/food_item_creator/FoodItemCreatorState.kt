@@ -2,5 +2,12 @@ package com.example.fitnessapp.nutrition_calculator_feature.presentation.nutriti
 
 data class FoodItemCreatorState(
     val name: String = "",
-    val foodComponents: List<FoodComponent> = emptyList()
+    val servingSize: String = "",
+    val calories: String = "",
+    val carbs: String = "",
+    val protein: String = "",
+    val totalFat: String = "",
+    val saturatedFat: String = "",
+    val fiber: String = "",
+    val sugar: String = "",
 )

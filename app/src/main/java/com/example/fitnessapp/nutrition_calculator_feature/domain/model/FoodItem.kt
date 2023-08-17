@@ -1,7 +1,7 @@
 package com.example.fitnessapp.nutrition_calculator_feature.domain.model
 
 data class FoodItem(
-    val name: String,
+    var name: String,
     val servingSize: Double,
     val calories: Double,
     val carbs: Double,
@@ -10,4 +10,5 @@ data class FoodItem(
     val saturatedFat: Double,
     val sugar: Double,
     val fiber: Double,
+    var isSelected: Boolean = false,
 )
