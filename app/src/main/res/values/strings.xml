@@ -37,7 +37,7 @@
     <string name="select_text">Select</string>
     <string name="activity_level_selection_hint">Hold For More Details</string>
     <string name="height_error_text">Height Must Be Between 130cm to 230cm</string>
-    <string name="weight_error_text">Weight Must Be Between 40kg to 80kg</string>
+    <string name="weight_error_text">Weight Must Be Between 40kg to 160kg</string>
     <string name="age_error_text">Age Must Be Between 0 to 80</string>
     <string name="no_profiles">No Profiles Available</string>
     <string name="overview_title">Overview</string>
@@ -56,12 +56,38 @@
     <string name="rename_meal_plan">Rename Meal Plan</string>
     <string name="calculate_nutrition">Calculate Nutrition</string>
     <string name="add_product">Add Product Manually</string>
-    <string name="food_item_supporting_text">Nutrition per %1$a: Calories %2$b, Carbs %3$c, Fat %4$d, Protein %5$e</string>
     <string name="food_item_supporting_text_expanded">
-        Nutrition per %1$a: Calories %2$b, Carbs %3$c, Fat %4$d, Protein %5$e, Saturated Fat %6$f, Sugar %7$g, Fiber %8$h
+        Nutrition per %1$.0fg: Calories %2$.0f, Carbs %3$.0f, Fat %4$.0f, Protein %5$.0f, Saturated Fat %6$.0f, Sugar %7$.0f, Fiber %8$.0f
     </string>
     <string name="collapse">Collapse</string>
     <string name="add_food_item">Add Food Item</string>
+    <string name="name_label">Name</string>
+    <string name="serving_label">Serving Size</string>
+    <string name="calories_label">Calories per Serving</string>
+    <string name="protein_label">Protein</string>
+    <string name="carbs_label">Carbohydrates</string>
+    <string name="total_fat_label">Total Fat</string>
+    <string name="saturated_fat_label">Saturated Fat</string>
+    <string name="fiber_label">Fiber</string>
+    <string name="sugar_label">Sugar</string>
+    <string name="suffix_grams">g</string>
+    <string name="suffix_calories">kcal</string>
+    <string name="food_name_desc">Food Name</string>
+    <string name="name_error_text">Name Must Be Between 3 And 22</string>
+    <string name="serving_size_error_text">Serving Can\'t Be Bigger Than 3000g</string>
+    <string name="serving_calories_error_text">Too Much Calories, Should Be Less Than 2000</string>
+    <string name="carbs_error_text">Too Much Carbs, Should Be Less Than 800</string>
+    <string name="protein_error_text">Too Much Protein, Should Be Less Than 350</string>
+    <string name="fat_error_text">Too Much Fat, Should Be Less Than 160</string>
+    <string name="saturated_fat_error_text">Too Much Fat, Should Be Less Than 40</string>
+    <string name="fiber_error_text">Too Much Fiber, Should Be Less Than 70</string>
+    <string name="sugar_error_text">Too Much Sugar, Should Be Less Than 40</string>
+    <string name="nutrition_title">Nutrition</string>
+    <string name="delete_food_item">Delete Food Item</string>
+    <string name="search_food">Search Food</string>
+    <string name="save_button">Save Button</string>
+    <string name="save_text">Save</string>
+    <string name="food_nutrition_search_placeholder">100g apple, banana, 100g milk...</string>
     <string name="five_meals_plan">
         <item>Breakfast</item>
         <item>Second BreakFast</item>
