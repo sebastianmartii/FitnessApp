@@ -1,14 +1,14 @@
 package com.example.fitnessapp.nutrition_calculator_feature.data.mappers
 
+import androidx.core.text.isDigitsOnly
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.entity.FoodItemEntity
 import com.example.fitnessapp.nutrition_calculator_feature.data.remote.dto.Item
 import com.example.fitnessapp.nutrition_calculator_feature.domain.model.FoodItem
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.TabRowItem
-import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.food_item_creator.FoodComponentType
 
 fun TabRowItem.toTabTitle(): String {
     return when(this) {
-        TabRowItem.NUTRITION_CALCULATOR -> "Nutrition Calculator"
+        TabRowItem.CALCULATOR -> "Calculator"
         TabRowItem.RECIPES -> "Recipes"
         TabRowItem.MEAL_PLAN -> "Meal Plan"
     }
@@ -68,16 +68,16 @@ fun FoodItemEntity.toFoodItem(): FoodItem {
     )
 }
 
-fun FoodComponentType.toLabel(): String {
-    return when(this) {
-        FoodComponentType.NAME -> "Name"
-        FoodComponentType.SERVING_SIZE -> "Serving Size"
-        FoodComponentType.CARBS -> "Carbohydrates"
-        FoodComponentType.PROTEIN -> "Protein"
-        FoodComponentType.FAT -> "Total Fat"
-        FoodComponentType.SATURATED_FAT -> "Saturated Fat"
-        FoodComponentType.FIBER -> "Fiber"
-        FoodComponentType.SUGAR -> "Sugar"
-        FoodComponentType.CALORIES -> "Calories Per Serving"
+fun String.toGrams(): Double {
+    if (this.isBlank() || !this.isDigitsOnly()) {
+        return 0.0
     }
+    return this.toDouble()
+}
+
+fun String.toCalories(): Double {
+    if (this.isBlank() || !this.isDigitsOnly()) {
+        return 0.0
+    }
+    return this.toDouble()
 }

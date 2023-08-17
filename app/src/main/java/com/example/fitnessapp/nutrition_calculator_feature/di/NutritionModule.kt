@@ -22,7 +22,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NutritionModule {
 
-
     @Provides
     @Singleton
     fun provideNutritionCalculatorRepository(

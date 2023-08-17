@@ -33,10 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.fitnessapp.R
-import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -209,13 +207,5 @@ private fun MealCreatorItem(
                 contentDescription = stringResource(id = R.string.delete_meal)
             )
         }
-    }
-}
-
-@Preview
-@Composable
-private fun CustomMealPlanCreatorScreenPreview() {
-    FitnessAppTheme {
-        CustomMealPlanCreatorScreen(state = CustomMealPlanCreatorState(), onNavigateBack = { /*TODO*/ }, onEvent = {})
     }
 }

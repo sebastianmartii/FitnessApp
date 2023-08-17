@@ -15,6 +15,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Singleton
 
 @Module
@@ -24,9 +25,14 @@ class CoreModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY // Set your desired logging level
+        }
+
         return OkHttpClient.Builder().apply {
             addInterceptor(NutritionCalculatorInterceptor())
             addInterceptor(CaloriesGoalInterceptor())
+            addInterceptor(loggingInterceptor)
         }.build()
     }
 
