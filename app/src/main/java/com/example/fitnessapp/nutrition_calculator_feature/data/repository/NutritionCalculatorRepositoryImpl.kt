@@ -28,11 +28,30 @@ class NutritionCalculatorRepositoryImpl(
         try {
             val response = nutritionCalculatorApi.getFoodNutrition(query)
             if (response.isSuccessful) {
-                foodItemDao.insertAllFoodItems(response.body()?.items?.map { it.toFoodItemEntity() } ?: emptyList())
                 emit(Resource.Success(data = response.body()?.items?.map { it.toFoodItem() }))
+            } else {
+                emit(Resource.Error(message = "${response.errorBody() }"))
             }
         } catch (e: Exception) {
             emit(Resource.Error(message = "$e"))
         }
+    }
+
+    override suspend fun cacheChosenProducts(products: List<FoodItem>) {
+        foodItemDao.insertAllFoodItems(products.map { it.toFoodItemEntity() })
+    }
+
+    override suspend fun deleteFoodItem(foodItem: FoodItem) {
+        foodItemDao.deleteFoodItem(
+            name = foodItem.name,
+            servingSize = foodItem.servingSize,
+            calories = foodItem.calories,
+            carbs = foodItem.carbs,
+            protein = foodItem.protein,
+            fat = foodItem.totalFat,
+            saturatedFat = foodItem.saturatedFat,
+            fiber = foodItem.fiber,
+            sugar = foodItem.sugar
+        )
     }
 }
