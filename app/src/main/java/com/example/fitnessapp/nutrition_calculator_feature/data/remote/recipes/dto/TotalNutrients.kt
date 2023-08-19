@@ -1,0 +1,40 @@
+package com.example.fitnessapp.nutrition_calculator_feature.data.remote.recipes.dto
+
+import com.google.gson.annotations.SerializedName
+
+data class TotalNutrients(
+    @SerializedName("ENERC_KCAL") val enercKcal: Nutrient,
+    @SerializedName("FAT") val fat: Nutrient,
+    @SerializedName("FASAT") val fasat: Nutrient,
+    @SerializedName("FATRN") val fatrn: Nutrient,
+    @SerializedName("FAMS") val fams: Nutrient,
+    @SerializedName("FAPU") val fapu: Nutrient,
+    @SerializedName("CHOCDF") val chocdf: Nutrient,
+    @SerializedName("CHOCDF_net") val chocdfNet: Nutrient,
+    @SerializedName("FIBTG") val fibtg: Nutrient,
+    @SerializedName("SUGAR") val sugar: Nutrient,
+    @SerializedName("SUGAR_added") val sugarAdded: Nutrient,
+    @SerializedName("PROCNT") val procnt: Nutrient,
+    @SerializedName("CHOLE") val chole: Nutrient,
+    @SerializedName("NA") val na: Nutrient,
+    @SerializedName("CA") val ca: Nutrient,
+    @SerializedName("MR") val mg: Nutrient,
+    @SerializedName("K") val k: Nutrient,
+    @SerializedName("FE") val fe: Nutrient,
+    @SerializedName("ZN") val zn: Nutrient,
+    @SerializedName("P") val p: Nutrient,
+    @SerializedName("VITA_RAE") val vitaRae: Nutrient,
+    @SerializedName("VITC") val vitc: Nutrient,
+    @SerializedName("THIA") val thia: Nutrient,
+    @SerializedName("RIBF") val ribf: Nutrient,
+    @SerializedName("NIA") val nia: Nutrient,
+    @SerializedName("VITB6A") val vitb6a: Nutrient,
+    @SerializedName("FOLDFE") val foldfe: Nutrient,
+    @SerializedName("FOLFD") val folfd: Nutrient,
+    @SerializedName("FOLAC") val folac: Nutrient,
+    @SerializedName("VITB12") val vitb12: Nutrient,
+    @SerializedName("VITD") val vitd: Nutrient,
+    @SerializedName("TOCPHA") val tocpha: Nutrient,
+    @SerializedName("VITK1") val vitk1: Nutrient,
+    @SerializedName("WATER") val water: Nutrient
+)

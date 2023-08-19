@@ -1,0 +1,31 @@
+package com.example.fitnessapp.nutrition_calculator_feature.data.remote.recipes.dto
+
+data class Recipe(
+    val uri: String,
+    val label: String,
+    val image: String,
+    val images: Images,
+    val source: String,
+    val url: String,
+    val shareAs: String,
+    val yield: Int,
+    val dietLabels: List<String>,
+    val healthLabels: List<String>,
+    val cautions: List<String>,
+    val ingredientLines: List<String>,
+    val ingredients: List<Ingredient>,
+    val calories: Double,
+    val glycemicIndex: Double,
+    val totalCO2Emissions: Double,
+    val co2EmissionsClass: String,
+    val totalWeight: Double,
+    val cuisineType: List<String>,
+    val mealType: List<String>,
+    val dishType: List<String>,
+    val instructions: List<String>,
+    val tags: List<String>,
+    val externalId: String,
+    val totalNutrients: TotalNutrients,
+    val totalDaily: TotalDaily,
+    val digest: List<Digest>
+)
