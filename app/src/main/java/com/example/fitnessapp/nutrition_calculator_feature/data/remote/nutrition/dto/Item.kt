@@ -1,4 +1,4 @@
-package com.example.fitnessapp.nutrition_calculator_feature.data.remote.dto
+package com.example.fitnessapp.nutrition_calculator_feature.data.remote.nutrition.dto
 
 import com.google.gson.annotations.SerializedName
 

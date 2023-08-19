@@ -5,7 +5,7 @@ import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.FoodIt
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.entity.FoodItemEntity
 import com.example.fitnessapp.nutrition_calculator_feature.data.mappers.toFoodItem
 import com.example.fitnessapp.nutrition_calculator_feature.data.mappers.toFoodItemEntity
-import com.example.fitnessapp.nutrition_calculator_feature.data.remote.NutritionCalculatorApi
+import com.example.fitnessapp.nutrition_calculator_feature.data.remote.nutrition.NutritionCalculatorApi
 import com.example.fitnessapp.nutrition_calculator_feature.domain.model.FoodItem
 import com.example.fitnessapp.nutrition_calculator_feature.domain.repository.NutritionCalculatorRepository
 import kotlinx.coroutines.flow.Flow

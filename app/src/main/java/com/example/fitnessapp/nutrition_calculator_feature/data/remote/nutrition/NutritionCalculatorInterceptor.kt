@@ -1,4 +1,4 @@
-package com.example.fitnessapp.nutrition_calculator_feature.data.remote
+package com.example.fitnessapp.nutrition_calculator_feature.data.remote.nutrition
 
 import com.example.fitnessapp.core.util.ApiKeys
 import okhttp3.Interceptor

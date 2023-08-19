@@ -1,6 +1,6 @@
-package com.example.fitnessapp.nutrition_calculator_feature.data.remote
+package com.example.fitnessapp.nutrition_calculator_feature.data.remote.nutrition
 
-import com.example.fitnessapp.nutrition_calculator_feature.data.remote.dto.NutritionDto
+import com.example.fitnessapp.nutrition_calculator_feature.data.remote.nutrition.dto.NutritionDto
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
