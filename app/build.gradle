@@ -36,6 +36,8 @@ android {
 
         buildConfigField "String", "FITNESS_CALCULATOR_API_KEY", "\"${properties.getProperty("FITNESS_CALCULATOR_API_KEY")}\""
         buildConfigField "String", "NUTRITION_CALCULATOR_API_KEY", "\"${properties.getProperty("NUTRITION_CALCULATOR_API_KEY")}\""
+        buildConfigField "String", "RECIPES_API_KEY", "\"${properties.getProperty("RECIPES_API_KEY")}\""
+        buildConfigField "String", "RECIPES_AP_ID", "\"${properties.getProperty("RECIPES_AP_ID")}\""
     }
 
     sourceSets {
