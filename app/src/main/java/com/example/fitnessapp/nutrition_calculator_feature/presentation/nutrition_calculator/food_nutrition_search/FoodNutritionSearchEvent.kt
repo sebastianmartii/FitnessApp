@@ -6,4 +6,5 @@ sealed interface FoodNutritionSearchEvent {
     data class OnQueryChange(val query: String) : FoodNutritionSearchEvent
     data class OnFoodItemSelect(val foodItem: FoodItem) : FoodNutritionSearchEvent
     object OnFoodItemsSave : FoodNutritionSearchEvent
+    object OnNutritionSearch : FoodNutritionSearchEvent
 }

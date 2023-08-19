@@ -15,7 +15,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -72,9 +71,6 @@ fun FoodNutritionSearchScreen(
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize()
         ) {
-            if (state.isLoading) {
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            }
             OutlinedTextField(
                 value = state.query,
                 onValueChange = { query ->
@@ -115,6 +111,7 @@ fun FoodNutritionSearchScreen(
                 ),
                 keyboardActions = KeyboardActions(
                     onSearch = {
+                        onEvent(FoodNutritionSearchEvent.OnNutritionSearch)
                         onKeyboardHide()
                     }
                 ),
@@ -122,7 +119,9 @@ fun FoodNutritionSearchScreen(
                     .padding(vertical = 8.dp)
                     .fillMaxWidth()
             )
-            HorizontalDivider()
+            if (state.isLoading) {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            }
             state.foodItems.onEach { foodItem ->
                 ListItem(
                     tonalElevation = if (foodItem.isSelected) 4.dp else 0.dp,

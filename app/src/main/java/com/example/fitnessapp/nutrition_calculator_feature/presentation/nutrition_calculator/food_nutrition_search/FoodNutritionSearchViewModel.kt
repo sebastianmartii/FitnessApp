@@ -5,8 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.core.util.Resource
 import com.example.fitnessapp.nutrition_calculator_feature.domain.repository.NutritionCalculatorRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -21,8 +19,6 @@ class FoodNutritionSearchViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(FoodNutritionSearchState())
     val state = _state.asStateFlow()
-
-    private var searchJob: Job? = null
 
     fun onEvent(event: FoodNutritionSearchEvent) {
         when(event) {
@@ -43,10 +39,16 @@ class FoodNutritionSearchViewModel @Inject constructor(
                         query = event.query
                     )
                 }
-                searchJob?.cancel()
-                searchJob = viewModelScope.launch {
-                    delay(500L)
-                    repo.getFoodNutrition(event.query).collectLatest { result ->
+            }
+            FoodNutritionSearchEvent.OnFoodItemsSave -> {
+                viewModelScope.launch {
+                    val selectedFoodItems = _state.value.foodItems.filter { it.isSelected }
+                    repo.cacheChosenProducts(selectedFoodItems)
+                }
+            }
+            FoodNutritionSearchEvent.OnNutritionSearch -> {
+                viewModelScope.launch {
+                    repo.getFoodNutrition(_state.value.query).collectLatest { result ->
                         when(result) {
                             is Resource.Error -> {
                                 _state.update {
@@ -75,12 +77,6 @@ class FoodNutritionSearchViewModel @Inject constructor(
                             }
                         }
                     }
-                }
-            }
-            FoodNutritionSearchEvent.OnFoodItemsSave -> {
-                viewModelScope.launch {
-                    val selectedFoodItems = _state.value.foodItems.filter { it.isSelected }
-                    repo.cacheChosenProducts(selectedFoodItems)
                 }
             }
         }
