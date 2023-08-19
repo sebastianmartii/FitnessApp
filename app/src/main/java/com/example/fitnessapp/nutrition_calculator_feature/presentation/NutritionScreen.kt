@@ -22,6 +22,8 @@ import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutritio
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.NutritionCalculatorScreen
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.NutritionCalculatorState
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.NutritionCalculatorTopBar
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe_search.RecipeSearchScreen
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe_search.RecipeSearchState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -73,8 +75,8 @@ fun NutritionScreen(
                 onNutritionCalculatorEvent = onNutritionCalculatorEvent,
                 onNavigateToFoodItemCreator = onNavigateToFoodItemCreator,
                 onNavigateToSearchScreen = onNavigateToSearchScreen,
-                onTabChange = { tabRowItem ->
-                    onEvent(NutritionEvent.OnTabChange(tabRowItem))
+                onTabChange = { tabRowItem, tabIndex ->
+                    onEvent(NutritionEvent.OnTabChange(tabRowItem, tabIndex))
                 },
                 onDrawerStateChange = {
                     onDrawerEvent(DrawerEvent.OpenDrawer)
@@ -95,7 +97,7 @@ private fun NutritionScreenContent(
     onNavigateToFoodItemCreator: () -> Unit,
     onNavigateToSearchScreen: () -> Unit,
     onDrawerStateChange: () -> Unit,
-    onTabChange: (TabRowItem) -> Unit,
+    onTabChange: (item: TabRowItem, index: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -120,7 +122,7 @@ private fun NutritionScreenContent(
                             Text(text = tabRowItem.toTabTitle())
                         },
                         onClick = {
-                            onTabChange(tabRowItem)
+                            onTabChange(tabRowItem, index)
                         }
                     )
                 }
@@ -134,7 +136,7 @@ private fun NutritionScreenContent(
                         )
                     }
                     TabRowItem.RECIPES -> {
-                        RecipesScreen()
+                        RecipeSearchScreen(RecipeSearchState())
                     }
                     TabRowItem.MEAL_PLAN -> {
                         MealPlanScreen(mealPlanTypeList = emptyList(), onCustomMealPLan = {})

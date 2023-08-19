@@ -2,7 +2,7 @@ package com.example.fitnessapp.nutrition_calculator_feature.data.mappers
 
 import androidx.core.text.isDigitsOnly
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.entity.FoodItemEntity
-import com.example.fitnessapp.nutrition_calculator_feature.data.remote.dto.Item
+import com.example.fitnessapp.nutrition_calculator_feature.data.remote.nutrition.dto.Item
 import com.example.fitnessapp.nutrition_calculator_feature.domain.model.FoodItem
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.TabRowItem
 

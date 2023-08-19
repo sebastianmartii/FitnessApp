@@ -4,7 +4,8 @@ import com.example.fitnessapp.core.database.FitnessDatabase
 import com.example.fitnessapp.core.util.Endpoints
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.FoodItemDao
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.MealDao
-import com.example.fitnessapp.nutrition_calculator_feature.data.remote.NutritionCalculatorApi
+import com.example.fitnessapp.nutrition_calculator_feature.data.remote.nutrition.NutritionCalculatorApi
+import com.example.fitnessapp.nutrition_calculator_feature.data.remote.recipes.RecipesApi
 import com.example.fitnessapp.nutrition_calculator_feature.data.repository.CustomMealPlanCreatorRepositoryImpl
 import com.example.fitnessapp.nutrition_calculator_feature.data.repository.NutritionCalculatorRepositoryImpl
 import com.example.fitnessapp.nutrition_calculator_feature.domain.repository.CustomMealPlanCreatorRepository
@@ -52,6 +53,17 @@ object NutritionModule {
     @Singleton
     fun provideMealDao(db: FitnessDatabase): MealDao {
         return db.mealDao
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideRecipesApi(): RecipesApi {
+        return Retrofit.Builder()
+            .baseUrl(Endpoints.RECIPES_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(RecipesApi::class.java)
     }
 
 
