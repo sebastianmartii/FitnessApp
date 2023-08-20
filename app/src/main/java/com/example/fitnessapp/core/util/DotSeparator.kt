@@ -10,3 +10,5 @@ fun DotSeparator(
 ) {
     Text(text = " · ", modifier = modifier)
 }
+
+const val DOT_SEPARATOR_TEXT = "·"
