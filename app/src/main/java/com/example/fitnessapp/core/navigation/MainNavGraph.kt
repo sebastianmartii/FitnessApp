@@ -14,6 +14,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.fitnessapp.core.util.sharedViewModel
 import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewScreen
 import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionScreen
@@ -27,6 +28,9 @@ import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutritio
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.food_item_creator.FoodItemCreatorViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.food_nutrition_search.FoodNutritionSearchScreen
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.food_nutrition_search.FoodNutritionSearchViewModel
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe_search.RecipeDetailsScreen
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe_search.RecipeSearchEvent
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe_search.RecipeSearchViewModel
 
 fun NavGraphBuilder.mainNavGraph(
     navController: NavController
@@ -56,7 +60,7 @@ fun NavGraphBuilder.mainNavGraph(
         }
         composable(
             route = MainDestinations.Nutrition.route
-        ) {
+        ) { entry ->
             val viewModel = hiltViewModel<NutritionViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
             val selectedDrawerItem by viewModel.selectedDrawerItem.collectAsStateWithLifecycle()
@@ -66,6 +70,11 @@ fun NavGraphBuilder.mainNavGraph(
             val nutritionCalculatorState by nutritionCalculatorViewModel.state.collectAsStateWithLifecycle(
                 NutritionCalculatorState()
             )
+
+            val recipeSearchViewModel = entry.sharedViewModel<RecipeSearchViewModel>(navController)
+            val recipeSearchState by recipeSearchViewModel.state.collectAsStateWithLifecycle()
+
+            val keyboardController = LocalSoftwareKeyboardController.current
 
             NutritionScreen(
                 state = state,
@@ -78,6 +87,7 @@ fun NavGraphBuilder.mainNavGraph(
                 drawerState = drawerState,
                 drawerEventFlow = viewModel.drawerEventFlow,
                 nutritionCalculatorState = nutritionCalculatorState,
+                recipeSearchState = recipeSearchState,
                 onNutritionCalculatorEvent = nutritionCalculatorViewModel::onEvent,
                 onEvent = viewModel::onEvent,
                 onDrawerEvent = viewModel::onDrawerEvent,
@@ -86,6 +96,13 @@ fun NavGraphBuilder.mainNavGraph(
                 },
                 onNavigateToSearchScreen = {
                     navController.navigate(MainDestinations.FoodNutritionSearch.route)
+                },
+                onRecipeSearchEvent = recipeSearchViewModel::onEvent,
+                onKeyboardHide = {
+                    keyboardController?.hide()
+                },
+                onNavigateToRecipeDetails = {
+                    navController.navigate(MainDestinations.RecipeDetails.route)
                 }
             )
         }
@@ -149,6 +166,24 @@ fun NavGraphBuilder.mainNavGraph(
                 },
                 onNavigateToFoodItemCreator = {
                     navController.navigate(MainDestinations.FoodItemCreator.route)
+                }
+            )
+        }
+        composable(
+            route = MainDestinations.RecipeDetails.route
+        ) { entry ->
+            val viewModel = entry.sharedViewModel<RecipeSearchViewModel>(navController)
+            val inspectedRecipe by viewModel.inspectedRecipe.collectAsStateWithLifecycle()
+            val isRecipeSaved by viewModel.isRecipeSaved.collectAsStateWithLifecycle()
+
+            RecipeDetailsScreen(
+                recipe = inspectedRecipe!!,
+                isRecipeSaved = isRecipeSaved,
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onIsRecipeSavedChange = { recipe, isSaved ->
+                    viewModel.onEvent(RecipeSearchEvent.OnIsRecipeSavedChange(recipe, isSaved))
                 }
             )
         }
