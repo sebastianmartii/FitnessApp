@@ -1,16 +1,15 @@
 package com.example.fitnessapp.core.navigation
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.*
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.fitnessapp.core.util.sharedViewModel
 import com.example.fitnessapp.profile_feature.presentation.sign_in.ActivityLevelAndCaloriesGoalScreen
 import com.example.fitnessapp.profile_feature.presentation.sign_in.CaloriesGoalListScreen
 import com.example.fitnessapp.profile_feature.presentation.sign_in.IntroductionScreen
@@ -41,6 +40,10 @@ fun NavGraphBuilder.signInNavGraph(navController: NavController) {
         composable(route = SignInDestinations.Measurements.route) { entry -> 
             val viewModel = entry.sharedViewModel<SignInViewModel>(navController)
             val state by viewModel.state.collectAsStateWithLifecycle()
+
+            val focusManager = LocalFocusManager.current
+            val keyboardController = LocalSoftwareKeyboardController.current
+
             MeasurementsScreen(
                 age = state.age,
                 height = state.height,
@@ -51,6 +54,12 @@ fun NavGraphBuilder.signInNavGraph(navController: NavController) {
                 },
                 onNavigateBack = {
                     navController.popBackStack()
+                },
+                onFocusMove = {
+                    focusManager.moveFocus(FocusDirection.Next)
+                },
+                onKeyboardHide = {
+                    keyboardController?.hide()
                 }
             )
         }
@@ -97,14 +106,4 @@ fun NavGraphBuilder.signInNavGraph(navController: NavController) {
             )
         }
     }
-}
-
-@Composable
-inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(navController: NavController): T {
-    val navGraphRoute = destination.parent?.route ?: return hiltViewModel()
-    val parentEntry = remember(this) {
-        navController.getBackStackEntry(navGraphRoute)
-    }
-
-    return hiltViewModel(parentEntry)
 }
