@@ -4,12 +4,15 @@ import com.example.fitnessapp.core.database.FitnessDatabase
 import com.example.fitnessapp.core.util.Endpoints
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.FoodItemDao
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.MealDao
+import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.RecipesDao
 import com.example.fitnessapp.nutrition_calculator_feature.data.remote.nutrition.NutritionCalculatorApi
 import com.example.fitnessapp.nutrition_calculator_feature.data.remote.recipes.RecipesApi
 import com.example.fitnessapp.nutrition_calculator_feature.data.repository.CustomMealPlanCreatorRepositoryImpl
 import com.example.fitnessapp.nutrition_calculator_feature.data.repository.NutritionCalculatorRepositoryImpl
+import com.example.fitnessapp.nutrition_calculator_feature.data.repository.RecipesRepositoryImpl
 import com.example.fitnessapp.nutrition_calculator_feature.domain.repository.CustomMealPlanCreatorRepository
 import com.example.fitnessapp.nutrition_calculator_feature.domain.repository.NutritionCalculatorRepository
+import com.example.fitnessapp.nutrition_calculator_feature.domain.repository.RecipesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,6 +25,24 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NutritionModule {
+
+
+    @Provides
+    @Singleton
+    fun provideRecipesDao(db: FitnessDatabase): RecipesDao {
+        return db.recipesDao
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideRecipesRepository(
+        recipesApi: RecipesApi,
+        recipesDao: RecipesDao
+    ): RecipesRepository {
+        return RecipesRepositoryImpl(recipesApi, recipesDao)
+    }
+
 
     @Provides
     @Singleton
@@ -58,9 +79,10 @@ object NutritionModule {
 
     @Provides
     @Singleton
-    fun provideRecipesApi(): RecipesApi {
+    fun provideRecipesApi(client: OkHttpClient): RecipesApi {
         return Retrofit.Builder()
             .baseUrl(Endpoints.RECIPES_BASE_URL)
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(RecipesApi::class.java)
