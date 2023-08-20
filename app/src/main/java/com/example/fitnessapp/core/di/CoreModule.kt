@@ -6,6 +6,7 @@ import com.example.fitnessapp.core.database.FitnessDatabase
 import com.example.fitnessapp.core.database.dao.CurrentUserDao
 import com.example.fitnessapp.core.util.GsonParser
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.MealConverters
+import com.example.fitnessapp.nutrition_calculator_feature.data.local.RecipeConverters
 import com.example.fitnessapp.nutrition_calculator_feature.data.remote.nutrition.NutritionCalculatorInterceptor
 import com.example.fitnessapp.profile_feature.data.remote.CaloriesGoalInterceptor
 import com.google.gson.Gson
@@ -54,7 +55,9 @@ class CoreModule {
             context,
             FitnessDatabase::class.java,
             "db"
-        ).addTypeConverter(MealConverters(GsonParser(Gson())))
+        )
+            .addTypeConverter(MealConverters(GsonParser(Gson())))
+            .addTypeConverter(RecipeConverters(GsonParser(Gson())))
             .build()
     }
 }

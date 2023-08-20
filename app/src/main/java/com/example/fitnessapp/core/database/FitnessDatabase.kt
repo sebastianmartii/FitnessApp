@@ -6,17 +6,20 @@ import androidx.room.TypeConverters
 import com.example.fitnessapp.core.database.dao.CurrentUserDao
 import com.example.fitnessapp.core.database.entity.CurrentUser
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.MealConverters
+import com.example.fitnessapp.nutrition_calculator_feature.data.local.RecipeConverters
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.FoodItemDao
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.MealDao
+import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.RecipesDao
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.entity.FoodItemEntity
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.entity.MealPlanEntity
+import com.example.fitnessapp.nutrition_calculator_feature.data.local.entity.RecipesEntity
 
 @Database(
-    entities = [CurrentUser::class, MealPlanEntity::class, FoodItemEntity::class],
+    entities = [CurrentUser::class, MealPlanEntity::class, FoodItemEntity::class, RecipesEntity::class],
     version = 1,
     exportSchema = false
 )
-@TypeConverters(MealConverters::class)
+@TypeConverters(MealConverters::class, RecipeConverters::class)
 abstract class FitnessDatabase : RoomDatabase() {
 
     abstract val currentUserDao: CurrentUserDao
@@ -24,4 +27,6 @@ abstract class FitnessDatabase : RoomDatabase() {
     abstract val mealDao: MealDao
 
     abstract val foodItemDao: FoodItemDao
+
+    abstract val recipesDao: RecipesDao
 }
