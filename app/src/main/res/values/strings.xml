@@ -88,6 +88,10 @@
     <string name="save_button">Save Button</string>
     <string name="save_text">Save</string>
     <string name="food_nutrition_search_placeholder">100g apple, banana, 100g milk...</string>
+    <string name="stop_search_button">Stop Searching</string>
+    <string name="clear_text_field">Clear Text Field</string>
+    <string name="ingredients_headline">Ingredients</string>
+    <string name="open_browser">Open Recipe In Browser</string>
     <string name="five_meals_plan">
         <item>Breakfast</item>
         <item>Second BreakFast</item>
