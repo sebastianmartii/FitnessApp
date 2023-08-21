@@ -1,4 +1,4 @@
-package com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe_search
+package com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search

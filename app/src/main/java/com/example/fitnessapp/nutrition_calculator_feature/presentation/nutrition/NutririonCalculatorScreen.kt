@@ -1,4 +1,4 @@
-package com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator
+package com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize

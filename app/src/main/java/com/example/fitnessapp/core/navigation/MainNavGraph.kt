@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -22,15 +23,15 @@ import com.example.fitnessapp.nutrition_calculator_feature.presentation.Nutritio
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.TabRowItem
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.custom_meal_plan_creator.CustomMealPlanCreatorScreen
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.custom_meal_plan_creator.CustomMealPlanCreatorViewModel
-import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.NutritionCalculatorState
-import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.NutritionCalculatorViewModel
-import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.food_item_creator.FoodItemCreatorScreen
-import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.food_item_creator.FoodItemCreatorViewModel
-import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.food_nutrition_search.FoodNutritionSearchScreen
-import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.food_nutrition_search.FoodNutritionSearchViewModel
-import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe_search.RecipeDetailsScreen
-import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe_search.RecipeSearchEvent
-import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe_search.RecipeSearchViewModel
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.NutritionCalculatorState
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.NutritionCalculatorViewModel
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.food_item_creator.FoodItemCreatorScreen
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.food_item_creator.FoodItemCreatorViewModel
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.food_nutrition_search.FoodNutritionSearchScreen
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.food_nutrition_search.FoodNutritionSearchViewModel
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeDetailsScreen
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchEvent
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchViewModel
 
 fun NavGraphBuilder.mainNavGraph(
     navController: NavController
@@ -176,6 +177,8 @@ fun NavGraphBuilder.mainNavGraph(
             val inspectedRecipe by viewModel.inspectedRecipe.collectAsStateWithLifecycle()
             val isRecipeSaved by viewModel.isRecipeSaved.collectAsStateWithLifecycle()
 
+            val uriHandler = LocalUriHandler.current
+
             RecipeDetailsScreen(
                 recipe = inspectedRecipe!!,
                 isRecipeSaved = isRecipeSaved,
@@ -184,6 +187,9 @@ fun NavGraphBuilder.mainNavGraph(
                 },
                 onIsRecipeSavedChange = { recipe, isSaved ->
                     viewModel.onEvent(RecipeSearchEvent.OnIsRecipeSavedChange(recipe, isSaved))
+                },
+                onExternalUrlOpen = {
+                    uriHandler.openUri(it)
                 }
             )
         }

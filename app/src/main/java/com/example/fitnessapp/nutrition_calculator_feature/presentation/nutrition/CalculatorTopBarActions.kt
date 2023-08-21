@@ -1,4 +1,4 @@
-package com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator
+package com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons

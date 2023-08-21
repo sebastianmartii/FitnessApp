@@ -1,4 +1,4 @@
-package com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition_calculator.food_nutrition_search
+package com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.food_nutrition_search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

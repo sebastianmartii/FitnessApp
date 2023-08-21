@@ -1,4 +1,4 @@
-package com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe_search
+package com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ExperimentalLayoutApi

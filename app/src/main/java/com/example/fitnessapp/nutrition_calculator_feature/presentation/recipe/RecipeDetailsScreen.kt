@@ -1,4 +1,4 @@
-package com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe_search
+package com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,6 +49,7 @@ fun RecipeDetailsScreen(
     isRecipeSaved: Boolean,
     onNavigateBack: () -> Unit,
     onIsRecipeSavedChange: (recipe: Recipe, isSaved: Boolean) -> Unit,
+    onExternalUrlOpen: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -74,7 +75,9 @@ fun RecipeDetailsScreen(
                             contentDescription = stringResource(id = R.string.save_text)
                         )
                     }
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = {
+                        onExternalUrlOpen(recipe.externalUrl)
+                    }) {
                         Icon(
                             imageVector = Icons.Default.OpenInBrowser,
                             contentDescription = stringResource(id = R.string.open_browser)
@@ -209,7 +212,8 @@ private fun RecipeDetailsScreenPreview() {
             onIsRecipeSavedChange = { recipe, isSaved ->
 
             },
-            onNavigateBack = {}
+            onNavigateBack = {},
+            onExternalUrlOpen = {}
         )
     }
 }
