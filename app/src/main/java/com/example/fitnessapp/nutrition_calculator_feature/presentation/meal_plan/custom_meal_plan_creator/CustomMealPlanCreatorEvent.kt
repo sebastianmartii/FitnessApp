@@ -1,4 +1,4 @@
-package com.example.fitnessapp.nutrition_calculator_feature.presentation.custom_meal_plan_creator
+package com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_plan.custom_meal_plan_creator
 
 sealed interface CustomMealPlanCreatorEvent {
     object OnDeleteMealPlan : CustomMealPlanCreatorEvent
@@ -8,5 +8,6 @@ sealed interface CustomMealPlanCreatorEvent {
     object OnChangeMealPlanName : CustomMealPlanCreatorEvent
     object OnChangeMealName : CustomMealPlanCreatorEvent
     data class OnMealPlanNameChange(val newName: String) : CustomMealPlanCreatorEvent
-    data class OnMealNameChange(val newName: String, val mealIndex: Int) : CustomMealPlanCreatorEvent
+    data class OnMealNameChange(val newName: String, val mealIndex: Int) :
+        CustomMealPlanCreatorEvent
 }

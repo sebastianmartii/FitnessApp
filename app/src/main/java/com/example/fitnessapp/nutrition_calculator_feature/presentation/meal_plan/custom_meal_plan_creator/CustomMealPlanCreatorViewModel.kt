@@ -1,4 +1,4 @@
-package com.example.fitnessapp.nutrition_calculator_feature.presentation.custom_meal_plan_creator
+package com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_plan.custom_meal_plan_creator
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
