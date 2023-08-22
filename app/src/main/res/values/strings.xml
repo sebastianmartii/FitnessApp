@@ -48,7 +48,7 @@
     <string name="add_meal_button">Add Meal</string>
     <string name="app_icon">App Icon</string>
     <string name="custom_text">Custom</string>
-    <string name="add_custom_meal_plan">Add Custom Meal Plan</string>
+    <string name="custom_meal_plan">Custom Meal Plan</string>
     <string name="edit_meal">Edit Meal</string>
     <string name="delete_meal">Delete Meal</string>
     <string name="delete_meal_plan">Delete Meal Plan</string>
@@ -92,22 +92,4 @@
     <string name="clear_text_field">Clear Text Field</string>
     <string name="ingredients_headline">Ingredients</string>
     <string name="open_browser">Open Recipe In Browser</string>
-    <string name="five_meals_plan">
-        <item>Breakfast</item>
-        <item>Second BreakFast</item>
-        <item>Lunch</item>
-        <item>Snack</item>
-        <item>Dinner</item>
-    </string>
-    <string name="four_meals_plan">
-        <item>Breakfast</item>
-        <item>Second Breakfast</item>
-        <item>Lunch</item>
-        <item>Dinner</item>
-    </string>
-    <string name="three_meals_plan">
-        <item>Breakfast</item>
-        <item>Lunch</item>
-        <item>Dinner</item>
-    </string>
 </resources>

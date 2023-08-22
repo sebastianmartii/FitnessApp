@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -35,6 +36,10 @@ import com.example.fitnessapp.core.navigation_drawer.DrawerEvent
 import com.example.fitnessapp.core.navigation_drawer.DrawerItem
 import com.example.fitnessapp.core.util.drawerItemList
 import com.example.fitnessapp.nutrition_calculator_feature.data.mappers.toTabTitle
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_plan.MealPlanEvent
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_plan.MealPlanScreen
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_plan.MealPlanState
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_plan.MealPlanViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.CalculatorTopBarActions
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.NutritionCalculatorEvent
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.NutritionCalculatorScreen
@@ -46,23 +51,29 @@ import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NutritionScreen(
     state: NutritionState,
     tabRowItems: List<TabRowItem>,
+    mealPlanState: MealPlanState,
     selectedDrawerItem: DrawerItem?,
+    mealPlanEventFlow: Flow<MealPlanViewModel.UiEvent>,
+    mealPlanBottomSheetScaffoldState: BottomSheetScaffoldState,
     drawerState: DrawerState,
     drawerEventFlow: Flow<DrawerAction>,
     nutritionCalculatorState: NutritionCalculatorState,
     recipeSearchState: RecipeSearchState,
     onRecipeSearchEvent: (RecipeSearchEvent) -> Unit,
     onNutritionCalculatorEvent: (NutritionCalculatorEvent) -> Unit,
+    onMealPlanEvent: (MealPlanEvent) -> Unit,
     onEvent: (NutritionEvent) -> Unit,
     onDrawerEvent: (DrawerEvent) -> Unit,
     onNavigateToFoodItemCreator: () -> Unit,
     onNavigateToSearchScreen: () -> Unit,
     onNavigateToRecipeDetails: () -> Unit,
     onKeyboardHide: () -> Unit,
+    onFocusMove: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LaunchedEffect(key1 = true) {
@@ -94,9 +105,13 @@ fun NutritionScreen(
                 selectedTabIndex = state.selectedTabIndex,
                 currentTabRowItem = state.currentTabRowItem,
                 tabRowItems = tabRowItems,
+                mealPlanState = mealPlanState,
+                mealPlanEventFlow = mealPlanEventFlow,
+                mealPlanBottomSheetScaffoldState = mealPlanBottomSheetScaffoldState,
                 nutritionCalculatorState = nutritionCalculatorState,
                 recipeSearchState = recipeSearchState,
                 onNutritionCalculatorEvent = onNutritionCalculatorEvent,
+                onMealPlanEvent = onMealPlanEvent,
                 onNavigateToFoodItemCreator = onNavigateToFoodItemCreator,
                 onNavigateToSearchScreen = onNavigateToSearchScreen,
                 onTabChange = { tabRowItem, tabIndex ->
@@ -107,7 +122,8 @@ fun NutritionScreen(
                 },
                 onRecipeSearchEvent = onRecipeSearchEvent,
                 onKeyboardHide = onKeyboardHide,
-                onNavigateToRecipeDetails = onNavigateToRecipeDetails
+                onFocusMove = onFocusMove,
+                onNavigateToRecipeDetails = onNavigateToRecipeDetails,
             )
         },
         modifier = modifier
@@ -120,14 +136,19 @@ private fun NutritionScreenContent(
     selectedTabIndex: Int,
     currentTabRowItem: TabRowItem,
     tabRowItems: List<TabRowItem>,
+    mealPlanEventFlow: Flow<MealPlanViewModel.UiEvent>,
+    mealPlanBottomSheetScaffoldState: BottomSheetScaffoldState,
+    mealPlanState: MealPlanState,
     nutritionCalculatorState: NutritionCalculatorState,
     recipeSearchState: RecipeSearchState,
     onRecipeSearchEvent: (RecipeSearchEvent) -> Unit,
     onNutritionCalculatorEvent: (NutritionCalculatorEvent) -> Unit,
+    onMealPlanEvent: (MealPlanEvent) -> Unit,
     onNavigateToFoodItemCreator: () -> Unit,
     onNavigateToSearchScreen: () -> Unit,
     onNavigateToRecipeDetails: () -> Unit,
     onKeyboardHide: () -> Unit,
+    onFocusMove: () -> Unit,
     onDrawerStateChange: () -> Unit,
     onTabChange: (item: TabRowItem, index: Int) -> Unit,
     modifier: Modifier = Modifier
@@ -255,7 +276,34 @@ private fun NutritionScreenContent(
                         )
                     }
                     TabRowItem.MEAL_PLAN -> {
-                        MealPlanScreen(mealPlanTypeList = emptyList(), onCustomMealPLan = {})
+                        MealPlanScreen(
+                            state = mealPlanState,
+                            onDeleteMeal = {
+                                onMealPlanEvent(MealPlanEvent.OnDeleteMeal(it))
+                            },
+                            scaffoldState = mealPlanBottomSheetScaffoldState ,
+                            eventFlow = mealPlanEventFlow,
+                            onAddMeal = {
+                                onMealPlanEvent(MealPlanEvent.OnAddMeal)
+                            },
+                            onMealPlanExpand = { isExpanded, type ->
+                                onMealPlanEvent(MealPlanEvent.OnMealPlanExpandedChange(isExpanded, type))
+                            },
+                            onMealPlanSelect = { type ->
+                                onMealPlanEvent(MealPlanEvent.OnMealPlanSelectedChange(type))
+                            },
+                            onKeyboardHide = onKeyboardHide,
+                            onMealNameChange = { name, index ->
+                                onMealPlanEvent(MealPlanEvent.OnMealNameChange(name, index))
+                            },
+                            onFocusMove = onFocusMove,
+                            onSheetClose = {
+                                onMealPlanEvent(MealPlanEvent.OnSheetClose)
+                            },
+                            onSheetOpen = {
+                                onMealPlanEvent(MealPlanEvent.OnSheetOpen)
+                            }
+                        )
                     }
                 }
             }

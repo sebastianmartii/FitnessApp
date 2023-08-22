@@ -1,8 +1,12 @@
 package com.example.fitnessapp.core.navigation
 
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.focus.FocusDirection
@@ -21,8 +25,7 @@ import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewV
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionScreen
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.TabRowItem
-import com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_plan.custom_meal_plan_creator.CustomMealPlanCreatorScreen
-import com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_plan.custom_meal_plan_creator.CustomMealPlanCreatorViewModel
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_plan.MealPlanViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.NutritionCalculatorState
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.NutritionCalculatorViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.food_item_creator.FoodItemCreatorScreen
@@ -33,6 +36,7 @@ import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.R
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchEvent
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.mainNavGraph(
     navController: NavController
 ) {
@@ -76,6 +80,14 @@ fun NavGraphBuilder.mainNavGraph(
             val recipeSearchState by recipeSearchViewModel.state.collectAsStateWithLifecycle()
 
             val keyboardController = LocalSoftwareKeyboardController.current
+            val focusManager = LocalFocusManager.current
+
+            val mealPlanViewModel = hiltViewModel<MealPlanViewModel>()
+            val mealPlanState by mealPlanViewModel.state.collectAsStateWithLifecycle()
+
+            val sheetState = rememberStandardBottomSheetState(initialValue = SheetValue.Hidden, skipHiddenState = false)
+            val mealPlanBottomSheetScaffoldState = rememberBottomSheetScaffoldState(sheetState)
+
 
             NutritionScreen(
                 state = state,
@@ -84,6 +96,9 @@ fun NavGraphBuilder.mainNavGraph(
                     TabRowItem.RECIPES,
                     TabRowItem.MEAL_PLAN
                 ),
+                mealPlanEventFlow = mealPlanViewModel.eventFlow,
+                mealPlanBottomSheetScaffoldState = mealPlanBottomSheetScaffoldState,
+                mealPlanState = mealPlanState,
                 selectedDrawerItem = selectedDrawerItem,
                 drawerState = drawerState,
                 drawerEventFlow = viewModel.drawerEventFlow,
@@ -92,6 +107,7 @@ fun NavGraphBuilder.mainNavGraph(
                 onNutritionCalculatorEvent = nutritionCalculatorViewModel::onEvent,
                 onEvent = viewModel::onEvent,
                 onDrawerEvent = viewModel::onDrawerEvent,
+                onMealPlanEvent = mealPlanViewModel::onEvent,
                 onNavigateToFoodItemCreator = {
                     navController.navigate(MainDestinations.FoodItemCreator.route)
                 },
@@ -102,22 +118,12 @@ fun NavGraphBuilder.mainNavGraph(
                 onKeyboardHide = {
                     keyboardController?.hide()
                 },
+                onFocusMove = {
+                    focusManager.moveFocus(FocusDirection.Next)
+                },
                 onNavigateToRecipeDetails = {
                     navController.navigate(MainDestinations.RecipeDetails.route)
                 }
-            )
-        }
-        composable(
-            route = MainDestinations.CustomMealPlanCreator.route
-        ) {
-            val viewModel = hiltViewModel<CustomMealPlanCreatorViewModel>()
-            val state by viewModel.state.collectAsStateWithLifecycle()
-            CustomMealPlanCreatorScreen(
-                state = state,
-                onNavigateBack = {
-                    navController.popBackStack()
-                },
-                onEvent = viewModel::onEvent
             )
         }
         composable(

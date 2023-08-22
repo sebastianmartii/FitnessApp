@@ -18,8 +18,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.OpenInBrowser
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -71,7 +71,7 @@ fun RecipeDetailsScreen(
                         onIsRecipeSavedChange(recipe, isRecipeSaved)
                     }) {
                         Icon(
-                            imageVector = if (isRecipeSaved) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                            imageVector = if (isRecipeSaved) Icons.Default.Bookmark else Icons.Outlined.BookmarkBorder,
                             contentDescription = stringResource(id = R.string.save_text)
                         )
                     }
