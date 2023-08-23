@@ -5,5 +5,5 @@ data class MealPlanState(
     val fourMealPlan: MealPlan = MealPlan(),
     val threeMealPlan: MealPlan = MealPlan(),
     val customMealPlan: MealPlan = MealPlan(),
-    val selectedMealPlan: MealPlanType = MealPlanType.FIVE
+    val selectedMealPlan: MealPlanType? = null
 )

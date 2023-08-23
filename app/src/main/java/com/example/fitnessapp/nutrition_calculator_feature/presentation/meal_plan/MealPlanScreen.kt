@@ -55,7 +55,8 @@ fun MealPlanScreen(
     onDeleteMeal: (Int) -> Unit,
     onAddMeal: () -> Unit,
     onMealPlanExpand: (isExpanded: Boolean, type: MealPlanType) -> Unit,
-    onMealPlanSelect: (type: MealPlanType) -> Unit,
+    onMealPlanSelect: (type: MealPlanType, plan: MealPlan) -> Unit,
+    onCustomMealPlanSave: (MealPlan) -> Unit,
     onKeyboardHide: () -> Unit,
     onFocusMove: () -> Unit,
     onSheetClose: () -> Unit,
@@ -106,7 +107,10 @@ fun MealPlanScreen(
                             modifier = Modifier.weight(0.1f)
                         )
                     }
-                    IconButton(onClick = onSheetClose) {
+                    IconButton(onClick = {
+                        onSheetClose()
+                        onCustomMealPlanSave(state.customMealPlan)
+                    }) {
                         Icon(
                             imageVector = Icons.Default.Done,
                             contentDescription = stringResource(id = R.string.save_meal_plan),
@@ -180,8 +184,8 @@ fun MealPlanScreen(
                 onMealPlanExpand = { isExpanded ->
                     onMealPlanExpand(isExpanded, MealPlanType.FIVE)
                 },
-                onMealPlanSelect = {
-                    onMealPlanSelect(it)
+                onMealPlanSelect = { type, plan ->
+                    onMealPlanSelect(type, plan)
                 }
             )
             MealPlanSection(
@@ -190,8 +194,8 @@ fun MealPlanScreen(
                 onMealPlanExpand = { isExpanded ->
                     onMealPlanExpand(isExpanded, MealPlanType.FOUR)
                 },
-                onMealPlanSelect = {
-                    onMealPlanSelect(it)
+                onMealPlanSelect = { type, plan ->
+                    onMealPlanSelect(type, plan)
                 }
             )
             MealPlanSection(
@@ -200,8 +204,8 @@ fun MealPlanScreen(
                 onMealPlanExpand = { isExpanded ->
                     onMealPlanExpand(isExpanded, MealPlanType.THREE)
                 },
-                onMealPlanSelect = {
-                    onMealPlanSelect(it)
+                onMealPlanSelect = { type, plan ->
+                    onMealPlanSelect(type, plan)
                 }
             )
             MealPlanSection(
@@ -210,8 +214,8 @@ fun MealPlanScreen(
                 onMealPlanExpand = { isExpanded ->
                     onMealPlanExpand(isExpanded, MealPlanType.CUSTOM)
                 },
-                onMealPlanSelect = {
-                    onMealPlanSelect(it)
+                onMealPlanSelect = { type, plan ->
+                    onMealPlanSelect(type, plan)
                 },
                 onSheetOpen = onSheetOpen
             )
@@ -223,9 +227,9 @@ fun MealPlanScreen(
 @Composable
 private fun MealPlanSection(
     mealPlan: MealPlan,
-    selectedMealPlan: MealPlanType,
+    selectedMealPlan: MealPlanType?,
     onMealPlanExpand: (Boolean) -> Unit,
-    onMealPlanSelect: (MealPlanType) -> Unit,
+    onMealPlanSelect: (type: MealPlanType, plan: MealPlan) -> Unit,
     modifier: Modifier = Modifier,
     onSheetOpen: () -> Unit = {},
 ) {
@@ -241,7 +245,7 @@ private fun MealPlanSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    onMealPlanSelect(mealPlan.type)
+                    onMealPlanSelect(mealPlan.type, mealPlan)
                     if (mealPlan.type == MealPlanType.CUSTOM) {
                         onSheetOpen()
                     }

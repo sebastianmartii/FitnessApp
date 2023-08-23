@@ -11,10 +11,12 @@ import androidx.compose.material.icons.outlined.Filter5
 import androidx.compose.material.icons.outlined.Quiz
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fitnessapp.nutrition_calculator_feature.domain.repository.CustomMealPlanCreatorRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -23,7 +25,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MealPlanViewModel @Inject constructor() : ViewModel() {
+class MealPlanViewModel @Inject constructor(
+    private val repo: CustomMealPlanCreatorRepository
+) : ViewModel() {
 
     private val _fiveMealPLan = MutableStateFlow(MealPlan(
         name = "Five Meal Plan",
@@ -79,6 +83,23 @@ class MealPlanViewModel @Inject constructor() : ViewModel() {
     ))
 
     private val _state = MutableStateFlow(MealPlanState())
+
+    init {
+        viewModelScope.launch {
+            repo.getMealPlan().collectLatest { selectedMealPlan ->
+                try {
+                    _state.update {
+                        it.copy(
+                            selectedMealPlan = selectedMealPlan.mealPlanType
+                        )
+                    }
+                } catch (_: NullPointerException) {
+
+                }
+            }
+        }
+    }
+
     val state = combine(
         _state,
         _fiveMealPLan,
@@ -132,16 +153,13 @@ class MealPlanViewModel @Inject constructor() : ViewModel() {
                 }
             }
             is MealPlanEvent.OnMealPlanSelectedChange -> {
-                val selectedMealPlan = when(event.type) {
-                    MealPlanType.FIVE -> MealPlanType.FIVE
-                    MealPlanType.FOUR -> MealPlanType.FOUR
-                    MealPlanType.THREE -> MealPlanType.THREE
-                    MealPlanType.CUSTOM -> MealPlanType.CUSTOM
-                }
                 _state.update {
                     it.copy(
-                        selectedMealPlan = selectedMealPlan
+                        selectedMealPlan = event.type
                     )
+                }
+                viewModelScope.launch {
+                    repo.changeMealPlan(event.plan)
                 }
             }
             MealPlanEvent.OnAddMeal -> {
@@ -173,6 +191,11 @@ class MealPlanViewModel @Inject constructor() : ViewModel() {
             MealPlanEvent.OnSheetOpen -> {
                 viewModelScope.launch {
                     _channel.send(UiEvent.OnBottomSheetOpen)
+                }
+            }
+            is MealPlanEvent.OnCustomMealPlanSave -> {
+                viewModelScope.launch {
+                    repo.changeMealPlan(event.plan)
                 }
             }
         }

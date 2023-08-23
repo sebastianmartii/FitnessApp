@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.fitnessapp.core.database.dao.CurrentUserDao
 import com.example.fitnessapp.core.database.entity.CurrentUser
-import com.example.fitnessapp.nutrition_calculator_feature.data.local.MealConverters
+import com.example.fitnessapp.nutrition_calculator_feature.data.local.MealPlanTypeConverters
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.RecipeConverters
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.FoodItemDao
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.MealDao
@@ -19,7 +19,7 @@ import com.example.fitnessapp.nutrition_calculator_feature.data.local.entity.Rec
     version = 1,
     exportSchema = false
 )
-@TypeConverters(MealConverters::class, RecipeConverters::class)
+@TypeConverters(RecipeConverters::class, MealPlanTypeConverters::class)
 abstract class FitnessDatabase : RoomDatabase() {
 
     abstract val currentUserDao: CurrentUserDao

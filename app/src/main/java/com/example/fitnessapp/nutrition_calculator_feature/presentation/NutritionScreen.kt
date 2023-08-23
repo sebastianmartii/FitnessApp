@@ -238,7 +238,6 @@ private fun NutritionScreenContent(
                                 )
                             }
                             TabRowItem.MEAL_PLAN -> {
-
                             }
                         }
                     }
@@ -304,8 +303,8 @@ private fun NutritionScreenContent(
                             onMealPlanExpand = { isExpanded, type ->
                                 onMealPlanEvent(MealPlanEvent.OnMealPlanExpandedChange(isExpanded, type))
                             },
-                            onMealPlanSelect = { type ->
-                                onMealPlanEvent(MealPlanEvent.OnMealPlanSelectedChange(type))
+                            onMealPlanSelect = { type, plan ->
+                                onMealPlanEvent(MealPlanEvent.OnMealPlanSelectedChange(type, plan))
                             },
                             onKeyboardHide = onKeyboardHide,
                             onMealNameChange = { name, index ->
@@ -317,6 +316,9 @@ private fun NutritionScreenContent(
                             },
                             onSheetOpen = {
                                 onMealPlanEvent(MealPlanEvent.OnSheetOpen)
+                            },
+                            onCustomMealPlanSave = { plan ->
+                                onMealPlanEvent(MealPlanEvent.OnCustomMealPlanSave(plan))
                             }
                         )
                     }
