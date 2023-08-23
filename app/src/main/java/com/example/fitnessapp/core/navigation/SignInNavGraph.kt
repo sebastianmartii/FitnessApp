@@ -71,7 +71,7 @@ fun NavGraphBuilder.signInNavGraph(navController: NavController) {
                 caloriesGoal = state.caloriesGoal,
                 onEvent = viewModel::onEvent,
                 onNavigateToOverviewScreen = {
-                    navController.navigate(MainDestinations.Overview.route)
+                    navController.navigate(BottomNavBarDestinations.Overview.route)
                 },
                 onNavigateToCalculatedCaloriesScreen = {
                     navController.navigate(SignInDestinations.CalculatedCalories.route)

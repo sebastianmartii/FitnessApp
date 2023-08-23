@@ -30,6 +30,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import com.example.fitnessapp.R
+import com.example.fitnessapp.core.navigation.BottomNavBar
+import com.example.fitnessapp.core.navigation.NavigationBarItem
 import com.example.fitnessapp.core.navigation_drawer.DrawerAction
 import com.example.fitnessapp.core.navigation_drawer.DrawerContent
 import com.example.fitnessapp.core.navigation_drawer.DrawerEvent
@@ -56,6 +58,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun NutritionScreen(
     state: NutritionState,
     tabRowItems: List<TabRowItem>,
+    bottomNavBarItems: List<NavigationBarItem>,
     mealPlanState: MealPlanState,
     selectedDrawerItem: DrawerItem?,
     mealPlanEventFlow: Flow<MealPlanViewModel.UiEvent>,
@@ -74,6 +77,7 @@ fun NutritionScreen(
     onNavigateToRecipeDetails: () -> Unit,
     onKeyboardHide: () -> Unit,
     onFocusMove: () -> Unit,
+    onBottomBarNavigate: (NavigationBarItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LaunchedEffect(key1 = true) {
@@ -105,6 +109,7 @@ fun NutritionScreen(
                 selectedTabIndex = state.selectedTabIndex,
                 currentTabRowItem = state.currentTabRowItem,
                 tabRowItems = tabRowItems,
+                bottomNavBarItems = bottomNavBarItems,
                 mealPlanState = mealPlanState,
                 mealPlanEventFlow = mealPlanEventFlow,
                 mealPlanBottomSheetScaffoldState = mealPlanBottomSheetScaffoldState,
@@ -124,6 +129,7 @@ fun NutritionScreen(
                 onKeyboardHide = onKeyboardHide,
                 onFocusMove = onFocusMove,
                 onNavigateToRecipeDetails = onNavigateToRecipeDetails,
+                onBottomBarNavigate = onBottomBarNavigate
             )
         },
         modifier = modifier
@@ -136,6 +142,7 @@ private fun NutritionScreenContent(
     selectedTabIndex: Int,
     currentTabRowItem: TabRowItem,
     tabRowItems: List<TabRowItem>,
+    bottomNavBarItems: List<NavigationBarItem>,
     mealPlanEventFlow: Flow<MealPlanViewModel.UiEvent>,
     mealPlanBottomSheetScaffoldState: BottomSheetScaffoldState,
     mealPlanState: MealPlanState,
@@ -149,6 +156,7 @@ private fun NutritionScreenContent(
     onNavigateToRecipeDetails: () -> Unit,
     onKeyboardHide: () -> Unit,
     onFocusMove: () -> Unit,
+    onBottomBarNavigate: (NavigationBarItem) -> Unit,
     onDrawerStateChange: () -> Unit,
     onTabChange: (item: TabRowItem, index: Int) -> Unit,
     modifier: Modifier = Modifier
@@ -235,6 +243,13 @@ private fun NutritionScreenContent(
                         }
                     }
                 }
+            )
+        },
+        bottomBar = {
+            BottomNavBar(
+                items = bottomNavBarItems,
+                selectedItemIndex = 1,
+                onNavigate = onBottomBarNavigate
             )
         },
         modifier = modifier

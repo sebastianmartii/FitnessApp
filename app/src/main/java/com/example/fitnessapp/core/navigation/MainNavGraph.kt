@@ -19,6 +19,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.fitnessapp.core.util.bottomNavBarItems
 import com.example.fitnessapp.core.util.sharedViewModel
 import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewScreen
 import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewViewModel
@@ -42,10 +43,10 @@ fun NavGraphBuilder.mainNavGraph(
 ) {
     navigation(
         route = NavGraphDestinations.MainNavGraph.route,
-        startDestination = MainDestinations.Overview.route
+        startDestination = BottomNavBarDestinations.Overview.route
     ) {
         composable(
-            route = MainDestinations.Overview.route
+            route = BottomNavBarDestinations.Overview.route
         ) {
             val viewModel = hiltViewModel<DailyOverviewViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
@@ -55,16 +56,20 @@ fun NavGraphBuilder.mainNavGraph(
                 drawerState = drawerState,
                 state = state,
                 selectedDrawerItem = selectedDrawerItem,
+                bottomNavBarItems = bottomNavBarItems,
                 eventFlow = viewModel.drawerEventFlow,
                 onEvent = viewModel::onEvent,
                 onDrawerEvent = viewModel::onDrawerEvent,
                 onNavigateToNutritionScreen = {
-                    navController.navigate(MainDestinations.Nutrition.route)
+                    navController.navigate(BottomNavBarDestinations.Nutrition.route)
+                },
+                onBottomBarNavigate = { navigationBarItem ->
+                    navController.navigate(navigationBarItem.route)
                 }
             )
         }
         composable(
-            route = MainDestinations.Nutrition.route
+            route = BottomNavBarDestinations.Nutrition.route
         ) { entry ->
             val viewModel = hiltViewModel<NutritionViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
@@ -96,6 +101,7 @@ fun NavGraphBuilder.mainNavGraph(
                     TabRowItem.RECIPES,
                     TabRowItem.MEAL_PLAN
                 ),
+                bottomNavBarItems = bottomNavBarItems,
                 mealPlanEventFlow = mealPlanViewModel.eventFlow,
                 mealPlanBottomSheetScaffoldState = mealPlanBottomSheetScaffoldState,
                 mealPlanState = mealPlanState,
@@ -123,6 +129,9 @@ fun NavGraphBuilder.mainNavGraph(
                 },
                 onNavigateToRecipeDetails = {
                     navController.navigate(MainDestinations.RecipeDetails.route)
+                },
+                onBottomBarNavigate = { navigationBarItem ->
+                    navController.navigate(navigationBarItem.route)
                 }
             )
         }

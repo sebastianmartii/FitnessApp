@@ -38,6 +38,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.fitnessapp.R
+import com.example.fitnessapp.core.navigation.BottomNavBar
+import com.example.fitnessapp.core.navigation.NavigationBarItem
 import com.example.fitnessapp.core.navigation_drawer.DrawerContent
 import com.example.fitnessapp.core.navigation_drawer.DrawerAction
 import com.example.fitnessapp.core.navigation_drawer.DrawerEvent
@@ -50,11 +52,13 @@ import kotlinx.coroutines.flow.collectLatest
 fun DailyOverviewScreen(
     drawerState: DrawerState,
     state: OverviewState,
+    bottomNavBarItems: List<NavigationBarItem>,
     selectedDrawerItem: DrawerItem?,
     eventFlow: Flow<DrawerAction>,
     onEvent: (OverviewEvent) -> Unit,
     onDrawerEvent: (DrawerEvent) -> Unit,
     onNavigateToNutritionScreen: () -> Unit,
+    onBottomBarNavigate: (NavigationBarItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LaunchedEffect(key1 = true) {
@@ -86,13 +90,15 @@ fun DailyOverviewScreen(
                 caloriesGoal = state.caloriesGoal,
                 currentCaloriesCount = state.currentCaloriesCount,
                 progress = state.progress,
+                bottomNavBarItems = bottomNavBarItems,
                 onDrawerOpen = {
                     onDrawerEvent(DrawerEvent.OpenDrawer)
                 },
                 onMealAdd = {
                     onEvent(OverviewEvent.OnAddMeal)
                     onNavigateToNutritionScreen()
-                }
+                },
+                onBottomBarNavigate = onBottomBarNavigate
             )
         },
         modifier = modifier
@@ -104,15 +110,24 @@ fun DailyOverviewScreen(
 private fun DailyOverviewContent(
     caloriesGoal: Int,
     currentCaloriesCount: Int,
+    bottomNavBarItems: List<NavigationBarItem>,
     progress: Dp,
     onDrawerOpen: () -> Unit,
     onMealAdd: () -> Unit,
+    onBottomBarNavigate: (NavigationBarItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         topBar = {
             OverviewTopBar(
                 onDrawerStateChange = onDrawerOpen
+            )
+        },
+        bottomBar = {
+            BottomNavBar(
+                items = bottomNavBarItems,
+                selectedItemIndex = 0,
+                onNavigate = onBottomBarNavigate
             )
         },
         modifier = modifier
