@@ -96,7 +96,10 @@ fun MealPlanScreen(
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.weight(0.8f)
                     )
-                    IconButton(onClick = onAddMeal) {
+                    IconButton(
+                        onClick = onAddMeal,
+                        enabled = state.customMealPlan.meals.size < 11
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = stringResource(id = R.string.add_meal_button),
@@ -146,9 +149,12 @@ fun MealPlanScreen(
                             Text(text = "${index + 1}")
                         },
                         trailingContent = {
-                            IconButton(onClick = {
-                                onDeleteMeal(index)
-                            }) {
+                            IconButton(
+                                onClick = {
+                                    onDeleteMeal(index)
+                                },
+                                enabled = index != 0
+                            ) {
                                 Icon(
                                     imageVector = Icons.Default.Delete,
                                     contentDescription = stringResource(id = R.string.delete_meal)
@@ -226,14 +232,8 @@ private fun MealPlanSection(
     Column(
         modifier = modifier
             .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-            .then(
-                if (mealPlan.isExpanded) {
-                    Modifier.wrapContentHeight()
-                } else {
-                    Modifier.height(32.dp)
-                }
-            )
             .fillMaxWidth()
+            .wrapContentHeight()
             .animateContentSize()
     ) {
         Row(
@@ -285,17 +285,19 @@ private fun MealPlanSection(
                 )
             }
         }
-        mealPlan.meals.onEachIndexed { index, meal ->
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(start = 32.dp, bottom = 8.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(text = "${index + 1}")
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = meal)
+        if (mealPlan.isExpanded) {
+            mealPlan.meals.onEachIndexed { index, meal ->
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(start = 32.dp, bottom = 8.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(text = "${index + 1}")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = meal)
+                }
             }
         }
     }
