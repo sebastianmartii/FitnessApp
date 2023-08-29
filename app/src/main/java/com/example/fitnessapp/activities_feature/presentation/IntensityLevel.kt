@@ -1,5 +1,10 @@
 package com.example.fitnessapp.activities_feature.presentation
 
-enum class IntensityLevel {
-    INTENSITY_1, INTENSITY_2, INTENSITY_3, INTENSITY_4, INTENSITY_5, INTENSITY_6
+enum class IntensityLevel(val level: Int) {
+    INTENSITY_1(4),
+    INTENSITY_2(5),
+    INTENSITY_3(6),
+    INTENSITY_4(7),
+    INTENSITY_5(8),
+    INTENSITY_6(9)
 }

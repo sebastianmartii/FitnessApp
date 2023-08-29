@@ -1,5 +1,7 @@
 package com.example.fitnessapp.activities_feature.data.repository
 
+import com.example.fitnessapp.activities_feature.data.local.dao.SavedActivitiesDao
+import com.example.fitnessapp.activities_feature.data.local.entity.SavedActivitiesEntity
 import com.example.fitnessapp.activities_feature.data.mappers.toActivityList
 import com.example.fitnessapp.activities_feature.data.remote.ActivitiesApi
 import com.example.fitnessapp.activities_feature.domain.model.Activity
@@ -9,7 +11,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class ActivitiesRepositoryImpl(
-    private val activitiesApi: ActivitiesApi
+    private val activitiesApi: ActivitiesApi,
+    private val savedActivitiesDao: SavedActivitiesDao
 ) : ActivitiesRepository {
 
     override fun getActivitiesForIntensityLevel(intensityLevel: Int): Flow<Resource<List<Activity>>> = flow {
@@ -32,6 +35,7 @@ class ActivitiesRepositoryImpl(
         weight: Double,
         duration: Double
     ) {
-        TODO("Not yet implemented")
     }
+
+    override fun getSavedActivities(): Flow<List<SavedActivitiesEntity>> = savedActivitiesDao.getSavedActivities()
 }
