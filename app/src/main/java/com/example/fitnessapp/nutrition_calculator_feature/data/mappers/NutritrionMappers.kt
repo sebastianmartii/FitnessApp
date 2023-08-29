@@ -4,13 +4,13 @@ import androidx.core.text.isDigitsOnly
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.entity.FoodItemEntity
 import com.example.fitnessapp.nutrition_calculator_feature.data.remote.nutrition.dto.Item
 import com.example.fitnessapp.nutrition_calculator_feature.domain.model.FoodItem
-import com.example.fitnessapp.nutrition_calculator_feature.presentation.TabRowItem
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionTabRowItem
 
-fun TabRowItem.toTabTitle(): String {
+fun NutritionTabRowItem.toTabTitle(): String {
     return when(this) {
-        TabRowItem.CALCULATOR -> "Calculator"
-        TabRowItem.RECIPES -> "Recipes"
-        TabRowItem.MEAL_PLAN -> "Meal Plan"
+        NutritionTabRowItem.CALCULATOR -> "Calculator"
+        NutritionTabRowItem.RECIPES -> "Recipes"
+        NutritionTabRowItem.MEAL_PLAN -> "Meal Plan"
     }
 }
 

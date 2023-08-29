@@ -57,7 +57,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun NutritionScreen(
     state: NutritionState,
-    tabRowItems: List<TabRowItem>,
+    nutritionTabRowItems: List<NutritionTabRowItem>,
     bottomNavBarItems: List<NavigationBarItem>,
     mealPlanState: MealPlanState,
     selectedDrawerItem: DrawerItem?,
@@ -107,8 +107,8 @@ fun NutritionScreen(
         content = {
             NutritionScreenContent(
                 selectedTabIndex = state.selectedTabIndex,
-                currentTabRowItem = state.currentTabRowItem,
-                tabRowItems = tabRowItems,
+                currentNutritionTabRowItem = state.currentNutritionTabRowItem,
+                nutritionTabRowItems = nutritionTabRowItems,
                 bottomNavBarItems = bottomNavBarItems,
                 mealPlanState = mealPlanState,
                 mealPlanEventFlow = mealPlanEventFlow,
@@ -140,8 +140,8 @@ fun NutritionScreen(
 @Composable
 private fun NutritionScreenContent(
     selectedTabIndex: Int,
-    currentTabRowItem: TabRowItem,
-    tabRowItems: List<TabRowItem>,
+    currentNutritionTabRowItem: NutritionTabRowItem,
+    nutritionTabRowItems: List<NutritionTabRowItem>,
     bottomNavBarItems: List<NavigationBarItem>,
     mealPlanEventFlow: Flow<MealPlanViewModel.UiEvent>,
     mealPlanBottomSheetScaffoldState: BottomSheetScaffoldState,
@@ -158,14 +158,14 @@ private fun NutritionScreenContent(
     onFocusMove: () -> Unit,
     onBottomBarNavigate: (NavigationBarItem) -> Unit,
     onDrawerStateChange: () -> Unit,
-    onTabChange: (item: TabRowItem, index: Int) -> Unit,
+    onTabChange: (item: NutritionTabRowItem, index: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    if (currentTabRowItem == TabRowItem.RECIPES && recipeSearchState.isSearchBarActive) {
+                    if (currentNutritionTabRowItem == NutritionTabRowItem.RECIPES && recipeSearchState.isSearchBarActive) {
                         IconButton(onClick = {
                             onRecipeSearchEvent(RecipeSearchEvent.OnIsSearchBarActiveChange(false))
                             onKeyboardHide()
@@ -185,7 +185,7 @@ private fun NutritionScreenContent(
                     }
                 },
                 title = {
-                    if (currentTabRowItem == TabRowItem.RECIPES && recipeSearchState.isSearchBarActive) {
+                    if (currentNutritionTabRowItem == NutritionTabRowItem.RECIPES && recipeSearchState.isSearchBarActive) {
                         OutlinedTextField(
                             value = recipeSearchState.query,
                             onValueChange = {
@@ -222,22 +222,22 @@ private fun NutritionScreenContent(
                     }
                 },
                 actions = {
-                    AnimatedContent(targetState = currentTabRowItem, label = "") {tabRowItem ->
+                    AnimatedContent(targetState = currentNutritionTabRowItem, label = "") { tabRowItem ->
                         when(tabRowItem) {
-                            TabRowItem.CALCULATOR -> {
+                            NutritionTabRowItem.CALCULATOR -> {
                                 CalculatorTopBarActions(
                                     onNavigateToFoodItemCreator = onNavigateToFoodItemCreator,
                                     onNavigateToSearchScreen = onNavigateToSearchScreen
                                 )
                             }
-                            TabRowItem.RECIPES -> {
+                            NutritionTabRowItem.RECIPES -> {
                                 RecipeTopBarActions(
                                     onSearchActiveChange = {
                                         onRecipeSearchEvent(RecipeSearchEvent.OnIsSearchBarActiveChange(!recipeSearchState.isSearchBarActive))
                                     }
                                 )
                             }
-                            TabRowItem.MEAL_PLAN -> {
+                            NutritionTabRowItem.MEAL_PLAN -> {
                             }
                         }
                     }
@@ -258,7 +258,7 @@ private fun NutritionScreenContent(
                 .padding(paddingValues)
         ) {
             TabRow(selectedTabIndex = selectedTabIndex) {
-                tabRowItems.onEachIndexed { index, tabRowItem ->
+                nutritionTabRowItems.onEachIndexed { index, tabRowItem ->
                     Tab(
                         selected = selectedTabIndex == index,
                         text = {
@@ -270,15 +270,15 @@ private fun NutritionScreenContent(
                     )
                 }
             }
-            AnimatedContent(targetState = currentTabRowItem, label = "") { tabRowItem ->
+            AnimatedContent(targetState = currentNutritionTabRowItem, label = "") { tabRowItem ->
                 when(tabRowItem) {
-                    TabRowItem.CALCULATOR -> {
+                    NutritionTabRowItem.CALCULATOR -> {
                         NutritionCalculatorScreen(
                             state = nutritionCalculatorState,
                             onEvent = onNutritionCalculatorEvent,
                         )
                     }
-                    TabRowItem.RECIPES -> {
+                    NutritionTabRowItem.RECIPES -> {
                         RecipeSearchScreen(
                             state = recipeSearchState,
                             onNavigateToRecipeDetails = {
@@ -289,7 +289,7 @@ private fun NutritionScreenContent(
                                 .fillMaxSize()
                         )
                     }
-                    TabRowItem.MEAL_PLAN -> {
+                    NutritionTabRowItem.MEAL_PLAN -> {
                         MealPlanScreen(
                             state = mealPlanState,
                             onDeleteMeal = {

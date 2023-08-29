@@ -20,7 +20,7 @@ class NutritionViewModel @Inject constructor(
             is NutritionEvent.OnTabChange -> {
                 _state.update {
                     it.copy(
-                        currentTabRowItem = event.tabRowItem,
+                        currentNutritionTabRowItem = event.nutritionTabRowItem,
                         selectedTabIndex = event.tabIndex
                     )
                 }
