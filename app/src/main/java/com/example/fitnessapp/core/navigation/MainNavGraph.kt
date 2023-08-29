@@ -19,13 +19,16 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.fitnessapp.activities_feature.presentation.ActivitiesScreen
+import com.example.fitnessapp.activities_feature.presentation.ActivitiesTabRowItem
+import com.example.fitnessapp.activities_feature.presentation.ActivitiesViewModel
 import com.example.fitnessapp.core.util.bottomNavBarItems
 import com.example.fitnessapp.core.util.sharedViewModel
 import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewScreen
 import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionScreen
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionViewModel
-import com.example.fitnessapp.nutrition_calculator_feature.presentation.TabRowItem
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionTabRowItem
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_plan.MealPlanViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.NutritionCalculatorState
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.NutritionCalculatorViewModel
@@ -96,10 +99,10 @@ fun NavGraphBuilder.mainNavGraph(
 
             NutritionScreen(
                 state = state,
-                tabRowItems = listOf(
-                    TabRowItem.CALCULATOR,
-                    TabRowItem.RECIPES,
-                    TabRowItem.MEAL_PLAN
+                nutritionTabRowItems = listOf(
+                    NutritionTabRowItem.CALCULATOR,
+                    NutritionTabRowItem.RECIPES,
+                    NutritionTabRowItem.MEAL_PLAN
                 ),
                 bottomNavBarItems = bottomNavBarItems,
                 mealPlanEventFlow = mealPlanViewModel.eventFlow,
@@ -205,6 +208,40 @@ fun NavGraphBuilder.mainNavGraph(
                 },
                 onExternalUrlOpen = {
                     uriHandler.openUri(it)
+                }
+            )
+        }
+        composable(
+            route = BottomNavBarDestinations.Activities.route
+        ) {
+            val viewModel = hiltViewModel<ActivitiesViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            val selectedDrawerItem by viewModel.selectedDrawerItem.collectAsStateWithLifecycle()
+            val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+            val keyboardController = LocalSoftwareKeyboardController.current
+            val focusManager = LocalFocusManager.current
+
+            ActivitiesScreen(
+                state = state,
+                activitiesTabRowItems = listOf(
+                    ActivitiesTabRowItem.SAVED,
+                    ActivitiesTabRowItem.SEARCH
+                ),
+                bottomNavBarItems = bottomNavBarItems,
+                drawerState = drawerState,
+                selectedDrawerItem = selectedDrawerItem,
+                drawerEventFlow = viewModel.drawerEventFlow,
+                onDrawerEvent = viewModel::onDrawerEvent,
+                onEvent = viewModel::onEvent,
+                onBottomBarNavigate = { navigationBarItem ->
+                    navController.navigate(navigationBarItem.route)
+                },
+                onFocusMove = {
+                    focusManager.moveFocus(FocusDirection.Next)
+                },
+                onKeyboardHide = {
+                    keyboardController?.hide()
                 }
             )
         }
