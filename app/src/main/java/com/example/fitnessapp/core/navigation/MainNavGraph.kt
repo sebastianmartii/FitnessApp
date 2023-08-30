@@ -242,6 +242,9 @@ fun NavGraphBuilder.mainNavGraph(
                 },
                 onKeyboardHide = {
                     keyboardController?.hide()
+                },
+                onNavigateToAddActivityScreen = {
+
                 }
             )
         }

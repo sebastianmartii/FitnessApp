@@ -4,13 +4,21 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -19,7 +27,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import com.example.fitnessapp.R
 import com.example.fitnessapp.activities_feature.data.mappers.toTabTitle
 import com.example.fitnessapp.activities_feature.domain.model.IntensityItem
@@ -47,6 +57,7 @@ fun ActivitiesScreen(
     onBottomBarNavigate: (NavigationBarItem) -> Unit,
     onFocusMove: () -> Unit,
     onKeyboardHide: () -> Unit,
+    onNavigateToAddActivityScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LaunchedEffect(key1 = true) {
@@ -99,6 +110,8 @@ fun ActivitiesScreen(
                 intensityLevels = state.intensityLevels,
                 currentSelectedActivitiesTabRowItem = state.currentSelectedActivitiesTabRowItem,
                 selectedTabIndex = state.selectedTabIndex,
+                areActivitiesFiltered = state.areActivitiesFiltered,
+                filterQuery = state.filterQuery,
                 activitiesTabRowItems = activitiesTabRowItems,
                 bottomNavBarItems = bottomNavBarItems,
                 onDrawerStateChange = {
@@ -116,7 +129,18 @@ fun ActivitiesScreen(
                 onBottomBarNavigate = onBottomBarNavigate,
                 onActivityClick = { activityID ->
                     onEvent(ActivitiesEvent.OnActivityClick(activityID))
-                }
+                },
+                onNavigateToAddActivityScreen = onNavigateToAddActivityScreen,
+                onFilterActivities = { areFiltered ->
+                    onEvent(ActivitiesEvent.OnFilterActivities(areFiltered))
+                },
+                onFilterQueryChange = { filterQuery ->
+                    onEvent(ActivitiesEvent.OnFilterQueryChange(filterQuery))
+                },
+                onFilterQueryClear = {
+                    onEvent(ActivitiesEvent.OnFilterQueryClear)
+                },
+                onKeyboardHide = onKeyboardHide,
             )
         },
         modifier = modifier
@@ -131,6 +155,8 @@ private fun ActivitiesContent(
     bottomNavBarItems: List<NavigationBarItem>,
     currentSelectedActivitiesTabRowItem: ActivitiesTabRowItem,
     selectedTabIndex: Int,
+    filterQuery: String,
+    areActivitiesFiltered: Boolean,
     activitiesTabRowItems: List<ActivitiesTabRowItem>,
     onDrawerStateChange: () -> Unit,
     onTabChange: (tabRowItem: ActivitiesTabRowItem, tabIndex: Int) -> Unit,
@@ -138,21 +164,97 @@ private fun ActivitiesContent(
     onIntensityLevelActivitiesFetch: (intensityLevel: IntensityLevel, index: Int) -> Unit,
     onBottomBarNavigate: (NavigationBarItem) -> Unit,
     onActivityClick: (String) -> Unit,
+    onNavigateToAddActivityScreen: () -> Unit,
+    onFilterActivities: (Boolean) -> Unit,
+    onFilterQueryChange: (String) -> Unit,
+    onFilterQueryClear: () -> Unit,
+    onKeyboardHide: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = onDrawerStateChange) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = stringResource(id = R.string.navigation_drawer_icon)
-                        )
+                    if (currentSelectedActivitiesTabRowItem == ActivitiesTabRowItem.SEARCH && areActivitiesFiltered) {
+                        IconButton(onClick = {
+                            onFilterQueryClear()
+                            onFilterActivities(false)
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = stringResource(id = R.string.stop_filtering)
+                            )
+                        }
+                    } else {
+                        IconButton(onClick = onDrawerStateChange) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = stringResource(id = R.string.navigation_drawer_icon)
+                            )
+                        }
                     }
                 },
                 title = {
-                    Text(text = stringResource(id = R.string.activities_title))
+                    if (currentSelectedActivitiesTabRowItem == ActivitiesTabRowItem.SEARCH && areActivitiesFiltered) {
+                        OutlinedTextField(
+                            value = filterQuery,
+                            onValueChange = { query ->
+                                onFilterQueryChange(query)
+                            },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                disabledBorderColor = Color.Transparent,
+                                errorBorderColor = Color.Transparent,
+                                focusedBorderColor = Color.Transparent,
+                                unfocusedBorderColor = Color.Transparent
+                            ),
+                            trailingIcon = {
+                                IconButton(onClick = onFilterQueryClear) {
+                                    Icon(
+                                        imageVector = Icons.Default.Cancel,
+                                        contentDescription = stringResource(id = R.string.clear_text_field)
+                                    )
+                                }
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Done
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onDone = {
+                                    onKeyboardHide()
+                                }
+                            )
+                        )
+                    } else {
+                        Text(text = stringResource(id = R.string.activities_title))
+                    }
+                },
+                actions = {
+                    when(currentSelectedActivitiesTabRowItem) {
+                        ActivitiesTabRowItem.SAVED -> {
+                            IconButton(onClick = onNavigateToAddActivityScreen) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = stringResource(id = R.string.add_activity)
+                                )
+                            }
+                        }
+                        ActivitiesTabRowItem.SEARCH -> {
+                            IconButton(onClick = {
+                                onFilterActivities(!areActivitiesFiltered)
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = stringResource(id = R.string.filter_activities_by_key_words)
+                                )
+                            }
+                            IconButton(onClick = onNavigateToAddActivityScreen) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = stringResource(id = R.string.add_activity)
+                                )
+                            }
+                        }
+                    }
                 }
             )
         },

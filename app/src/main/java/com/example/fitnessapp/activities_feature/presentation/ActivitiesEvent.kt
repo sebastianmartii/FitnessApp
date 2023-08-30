@@ -10,4 +10,7 @@ sealed interface ActivitiesEvent {
     data class OnBurnedCaloriesDialogConfirm(val minutes: String, val seconds: String) : ActivitiesEvent
     data class OnMinutesChange(val minutes: String) : ActivitiesEvent
     data class OnSecondsChange(val seconds: String) : ActivitiesEvent
+    data class OnFilterQueryChange(val query: String) : ActivitiesEvent
+    data class OnFilterActivities(val areActivitiesFiltered: Boolean) : ActivitiesEvent
+    object OnFilterQueryClear : ActivitiesEvent
 }

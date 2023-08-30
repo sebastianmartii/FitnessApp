@@ -11,4 +11,6 @@ data class ActivitiesState(
     val isBurnedCaloriesDialogVisible: Boolean = false,
     val minutes: String = "0",
     val seconds: String = "0",
+    val filterQuery: String = "",
+    val areActivitiesFiltered: Boolean = false
 )

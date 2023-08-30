@@ -1,5 +1,6 @@
 package com.example.fitnessapp.activities_feature.presentation
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
@@ -79,6 +80,7 @@ private fun BurnedCaloriesDialogContent(
     modifier: Modifier = Modifier
 ) {
     Row(
+        horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
@@ -105,7 +107,7 @@ private fun BurnedCaloriesDialogContent(
                     onFocusMove()
                 }
             ),
-            modifier = Modifier.weight(0.5f)
+            modifier = Modifier.weight(0.2f)
         )
         Text(
             text = stringResource(id = R.string.minutes_seconds_divider),
@@ -135,7 +137,7 @@ private fun BurnedCaloriesDialogContent(
                     onKeyboardHide()
                 }
             ),
-            modifier = Modifier.weight(0.5f)
+            modifier = Modifier.weight(0.2f)
         )
     }
 }

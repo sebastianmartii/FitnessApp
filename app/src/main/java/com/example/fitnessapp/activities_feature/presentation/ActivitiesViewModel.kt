@@ -31,10 +31,29 @@ class ActivitiesViewModel @Inject constructor(
 
     private val _savedActivities = repo.getSavedActivities()
 
+    private val _filterQuery = MutableStateFlow("")
+
     private val _state = MutableStateFlow(ActivitiesState(intensityLevels = _initialIntensityItems))
-    val state = _state.combine(_savedActivities) { state, savedActivities ->
+    val state = combine(_state, _savedActivities, _filterQuery) { state, savedActivities, filterQuery ->
         state.copy(
-            savedActivities = savedActivities.map { it.toSavedActivity() }
+            filterQuery = filterQuery,
+            savedActivities = savedActivities.map { it.toSavedActivity() },
+            intensityLevels = if (filterQuery.isBlank()) {
+                state.intensityLevels
+            } else {
+                state.intensityLevels
+                    .filter {
+                        it.isExpanded
+                    }
+                    .map {
+                        it.copy(
+                            activities = it.activities.filter { activity ->
+                                activity.name.contains(filterQuery, ignoreCase = true) ||
+                                        activity.description.contains(filterQuery, ignoreCase = true)
+                            }
+                        )
+                    }
+            }
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ActivitiesState(intensityLevels = _initialIntensityItems))
 
@@ -133,6 +152,19 @@ class ActivitiesViewModel @Inject constructor(
                         seconds = event.seconds
                     )
                 }
+            }
+            is ActivitiesEvent.OnFilterActivities -> {
+                _state.update {
+                    it.copy(
+                        areActivitiesFiltered = event.areActivitiesFiltered
+                    )
+                }
+            }
+            is ActivitiesEvent.OnFilterQueryChange -> {
+                _filterQuery.value = event.query
+            }
+            ActivitiesEvent.OnFilterQueryClear -> {
+                _filterQuery.value = ""
             }
         }
     }
