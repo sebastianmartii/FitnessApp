@@ -5,6 +5,7 @@ import com.example.fitnessapp.activities_feature.data.remote.ActivitiesApi
 import com.example.fitnessapp.activities_feature.data.repository.ActivitiesRepositoryImpl
 import com.example.fitnessapp.activities_feature.domain.repository.ActivitiesRepository
 import com.example.fitnessapp.core.database.FitnessDatabase
+import com.example.fitnessapp.core.database.dao.CurrentUserDao
 import com.example.fitnessapp.core.util.Endpoints
 import dagger.Module
 import dagger.Provides
@@ -30,9 +31,10 @@ object ActivitiesModule {
     @Singleton
     fun provideActivitiesRepository(
         activitiesApi: ActivitiesApi,
-        savedActivitiesDao: SavedActivitiesDao
+        savedActivitiesDao: SavedActivitiesDao,
+        currentUserDao: CurrentUserDao
     ): ActivitiesRepository {
-        return ActivitiesRepositoryImpl(activitiesApi, savedActivitiesDao)
+        return ActivitiesRepositoryImpl(activitiesApi, savedActivitiesDao, currentUserDao)
     }
 
     @Provides

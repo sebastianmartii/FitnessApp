@@ -37,14 +37,22 @@ class ActivitiesViewModel @Inject constructor(
     val state = combine(_state, _savedActivities, _filterQuery) { state, savedActivities, filterQuery ->
         state.copy(
             filterQuery = filterQuery,
-            savedActivities = savedActivities.map { it.toSavedActivity() },
+            savedActivities = if (filterQuery.isBlank()) {
+                savedActivities.map { it.toSavedActivity() }
+            } else {
+                savedActivities
+                    .map {
+                        it.toSavedActivity()
+                    }
+                    .filter {
+                        it.name.contains(filterQuery, ignoreCase = true) ||
+                                it.description?.contains(filterQuery, ignoreCase = true) == true
+                    }
+            },
             intensityLevels = if (filterQuery.isBlank()) {
                 state.intensityLevels
             } else {
                 state.intensityLevels
-                    .filter {
-                        it.isExpanded
-                    }
                     .map {
                         it.copy(
                             activities = it.activities.filter { activity ->
@@ -117,7 +125,8 @@ class ActivitiesViewModel @Inject constructor(
             is ActivitiesEvent.OnActivityClick -> {
                 _state.update {
                     it.copy(
-                        isBurnedCaloriesDialogVisible = true
+                        isBurnedCaloriesDialogVisible = true,
+                        chosenActivityID = event.activityID
                     )
                 }
             }
@@ -137,7 +146,13 @@ class ActivitiesViewModel @Inject constructor(
                 }
             }
             is ActivitiesEvent.OnBurnedCaloriesDialogConfirm -> {
-
+                println(event.duration)
+                _state.update {
+                    it.copy(
+                        minutes = "",
+                        seconds = ""
+                    )
+                }
             }
             is ActivitiesEvent.OnMinutesChange -> {
                 _state.update {
@@ -162,9 +177,11 @@ class ActivitiesViewModel @Inject constructor(
             }
             is ActivitiesEvent.OnFilterQueryChange -> {
                 _filterQuery.value = event.query
+
             }
-            ActivitiesEvent.OnFilterQueryClear -> {
+            is ActivitiesEvent.OnFilterQueryClear -> {
                 _filterQuery.value = ""
+
             }
         }
     }

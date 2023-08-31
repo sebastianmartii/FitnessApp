@@ -9,7 +9,8 @@ interface ActivitiesRepository {
 
     fun getActivitiesForIntensityLevel(intensityLevel: Int): Flow<Resource<List<Activity>>>
 
-    fun getCaloriesBurnedForActivity(activityId: String, weight: Double, duration: Double)
+    suspend fun getCaloriesBurnedForActivity(activityId: String, duration: Double)
 
     fun getSavedActivities(): Flow<List<SavedActivitiesEntity>>
+    suspend fun saveActivity(name: String, description: String?, duration: Double, burnedCalories: String)
 }

@@ -41,6 +41,7 @@ import com.example.fitnessapp.core.navigation_drawer.DrawerContent
 import com.example.fitnessapp.core.navigation_drawer.DrawerEvent
 import com.example.fitnessapp.core.navigation_drawer.DrawerItem
 import com.example.fitnessapp.core.util.drawerItemList
+import com.example.fitnessapp.core.util.duration
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -87,7 +88,7 @@ fun ActivitiesScreen(
                 onEvent(ActivitiesEvent.OnBurnedCaloriesDialogDismiss)
             },
             onConfirm = { minutes, seconds ->
-                onEvent(ActivitiesEvent.OnBurnedCaloriesDialogConfirm(minutes, seconds))
+                onEvent(ActivitiesEvent.OnBurnedCaloriesDialogConfirm(state.chosenActivityID, duration(minutes, seconds)))
             },
             onFocusMove = onFocusMove,
             onKeyboardHide = onKeyboardHide)
@@ -175,7 +176,7 @@ private fun ActivitiesContent(
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    if (currentSelectedActivitiesTabRowItem == ActivitiesTabRowItem.SEARCH && areActivitiesFiltered) {
+                    if (areActivitiesFiltered) {
                         IconButton(onClick = {
                             onFilterQueryClear()
                             onFilterActivities(false)
@@ -195,7 +196,7 @@ private fun ActivitiesContent(
                     }
                 },
                 title = {
-                    if (currentSelectedActivitiesTabRowItem == ActivitiesTabRowItem.SEARCH && areActivitiesFiltered) {
+                    if (areActivitiesFiltered) {
                         OutlinedTextField(
                             value = filterQuery,
                             onValueChange = { query ->
@@ -229,31 +230,19 @@ private fun ActivitiesContent(
                     }
                 },
                 actions = {
-                    when(currentSelectedActivitiesTabRowItem) {
-                        ActivitiesTabRowItem.SAVED -> {
-                            IconButton(onClick = onNavigateToAddActivityScreen) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = stringResource(id = R.string.add_activity)
-                                )
-                            }
-                        }
-                        ActivitiesTabRowItem.SEARCH -> {
-                            IconButton(onClick = {
-                                onFilterActivities(!areActivitiesFiltered)
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Default.Search,
-                                    contentDescription = stringResource(id = R.string.filter_activities_by_key_words)
-                                )
-                            }
-                            IconButton(onClick = onNavigateToAddActivityScreen) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = stringResource(id = R.string.add_activity)
-                                )
-                            }
-                        }
+                    IconButton(onClick = {
+                        onFilterActivities(!areActivitiesFiltered)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = stringResource(id = R.string.filter_activities_by_key_words)
+                        )
+                    }
+                    IconButton(onClick = onNavigateToAddActivityScreen) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(id = R.string.add_activity)
+                        )
                     }
                 }
             )

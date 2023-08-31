@@ -9,8 +9,9 @@ data class ActivitiesState(
     val currentSelectedActivitiesTabRowItem: ActivitiesTabRowItem = ActivitiesTabRowItem.SAVED,
     val selectedTabIndex: Int = 0,
     val isBurnedCaloriesDialogVisible: Boolean = false,
-    val minutes: String = "0",
-    val seconds: String = "0",
+    val minutes: String = "",
+    val seconds: String = "",
     val filterQuery: String = "",
-    val areActivitiesFiltered: Boolean = false
+    val areActivitiesFiltered: Boolean = false,
+    val chosenActivityID: String = ""
 )

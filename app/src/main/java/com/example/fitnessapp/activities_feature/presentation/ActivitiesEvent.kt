@@ -7,7 +7,7 @@ sealed interface ActivitiesEvent {
     data class OnActivityClick(val activityID: String) : ActivitiesEvent
     object OnBurnedCaloriesDialogDismiss : ActivitiesEvent
     data class OnActivitiesTabChange(val activitiesTabRowItem: ActivitiesTabRowItem, val tabIndex: Int) : ActivitiesEvent
-    data class OnBurnedCaloriesDialogConfirm(val minutes: String, val seconds: String) : ActivitiesEvent
+    data class OnBurnedCaloriesDialogConfirm(val activityID: String, val duration: Double) : ActivitiesEvent
     data class OnMinutesChange(val minutes: String) : ActivitiesEvent
     data class OnSecondsChange(val seconds: String) : ActivitiesEvent
     data class OnFilterQueryChange(val query: String) : ActivitiesEvent
