@@ -6,6 +6,6 @@ fun isBurnedCaloriesConfirmEnabled(minutes: String, seconds: String): Boolean {
     if (!minutes.isDigitsOnly() || minutes.isBlank() || !seconds.isDigitsOnly() || seconds.isBlank()) {
         return false
     }
-    seconds.toInt()
-    return minutes.toInt() in 1..60 && seconds.toInt() in 0..60
+
+    return minutes.toInt() in 1..60 && seconds.toInt() in 0..60 || minutes.toInt() in 0..60 && seconds.toInt() in 1..60
 }
