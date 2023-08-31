@@ -40,6 +40,9 @@ interface CurrentUserDao {
     @Query("SELECT * FROM CurrentUser WHERE is_signed_in = 1")
     fun getCurrentUser(): Flow<CurrentUser?>
 
+    @Query("SELECT weight FROM CurrentUser WHERE is_signed_in = 1")
+    suspend fun getCurrentUserWeight(): Float
+
     @Query("SELECT * FROM CurrentUser")
     suspend fun getAllUsers(): List<CurrentUser>
 
