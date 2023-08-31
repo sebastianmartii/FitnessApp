@@ -99,11 +99,14 @@
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="burned_calories_dialog_title">Provide Exercise Duration</string>
-    <string name="minutes_seconds_placeholder">0</string>
+    <string name="minutes_seconds_placeholder">00</string>
     <string name="minutes_label">Minutes</string>
     <string name="seconds_label">Seconds</string>
     <string name="minutes_seconds_divider">:</string>
     <string name="add_activity">Add Activity</string>
     <string name="filter_activities_by_key_words">Filter By Key Words</string>
     <string name="stop_filtering">Stop Filtering</string>
+    <string name="description_label">Description</string>
+    <string name="duration_label">Duration</string>
+    <string name="burned_calories_label">Burned Calories</string>
 </resources>

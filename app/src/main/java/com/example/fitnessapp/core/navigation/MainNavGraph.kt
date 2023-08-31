@@ -22,6 +22,8 @@ import androidx.navigation.navigation
 import com.example.fitnessapp.activities_feature.presentation.ActivitiesScreen
 import com.example.fitnessapp.activities_feature.presentation.ActivitiesTabRowItem
 import com.example.fitnessapp.activities_feature.presentation.ActivitiesViewModel
+import com.example.fitnessapp.activities_feature.presentation.activity_creator.ActivityCreatorScreen
+import com.example.fitnessapp.activities_feature.presentation.activity_creator.ActivityCreatorViewModel
 import com.example.fitnessapp.core.util.bottomNavBarItems
 import com.example.fitnessapp.core.util.sharedViewModel
 import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewScreen
@@ -244,7 +246,30 @@ fun NavGraphBuilder.mainNavGraph(
                     keyboardController?.hide()
                 },
                 onNavigateToAddActivityScreen = {
+                    navController.navigate(MainDestinations.ActivityCreator.route)
+                }
+            )
+        }
+        composable(
+            route = MainDestinations.ActivityCreator.route
+        ) {
+            val viewModel = hiltViewModel<ActivityCreatorViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
 
+            val keyboardController = LocalSoftwareKeyboardController.current
+            val focusManager = LocalFocusManager.current
+
+            ActivityCreatorScreen(
+                state = state,
+                onEvent = viewModel::onEvent,
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onFocusMove = {
+                    focusManager.moveFocus(FocusDirection.Next)
+                },
+                onKeyboardHide = {
+                    keyboardController?.hide()
                 }
             )
         }
