@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import com.example.fitnessapp.R
 import com.example.fitnessapp.activities_feature.data.mappers.toTabTitle
+import com.example.fitnessapp.activities_feature.domain.model.Activity
 import com.example.fitnessapp.activities_feature.domain.model.IntensityItem
 import com.example.fitnessapp.activities_feature.domain.model.SavedActivity
 import com.example.fitnessapp.core.navigation.BottomNavBar
@@ -88,7 +89,10 @@ fun ActivitiesScreen(
                 onEvent(ActivitiesEvent.OnBurnedCaloriesDialogDismiss)
             },
             onConfirm = { minutes, seconds ->
-                onEvent(ActivitiesEvent.OnBurnedCaloriesDialogConfirm(state.chosenActivityID, duration(minutes, seconds)))
+                onEvent(ActivitiesEvent.OnBurnedCaloriesDialogConfirm(
+                    state.chosenActivity!!,
+                    duration(minutes, seconds),
+                ))
             },
             onFocusMove = onFocusMove,
             onKeyboardHide = onKeyboardHide)
@@ -128,8 +132,8 @@ fun ActivitiesScreen(
                     onEvent(ActivitiesEvent.OnIntensityLevelActivitiesFetch(level, index))
                 },
                 onBottomBarNavigate = onBottomBarNavigate,
-                onActivityClick = { activityID ->
-                    onEvent(ActivitiesEvent.OnActivityClick(activityID))
+                onActivityClick = { activity ->
+                    onEvent(ActivitiesEvent.OnActivityClick(activity))
                 },
                 onNavigateToAddActivityScreen = onNavigateToAddActivityScreen,
                 onFilterActivities = { areFiltered ->
@@ -164,7 +168,7 @@ private fun ActivitiesContent(
     onIntensityLevelExpandedChange: (isExpanded: Boolean, index: Int) -> Unit,
     onIntensityLevelActivitiesFetch: (intensityLevel: IntensityLevel, index: Int) -> Unit,
     onBottomBarNavigate: (NavigationBarItem) -> Unit,
-    onActivityClick: (String) -> Unit,
+    onActivityClick: (Activity) -> Unit,
     onNavigateToAddActivityScreen: () -> Unit,
     onFilterActivities: (Boolean) -> Unit,
     onFilterQueryChange: (String) -> Unit,

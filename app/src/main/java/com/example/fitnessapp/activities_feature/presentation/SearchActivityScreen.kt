@@ -31,7 +31,7 @@ fun SearchActivityScreen(
     intensityLevels: List<IntensityItem>,
     onIntensityLevelExpandedChange: (isExpanded: Boolean, intensityIndex: Int) -> Unit,
     onIntensityLevelActivitiesFetch: (intensityLevel: IntensityLevel, intensityIndex: Int) -> Unit,
-    onActivityClick: (String) -> Unit
+    onActivityClick: (Activity) -> Unit
 ) {
     LazyColumn {
         itemsIndexed(intensityLevels) { index, item ->
@@ -56,7 +56,7 @@ private fun IntensitySection(
     intensityItem: IntensityItem,
     intensityActivities: List<Activity>,
     onSectionExpand: (isExpanded: Boolean, intensityLevel: IntensityLevel) -> Unit,
-    onActivityClick: (String) -> Unit,
+    onActivityClick: (Activity) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -96,7 +96,7 @@ private fun IntensitySection(
                         Text(text = activity.description)
                     },
                     modifier = Modifier.clickable {
-                        onActivityClick(activity.id)
+                        onActivityClick(activity)
                     }
                 )
             }

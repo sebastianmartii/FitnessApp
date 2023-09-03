@@ -87,7 +87,7 @@
     <string name="search_food">Search Food</string>
     <string name="save_button">Save Button</string>
     <string name="save_text">Save</string>
-    <string name="food_nutrition_search_placeholder">100g apple, banana, 100g milk...</string>
+    <string name="food_nutrition_search_placeholder">100g apple, banana, 100g milk…</string>
     <string name="stop_search_button">Stop Searching</string>
     <string name="clear_text_field">Clear Text Field</string>
     <string name="ingredients_headline">Ingredients</string>
@@ -109,4 +109,12 @@
     <string name="description_label">Description</string>
     <string name="duration_label">Duration</string>
     <string name="burned_calories_label">Burned Calories</string>
+    <string name="activity_name_headline_icon">Activity Name Headline Icon</string>
+    <string name="activity_details_headline_icon">Activity Details Headline Icon</string>
+    <string name="activity_calories_burned_placeholder">150</string>
+    <string name="activity_description_placeholder">Weight exercise…</string>
+    <string name="activity_name_placeholder">Bench press</string>
+    <string name="activity_duration_error_text">Provide Correct Time Frame In Which Activity Was Performed</string>
+    <string name="activity_calories_burned_error_text">Provide Correct Calories Burned While Performing Activity</string>
+    <string name="activity_name_error_text">Activity Name Must Be Longer Then 3 Characters</string>
 </resources>

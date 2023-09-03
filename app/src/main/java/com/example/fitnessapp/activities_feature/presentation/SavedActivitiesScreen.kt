@@ -2,7 +2,6 @@ package com.example.fitnessapp.activities_feature.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
@@ -33,18 +32,18 @@ fun SavedActivitiesScreen(
                     }
                 },
                 leadingContent = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(text = savedActivity.duration.toString())
                         Text(text = stringResource(id = R.string.suffix_minutes))
                     }
                 },
                 trailingContent = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(text = savedActivity.burnedCalories)
                         Text(text = stringResource(id = R.string.suffix_calories))

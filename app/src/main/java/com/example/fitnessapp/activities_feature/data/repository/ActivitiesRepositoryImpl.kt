@@ -33,14 +33,38 @@ class ActivitiesRepositoryImpl(
     }
 
     override suspend fun getCaloriesBurnedForActivity(
-        activityId: String,
+        activity: Activity,
         duration: Double
     ) {
+        val currentUserWeight = currentUserDao.getCurrentUserWeight()
+        try {
+            val response = activitiesApi.getCaloriesFromActivity(
+                activity.id,
+                duration,
+                currentUserWeight.toDouble()
+            )
+            if (response.isSuccessful) {
+                savedActivitiesDao.saveActivity(
+                    SavedActivitiesEntity(
+                        activity = activity.name,
+                        description = activity.description,
+                        duration = duration,
+                        caloriesBurned = response.body()!!.data.burnedCalorie
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            println(e)
+        }
     }
 
     override fun getSavedActivities(): Flow<List<SavedActivitiesEntity>> = savedActivitiesDao.getSavedActivities()
 
     override suspend fun saveActivity(name: String, description: String?, duration: Double, burnedCalories: String) {
+        println(name)
+        println(description)
+        println(duration)
+        println(burnedCalories)
         savedActivitiesDao.saveActivity(
             SavedActivitiesEntity(
                 activity = name,

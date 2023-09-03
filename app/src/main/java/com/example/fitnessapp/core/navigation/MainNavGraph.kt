@@ -258,10 +258,15 @@ fun NavGraphBuilder.mainNavGraph(
 
             val keyboardController = LocalSoftwareKeyboardController.current
             val focusManager = LocalFocusManager.current
+            val snackbarHostState = remember {
+                SnackbarHostState()
+            }
 
             ActivityCreatorScreen(
                 state = state,
                 onEvent = viewModel::onEvent,
+                snackbarFlow = viewModel.snackbarFlow,
+                snackbarHostState = snackbarHostState,
                 onNavigateBack = {
                     navController.popBackStack()
                 },

@@ -126,7 +126,7 @@ class ActivitiesViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         isBurnedCaloriesDialogVisible = true,
-                        chosenActivityID = event.activityID
+                        chosenActivity = event.activity
                     )
                 }
             }
@@ -146,11 +146,14 @@ class ActivitiesViewModel @Inject constructor(
                 }
             }
             is ActivitiesEvent.OnBurnedCaloriesDialogConfirm -> {
-                println(event.duration)
+                viewModelScope.launch {
+                    repo.getCaloriesBurnedForActivity(event.activity, event.duration)
+                }
                 _state.update {
                     it.copy(
                         minutes = "",
-                        seconds = ""
+                        seconds = "",
+                        chosenActivity = null
                     )
                 }
             }
