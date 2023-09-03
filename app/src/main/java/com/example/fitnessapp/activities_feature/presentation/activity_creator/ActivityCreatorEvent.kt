@@ -7,5 +7,11 @@ sealed interface ActivityCreatorEvent {
     data class OnActivityMinutesChange(val minutes: String) : ActivityCreatorEvent
     data class OnActivitySecondsChange(val seconds: String) : ActivityCreatorEvent
     data class OnActivityBurnedCaloriesChange(val burnedCalories: String) : ActivityCreatorEvent
-    data class OnActivitySave(val name: String, val description: String, val duration: Double, val burnedCalories: String) : ActivityCreatorEvent
+    data class OnActivitySave(
+        val name: String,
+        val description: String,
+        val duration: Double,
+        val burnedCalories: String,
+        val isActivityValid: Boolean
+    ) : ActivityCreatorEvent
 }
