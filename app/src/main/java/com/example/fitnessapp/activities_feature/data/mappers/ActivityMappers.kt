@@ -29,3 +29,23 @@ fun ActivitiesTabRowItem.toTabTitle(): String {
         ActivitiesTabRowItem.SEARCH -> "Search"
     }
 }
+
+fun Double.toDurationString(): String {
+    val splitDuration = this.toString().split(".")
+    val suffix: String = when {
+        this % 1.0 == 0.0 -> {
+            "min"
+        }
+        this < 0.60 -> {
+            "s"
+        }
+        else -> ""
+    }
+    val decimal = splitDuration[1]
+    val additionalZero = if (decimal.length == 1 && decimal != "0") "0" else ""
+    return "${splitDuration.filter { it != "0" }.joinToString(":")}$additionalZero$suffix"
+}
+
+fun String.toCaloriesString(): String {
+    return this.toDouble().toInt().toString()
+}
