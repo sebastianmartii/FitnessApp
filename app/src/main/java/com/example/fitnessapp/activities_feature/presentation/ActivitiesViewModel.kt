@@ -7,9 +7,11 @@ import com.example.fitnessapp.activities_feature.domain.repository.ActivitiesRep
 import com.example.fitnessapp.core.navigation_drawer.NavigationDrawerViewModel
 import com.example.fitnessapp.core.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -64,6 +66,9 @@ class ActivitiesViewModel @Inject constructor(
             }
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ActivitiesState(intensityLevels = _initialIntensityItems))
+
+    private val _channel = Channel<Int>()
+    val pagerFlow = _channel.receiveAsFlow()
 
     fun onEvent(event: ActivitiesEvent) {
         when(event) {
@@ -131,17 +136,16 @@ class ActivitiesViewModel @Inject constructor(
                 }
             }
             is ActivitiesEvent.OnActivitiesTabChange -> {
-                _state.update {
-                    it.copy(
-                        selectedTabIndex = event.tabIndex,
-                        currentSelectedActivitiesTabRowItem = event.activitiesTabRowItem
-                    )
+                viewModelScope.launch {
+                    _channel.send(event.index)
                 }
             }
             ActivitiesEvent.OnBurnedCaloriesDialogDismiss -> {
                 _state.update {
                     it.copy(
-                        isBurnedCaloriesDialogVisible = false
+                        isBurnedCaloriesDialogVisible = false,
+                        minutes = "",
+                        seconds = ""
                     )
                 }
             }

@@ -1,9 +1,11 @@
 package com.example.fitnessapp.activities_feature.presentation
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -46,14 +48,17 @@ import com.example.fitnessapp.core.util.duration
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ActivitiesScreen(
     state: ActivitiesState,
     activitiesTabRowItems: List<ActivitiesTabRowItem>,
     bottomNavBarItems: List<NavigationBarItem>,
     drawerState: DrawerState,
+    pagerState: PagerState,
     selectedDrawerItem: DrawerItem?,
     drawerEventFlow: Flow<DrawerAction>,
+    pagerFlow: Flow<Int>,
     onDrawerEvent: (DrawerEvent) -> Unit,
     onEvent: (ActivitiesEvent) -> Unit,
     onBottomBarNavigate: (NavigationBarItem) -> Unit,
@@ -74,7 +79,12 @@ fun ActivitiesScreen(
             }
         }
     }
-    if (state.isBurnedCaloriesDialogVisible && state.currentSelectedActivitiesTabRowItem == ActivitiesTabRowItem.SEARCH) {
+    LaunchedEffect(key1 = true) {
+        pagerFlow.collectLatest { page ->
+            pagerState.animateScrollToPage(page)
+        }
+    }
+    if (state.isBurnedCaloriesDialogVisible && pagerState.currentPage == 1) {
         BurnedCaloriesDialog(
             minutes = state.minutes,
             seconds = state.seconds,
@@ -113,8 +123,7 @@ fun ActivitiesScreen(
             ActivitiesContent(
                 savedActivities = state.savedActivities,
                 intensityLevels = state.intensityLevels,
-                currentSelectedActivitiesTabRowItem = state.currentSelectedActivitiesTabRowItem,
-                selectedTabIndex = state.selectedTabIndex,
+                pagerState = pagerState,
                 areActivitiesFiltered = state.areActivitiesFiltered,
                 filterQuery = state.filterQuery,
                 activitiesTabRowItems = activitiesTabRowItems,
@@ -122,8 +131,8 @@ fun ActivitiesScreen(
                 onDrawerStateChange = {
                     onDrawerEvent(DrawerEvent.OpenDrawer)
                 },
-                onTabChange = { tabRowItem, tabIndex ->
-                    onEvent(ActivitiesEvent.OnActivitiesTabChange(tabRowItem, tabIndex))
+                onTabChange = { tabIndex ->
+                    onEvent(ActivitiesEvent.OnActivitiesTabChange(tabIndex))
                 },
                 onIntensityLevelExpandedChange = { isExpanded, index ->
                     onEvent(ActivitiesEvent.OnIntensityLevelExpandedChange(isExpanded, index))
@@ -152,19 +161,18 @@ fun ActivitiesScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun ActivitiesContent(
     savedActivities: List<SavedActivity>,
     intensityLevels: List<IntensityItem>,
     bottomNavBarItems: List<NavigationBarItem>,
-    currentSelectedActivitiesTabRowItem: ActivitiesTabRowItem,
-    selectedTabIndex: Int,
+    pagerState: PagerState,
     filterQuery: String,
     areActivitiesFiltered: Boolean,
     activitiesTabRowItems: List<ActivitiesTabRowItem>,
     onDrawerStateChange: () -> Unit,
-    onTabChange: (tabRowItem: ActivitiesTabRowItem, tabIndex: Int) -> Unit,
+    onTabChange: (tabIndex: Int) -> Unit,
     onIntensityLevelExpandedChange: (isExpanded: Boolean, index: Int) -> Unit,
     onIntensityLevelActivitiesFetch: (intensityLevel: IntensityLevel, index: Int) -> Unit,
     onBottomBarNavigate: (NavigationBarItem) -> Unit,
@@ -265,34 +273,37 @@ private fun ActivitiesContent(
             modifier = Modifier
                 .padding(paddingValues)
         ) {
-            TabRow(selectedTabIndex = selectedTabIndex) {
+            TabRow(selectedTabIndex = pagerState.currentPage) {
                 activitiesTabRowItems.onEachIndexed { index, tabRowItem ->
                     Tab(
-                        selected = selectedTabIndex == index,
+                        selected = pagerState.currentPage == index,
                         text = {
                             Text(text = tabRowItem.toTabTitle())
                         },
                         onClick = {
-                            onTabChange(tabRowItem, index)
+                            onTabChange(index)
                         }
                     )
                 }
             }
-            AnimatedContent(targetState = currentSelectedActivitiesTabRowItem, label = "") {tabRowItem ->
-                when(tabRowItem) {
-                    ActivitiesTabRowItem.SAVED -> {
-                        SavedActivitiesScreen(savedActivities = savedActivities)
-                    }
-                    ActivitiesTabRowItem.SEARCH -> {
-                        SearchActivityScreen(
-                            intensityLevels = intensityLevels,
-                            onIntensityLevelExpandedChange = onIntensityLevelExpandedChange,
-                            onIntensityLevelActivitiesFetch = onIntensityLevelActivitiesFetch,
-                            onActivityClick = onActivityClick
-                        )
+            HorizontalPager(
+                state = pagerState,
+                pageContent = { page ->
+                    when (page) {
+                        0 -> {
+                            SavedActivitiesScreen(savedActivities = savedActivities)
+                        }
+                        1 -> {
+                            SearchActivityScreen(
+                                intensityLevels = intensityLevels,
+                                onIntensityLevelExpandedChange = onIntensityLevelExpandedChange,
+                                onIntensityLevelActivitiesFetch = onIntensityLevelActivitiesFetch,
+                                onActivityClick = onActivityClick
+                            )
+                        }
                     }
                 }
-            }
+            )
         }
     }
 }

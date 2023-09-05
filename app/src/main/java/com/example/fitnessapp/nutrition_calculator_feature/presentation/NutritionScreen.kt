@@ -1,9 +1,12 @@
 package com.example.fitnessapp.nutrition_calculator_feature.presentation
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -53,10 +56,9 @@ import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun NutritionScreen(
-    state: NutritionState,
     nutritionTabRowItems: List<NutritionTabRowItem>,
     bottomNavBarItems: List<NavigationBarItem>,
     mealPlanState: MealPlanState,
@@ -64,13 +66,15 @@ fun NutritionScreen(
     mealPlanEventFlow: Flow<MealPlanViewModel.UiEvent>,
     mealPlanBottomSheetScaffoldState: BottomSheetScaffoldState,
     drawerState: DrawerState,
+    pagerState: PagerState,
+    pagerFlow: Flow<Int>,
     drawerEventFlow: Flow<DrawerAction>,
     nutritionCalculatorState: NutritionCalculatorState,
     recipeSearchState: RecipeSearchState,
+    onPageChange: (Int) -> Unit,
     onRecipeSearchEvent: (RecipeSearchEvent) -> Unit,
     onNutritionCalculatorEvent: (NutritionCalculatorEvent) -> Unit,
     onMealPlanEvent: (MealPlanEvent) -> Unit,
-    onEvent: (NutritionEvent) -> Unit,
     onDrawerEvent: (DrawerEvent) -> Unit,
     onNavigateToFoodItemCreator: () -> Unit,
     onNavigateToSearchScreen: () -> Unit,
@@ -78,7 +82,6 @@ fun NutritionScreen(
     onKeyboardHide: () -> Unit,
     onFocusMove: () -> Unit,
     onBottomBarNavigate: (NavigationBarItem) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     LaunchedEffect(key1 = true) {
         drawerEventFlow.collectLatest { action ->
@@ -90,6 +93,11 @@ fun NutritionScreen(
                     drawerState.open()
                 }
             }
+        }
+    }
+    LaunchedEffect(key1 = true) {
+        pagerFlow.collectLatest { page ->
+            pagerState.animateScrollToPage(page)
         }
     }
     ModalNavigationDrawer(
@@ -106,8 +114,7 @@ fun NutritionScreen(
         },
         content = {
             NutritionScreenContent(
-                selectedTabIndex = state.selectedTabIndex,
-                currentNutritionTabRowItem = state.currentNutritionTabRowItem,
+                pagerState = pagerState,
                 nutritionTabRowItems = nutritionTabRowItems,
                 bottomNavBarItems = bottomNavBarItems,
                 mealPlanState = mealPlanState,
@@ -119,9 +126,7 @@ fun NutritionScreen(
                 onMealPlanEvent = onMealPlanEvent,
                 onNavigateToFoodItemCreator = onNavigateToFoodItemCreator,
                 onNavigateToSearchScreen = onNavigateToSearchScreen,
-                onTabChange = { tabRowItem, tabIndex ->
-                    onEvent(NutritionEvent.OnTabChange(tabRowItem, tabIndex))
-                },
+                onPageChange = onPageChange,
                 onDrawerStateChange = {
                     onDrawerEvent(DrawerEvent.OpenDrawer)
                 },
@@ -131,21 +136,19 @@ fun NutritionScreen(
                 onNavigateToRecipeDetails = onNavigateToRecipeDetails,
                 onBottomBarNavigate = onBottomBarNavigate
             )
-        },
-        modifier = modifier
+        }
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun NutritionScreenContent(
-    selectedTabIndex: Int,
-    currentNutritionTabRowItem: NutritionTabRowItem,
     nutritionTabRowItems: List<NutritionTabRowItem>,
     bottomNavBarItems: List<NavigationBarItem>,
     mealPlanEventFlow: Flow<MealPlanViewModel.UiEvent>,
     mealPlanBottomSheetScaffoldState: BottomSheetScaffoldState,
     mealPlanState: MealPlanState,
+    pagerState: PagerState,
     nutritionCalculatorState: NutritionCalculatorState,
     recipeSearchState: RecipeSearchState,
     onRecipeSearchEvent: (RecipeSearchEvent) -> Unit,
@@ -158,14 +161,14 @@ private fun NutritionScreenContent(
     onFocusMove: () -> Unit,
     onBottomBarNavigate: (NavigationBarItem) -> Unit,
     onDrawerStateChange: () -> Unit,
-    onTabChange: (item: NutritionTabRowItem, index: Int) -> Unit,
+    onPageChange: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    if (currentNutritionTabRowItem == NutritionTabRowItem.RECIPES && recipeSearchState.isSearchBarActive) {
+                    if (pagerState.currentPage == 1 && recipeSearchState.isSearchBarActive) {
                         IconButton(onClick = {
                             onRecipeSearchEvent(RecipeSearchEvent.OnIsSearchBarActiveChange(false))
                             onKeyboardHide()
@@ -185,7 +188,7 @@ private fun NutritionScreenContent(
                     }
                 },
                 title = {
-                    if (currentNutritionTabRowItem == NutritionTabRowItem.RECIPES && recipeSearchState.isSearchBarActive) {
+                    if (pagerState.currentPage == 1 && recipeSearchState.isSearchBarActive) {
                         OutlinedTextField(
                             value = recipeSearchState.query,
                             onValueChange = {
@@ -222,22 +225,20 @@ private fun NutritionScreenContent(
                     }
                 },
                 actions = {
-                    AnimatedContent(targetState = currentNutritionTabRowItem, label = "") { tabRowItem ->
-                        when(tabRowItem) {
-                            NutritionTabRowItem.CALCULATOR -> {
+                    AnimatedContent(targetState = pagerState.currentPage, label = "") { page ->
+                        when(page) {
+                            0 -> {
                                 CalculatorTopBarActions(
                                     onNavigateToFoodItemCreator = onNavigateToFoodItemCreator,
                                     onNavigateToSearchScreen = onNavigateToSearchScreen
                                 )
                             }
-                            NutritionTabRowItem.RECIPES -> {
+                            1 -> {
                                 RecipeTopBarActions(
                                     onSearchActiveChange = {
                                         onRecipeSearchEvent(RecipeSearchEvent.OnIsSearchBarActiveChange(!recipeSearchState.isSearchBarActive))
                                     }
                                 )
-                            }
-                            NutritionTabRowItem.MEAL_PLAN -> {
                             }
                         }
                     }
@@ -257,73 +258,76 @@ private fun NutritionScreenContent(
             modifier = Modifier
                 .padding(paddingValues)
         ) {
-            TabRow(selectedTabIndex = selectedTabIndex) {
+            TabRow(selectedTabIndex = pagerState.currentPage) {
                 nutritionTabRowItems.onEachIndexed { index, tabRowItem ->
                     Tab(
-                        selected = selectedTabIndex == index,
+                        selected = pagerState.currentPage == index,
                         text = {
                             Text(text = tabRowItem.toTabTitle())
                         },
                         onClick = {
-                            onTabChange(tabRowItem, index)
+                            onPageChange(index)
                         }
                     )
                 }
             }
-            AnimatedContent(targetState = currentNutritionTabRowItem, label = "") { tabRowItem ->
-                when(tabRowItem) {
-                    NutritionTabRowItem.CALCULATOR -> {
-                        NutritionCalculatorScreen(
-                            state = nutritionCalculatorState,
-                            onEvent = onNutritionCalculatorEvent,
-                        )
-                    }
-                    NutritionTabRowItem.RECIPES -> {
-                        RecipeSearchScreen(
-                            state = recipeSearchState,
-                            onNavigateToRecipeDetails = {
-                                onRecipeSearchEvent(RecipeSearchEvent.OnNavigateToRecipeDetails(it))
-                                onNavigateToRecipeDetails()
-                            },
-                            modifier = Modifier
-                                .fillMaxSize()
-                        )
-                    }
-                    NutritionTabRowItem.MEAL_PLAN -> {
-                        MealPlanScreen(
-                            state = mealPlanState,
-                            onDeleteMeal = {
-                                onMealPlanEvent(MealPlanEvent.OnDeleteMeal(it))
-                            },
-                            scaffoldState = mealPlanBottomSheetScaffoldState ,
-                            eventFlow = mealPlanEventFlow,
-                            onAddMeal = {
-                                onMealPlanEvent(MealPlanEvent.OnAddMeal)
-                            },
-                            onMealPlanExpand = { isExpanded, type ->
-                                onMealPlanEvent(MealPlanEvent.OnMealPlanExpandedChange(isExpanded, type))
-                            },
-                            onMealPlanSelect = { type, plan ->
-                                onMealPlanEvent(MealPlanEvent.OnMealPlanSelectedChange(type, plan))
-                            },
-                            onKeyboardHide = onKeyboardHide,
-                            onMealNameChange = { name, index ->
-                                onMealPlanEvent(MealPlanEvent.OnMealNameChange(name, index))
-                            },
-                            onFocusMove = onFocusMove,
-                            onSheetClose = {
-                                onMealPlanEvent(MealPlanEvent.OnSheetClose)
-                            },
-                            onSheetOpen = {
-                                onMealPlanEvent(MealPlanEvent.OnSheetOpen)
-                            },
-                            onCustomMealPlanSave = { plan ->
-                                onMealPlanEvent(MealPlanEvent.OnCustomMealPlanSave(plan))
-                            }
-                        )
+            HorizontalPager(
+                state = pagerState,
+                pageContent = {page ->
+                    when(page) {
+                        0 -> {
+                            NutritionCalculatorScreen(
+                                state = nutritionCalculatorState,
+                                onEvent = onNutritionCalculatorEvent,
+                            )
+                        }
+                        1 -> {
+                            RecipeSearchScreen(
+                                state = recipeSearchState,
+                                onNavigateToRecipeDetails = {
+                                    onRecipeSearchEvent(RecipeSearchEvent.OnNavigateToRecipeDetails(it))
+                                    onNavigateToRecipeDetails()
+                                },
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            )
+                        }
+                        2 -> {
+                            MealPlanScreen(
+                                state = mealPlanState,
+                                onDeleteMeal = {
+                                    onMealPlanEvent(MealPlanEvent.OnDeleteMeal(it))
+                                },
+                                scaffoldState = mealPlanBottomSheetScaffoldState ,
+                                eventFlow = mealPlanEventFlow,
+                                onAddMeal = {
+                                    onMealPlanEvent(MealPlanEvent.OnAddMeal)
+                                },
+                                onMealPlanExpand = { isExpanded, type ->
+                                    onMealPlanEvent(MealPlanEvent.OnMealPlanExpandedChange(isExpanded, type))
+                                },
+                                onMealPlanSelect = { type, plan ->
+                                    onMealPlanEvent(MealPlanEvent.OnMealPlanSelectedChange(type, plan))
+                                },
+                                onKeyboardHide = onKeyboardHide,
+                                onMealNameChange = { name, index ->
+                                    onMealPlanEvent(MealPlanEvent.OnMealNameChange(name, index))
+                                },
+                                onFocusMove = onFocusMove,
+                                onSheetClose = {
+                                    onMealPlanEvent(MealPlanEvent.OnSheetClose)
+                                },
+                                onSheetOpen = {
+                                    onMealPlanEvent(MealPlanEvent.OnSheetOpen)
+                                },
+                                onCustomMealPlanSave = { plan ->
+                                    onMealPlanEvent(MealPlanEvent.OnCustomMealPlanSave(plan))
+                                }
+                            )
+                        }
                     }
                 }
-            }
+            )
         }
     }
 }

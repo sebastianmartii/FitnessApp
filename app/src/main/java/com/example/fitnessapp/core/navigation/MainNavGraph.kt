@@ -1,5 +1,7 @@
 package com.example.fitnessapp.core.navigation
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetValue
@@ -42,7 +44,7 @@ import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.R
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchEvent
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 fun NavGraphBuilder.mainNavGraph(
     navController: NavController
 ) {
@@ -77,9 +79,12 @@ fun NavGraphBuilder.mainNavGraph(
             route = BottomNavBarDestinations.Nutrition.route
         ) { entry ->
             val viewModel = hiltViewModel<NutritionViewModel>()
-            val state by viewModel.state.collectAsStateWithLifecycle()
             val selectedDrawerItem by viewModel.selectedDrawerItem.collectAsStateWithLifecycle()
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+            val pagerState = rememberPagerState(pageCount = {
+                3
+            })
 
             val nutritionCalculatorViewModel = hiltViewModel<NutritionCalculatorViewModel>()
             val nutritionCalculatorState by nutritionCalculatorViewModel.state.collectAsStateWithLifecycle(
@@ -100,7 +105,7 @@ fun NavGraphBuilder.mainNavGraph(
 
 
             NutritionScreen(
-                state = state,
+                pagerState = pagerState,
                 nutritionTabRowItems = listOf(
                     NutritionTabRowItem.CALCULATOR,
                     NutritionTabRowItem.RECIPES,
@@ -113,12 +118,13 @@ fun NavGraphBuilder.mainNavGraph(
                 selectedDrawerItem = selectedDrawerItem,
                 drawerState = drawerState,
                 drawerEventFlow = viewModel.drawerEventFlow,
+                pagerFlow = viewModel.pagerFlow,
                 nutritionCalculatorState = nutritionCalculatorState,
                 recipeSearchState = recipeSearchState,
                 onNutritionCalculatorEvent = nutritionCalculatorViewModel::onEvent,
-                onEvent = viewModel::onEvent,
                 onDrawerEvent = viewModel::onDrawerEvent,
                 onMealPlanEvent = mealPlanViewModel::onEvent,
+                onPageChange = viewModel::onPageChange,
                 onNavigateToFoodItemCreator = {
                     navController.navigate(MainDestinations.FoodItemCreator.route)
                 },
@@ -223,6 +229,7 @@ fun NavGraphBuilder.mainNavGraph(
 
             val keyboardController = LocalSoftwareKeyboardController.current
             val focusManager = LocalFocusManager.current
+            val pagerState = rememberPagerState(pageCount = {2})
 
             ActivitiesScreen(
                 state = state,
@@ -232,8 +239,10 @@ fun NavGraphBuilder.mainNavGraph(
                 ),
                 bottomNavBarItems = bottomNavBarItems,
                 drawerState = drawerState,
+                pagerState = pagerState,
                 selectedDrawerItem = selectedDrawerItem,
                 drawerEventFlow = viewModel.drawerEventFlow,
+                pagerFlow = viewModel.pagerFlow,
                 onDrawerEvent = viewModel::onDrawerEvent,
                 onEvent = viewModel::onEvent,
                 onBottomBarNavigate = { navigationBarItem ->
