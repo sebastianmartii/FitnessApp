@@ -1,6 +1,9 @@
 package com.example.fitnessapp.daily_overview_feature.di
 
 import com.example.fitnessapp.core.database.FitnessDatabase
+import com.example.fitnessapp.core.database.dao.CurrentUserDao
+import com.example.fitnessapp.daily_overview_feature.data.local.dao.DailyActivitiesDao
+import com.example.fitnessapp.daily_overview_feature.data.local.dao.DailyNutritionDao
 import com.example.fitnessapp.daily_overview_feature.data.repository.OverviewRepositoryImpl
 import com.example.fitnessapp.daily_overview_feature.domain.repository.OverviewRepository
 import dagger.Module
@@ -15,9 +18,22 @@ object OverviewModule {
 
     @Provides
     @Singleton
+    fun provideDailyActivitiesDao(db: FitnessDatabase): DailyActivitiesDao {
+        return db.dailyActivitiesDao
+    }
+
+    @Provides
+    @Singleton
+    fun provideDailyNutritionDao(db: FitnessDatabase): DailyNutritionDao {
+        return db.dailyNutritionDao
+    }
+
+
+    @Provides
+    @Singleton
     fun provideOverviewRepository(
-        db: FitnessDatabase
+        currentUserDao: CurrentUserDao
     ): OverviewRepository {
-        return OverviewRepositoryImpl(db.currentUserDao)
+        return OverviewRepositoryImpl(currentUserDao)
     }
 }

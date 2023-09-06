@@ -117,4 +117,5 @@
     <string name="activity_duration_error_text">Provide Correct Time Frame In Which Activity Was Performed</string>
     <string name="activity_calories_burned_error_text">Provide Correct Calories Burned While Performing Activity</string>
     <string name="activity_name_error_text">Activity Name Must Be Longer Then 3 Characters</string>
+    <string name="delete_activities">Delete Saved Activities</string>
 </resources>
