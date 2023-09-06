@@ -3,18 +3,22 @@ package com.example.fitnessapp.activities_feature.data.repository
 import com.example.fitnessapp.activities_feature.data.local.dao.SavedActivitiesDao
 import com.example.fitnessapp.activities_feature.data.local.entity.SavedActivitiesEntity
 import com.example.fitnessapp.activities_feature.data.mappers.toActivityList
+import com.example.fitnessapp.activities_feature.data.mappers.toDailyActivity
 import com.example.fitnessapp.activities_feature.data.remote.ActivitiesApi
 import com.example.fitnessapp.activities_feature.domain.model.Activity
+import com.example.fitnessapp.activities_feature.domain.model.SavedActivity
 import com.example.fitnessapp.activities_feature.domain.repository.ActivitiesRepository
 import com.example.fitnessapp.core.database.dao.CurrentUserDao
 import com.example.fitnessapp.core.util.Resource
+import com.example.fitnessapp.daily_overview_feature.data.local.dao.DailyActivitiesDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class ActivitiesRepositoryImpl(
     private val activitiesApi: ActivitiesApi,
     private val savedActivitiesDao: SavedActivitiesDao,
-    private val currentUserDao: CurrentUserDao
+    private val currentUserDao: CurrentUserDao,
+    private val dailyActivitiesDao: DailyActivitiesDao
 ) : ActivitiesRepository {
 
     override fun getActivitiesForIntensityLevel(intensityLevel: Int): Flow<Resource<List<Activity>>> = flow {
@@ -61,10 +65,6 @@ class ActivitiesRepositoryImpl(
     override fun getSavedActivities(): Flow<List<SavedActivitiesEntity>> = savedActivitiesDao.getSavedActivities()
 
     override suspend fun saveActivity(name: String, description: String?, duration: Double, burnedCalories: String) {
-        println(name)
-        println(description)
-        println(duration)
-        println(burnedCalories)
         savedActivitiesDao.saveActivity(
             SavedActivitiesEntity(
                 activity = name,
@@ -73,5 +73,13 @@ class ActivitiesRepositoryImpl(
                 caloriesBurned = burnedCalories
             )
         )
+    }
+
+    override suspend fun deleteSavedActivities(activities: List<SavedActivity>) {
+        savedActivitiesDao.deleteSavedActivities(activities)
+    }
+
+    override suspend fun performSavedActivities(activities: List<SavedActivity>) {
+        dailyActivitiesDao.addActivities(activities.map { it.toDailyActivity() })
     }
 }

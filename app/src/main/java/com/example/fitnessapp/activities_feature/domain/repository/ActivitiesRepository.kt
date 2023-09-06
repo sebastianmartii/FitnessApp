@@ -2,6 +2,7 @@ package com.example.fitnessapp.activities_feature.domain.repository
 
 import com.example.fitnessapp.activities_feature.data.local.entity.SavedActivitiesEntity
 import com.example.fitnessapp.activities_feature.domain.model.Activity
+import com.example.fitnessapp.activities_feature.domain.model.SavedActivity
 import com.example.fitnessapp.core.util.Resource
 import kotlinx.coroutines.flow.Flow
 
@@ -12,5 +13,10 @@ interface ActivitiesRepository {
     suspend fun getCaloriesBurnedForActivity(activity: Activity, duration: Double)
 
     fun getSavedActivities(): Flow<List<SavedActivitiesEntity>>
+
     suspend fun saveActivity(name: String, description: String?, duration: Double, burnedCalories: String)
+
+    suspend fun deleteSavedActivities(activities: List<SavedActivity>)
+
+    suspend fun performSavedActivities(activities: List<SavedActivity>)
 }
