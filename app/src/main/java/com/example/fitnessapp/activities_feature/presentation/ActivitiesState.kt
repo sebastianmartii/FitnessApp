@@ -8,6 +8,7 @@ data class ActivitiesState(
     val intensityLevels: List<IntensityItem> = emptyList(),
     val savedActivities: List<SavedActivity> = emptyList(),
     val isBurnedCaloriesDialogVisible: Boolean = false,
+    val isSavedActivitiesFABVisible: Boolean = false,
     val minutes: String = "",
     val seconds: String = "",
     val filterQuery: String = "",

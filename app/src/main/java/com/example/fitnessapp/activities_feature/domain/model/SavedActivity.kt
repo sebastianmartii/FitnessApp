@@ -5,4 +5,5 @@ data class SavedActivity(
     val description: String?,
     val burnedCalories: String,
     val duration: Double,
+    val isSelected: Boolean = false
 )

@@ -3,6 +3,7 @@ package com.example.fitnessapp.activities_feature.presentation
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.activities_feature.data.mappers.toSavedActivity
 import com.example.fitnessapp.activities_feature.domain.model.IntensityItem
+import com.example.fitnessapp.activities_feature.domain.model.SavedActivity
 import com.example.fitnessapp.activities_feature.domain.repository.ActivitiesRepository
 import com.example.fitnessapp.core.navigation_drawer.NavigationDrawerViewModel
 import com.example.fitnessapp.core.util.Resource
@@ -10,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -31,7 +33,15 @@ class ActivitiesViewModel @Inject constructor(
         IntensityItem(intensityLevel = IntensityLevel.INTENSITY_6),
     )
 
-    private val _savedActivities = repo.getSavedActivities()
+    private val _savedActivities = MutableStateFlow<List<SavedActivity>>(emptyList())
+
+    init {
+        viewModelScope.launch {
+            repo.getSavedActivities().collectLatest { savedActivitiesEntity ->
+                _savedActivities.value = savedActivitiesEntity.map { it.toSavedActivity() }
+            }
+        }
+    }
 
     private val _filterQuery = MutableStateFlow("")
 
@@ -40,11 +50,11 @@ class ActivitiesViewModel @Inject constructor(
         state.copy(
             filterQuery = filterQuery,
             savedActivities = if (filterQuery.isBlank()) {
-                savedActivities.map { it.toSavedActivity() }
+                savedActivities
             } else {
                 savedActivities
                     .map {
-                        it.toSavedActivity()
+                        it
                     }
                     .filter {
                         it.name.contains(filterQuery, ignoreCase = true) ||
@@ -188,6 +198,31 @@ class ActivitiesViewModel @Inject constructor(
             }
             is ActivitiesEvent.OnFilterQueryClear -> {
                 _filterQuery.value = ""
+
+            }
+            is ActivitiesEvent.OnSavedActivityClick -> {
+                val updatedSavedActivities = state.value.savedActivities.toMutableList()
+                updatedSavedActivities[event.savedActivityIndex] = updatedSavedActivities[event.savedActivityIndex].copy(
+                    isSelected = !event.isSelected
+                )
+                _savedActivities.value = updatedSavedActivities
+                _state.update {
+                    it.copy(
+                        isSavedActivitiesFABVisible = updatedSavedActivities.any { savedActivity -> savedActivity.isSelected }
+                    )
+                }
+            }
+            is ActivitiesEvent.OnSavedActivitiesDelete -> {
+                viewModelScope.launch {
+                    repo.deleteSavedActivities(event.deletedActivities)
+                }
+                _state.update {
+                    it.copy(
+                        isSavedActivitiesFABVisible = false
+                    )
+                }
+            }
+            is ActivitiesEvent.OnSavedActivitiesPerform -> {
 
             }
         }

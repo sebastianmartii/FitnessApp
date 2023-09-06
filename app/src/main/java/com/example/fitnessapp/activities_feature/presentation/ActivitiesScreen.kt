@@ -12,10 +12,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DoneAll
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalNavigationDrawer
@@ -125,6 +128,7 @@ fun ActivitiesScreen(
                 intensityLevels = state.intensityLevels,
                 pagerState = pagerState,
                 areActivitiesFiltered = state.areActivitiesFiltered,
+                isSavedActivitiesFABVisible = state.isSavedActivitiesFABVisible,
                 filterQuery = state.filterQuery,
                 activitiesTabRowItems = activitiesTabRowItems,
                 bottomNavBarItems = bottomNavBarItems,
@@ -144,6 +148,9 @@ fun ActivitiesScreen(
                 onActivityClick = { activity ->
                     onEvent(ActivitiesEvent.OnActivityClick(activity))
                 },
+                onSavedActivityClick = { savedActivityIndex, isSavedActivitySelected ->
+                    onEvent(ActivitiesEvent.OnSavedActivityClick(savedActivityIndex, isSavedActivitySelected))
+                },
                 onNavigateToAddActivityScreen = onNavigateToAddActivityScreen,
                 onFilterActivities = { areFiltered ->
                     onEvent(ActivitiesEvent.OnFilterActivities(areFiltered))
@@ -153,6 +160,12 @@ fun ActivitiesScreen(
                 },
                 onFilterQueryClear = {
                     onEvent(ActivitiesEvent.OnFilterQueryClear)
+                },
+                onSavedActivitiesDelete = { deletedActivities ->
+                    onEvent(ActivitiesEvent.OnSavedActivitiesDelete(deletedActivities))
+                },
+                onSavedActivitiesPerform = { performedActivities ->
+                    onEvent(ActivitiesEvent.OnSavedActivitiesPerform(performedActivities))
                 },
                 onKeyboardHide = onKeyboardHide,
             )
@@ -170,6 +183,7 @@ private fun ActivitiesContent(
     pagerState: PagerState,
     filterQuery: String,
     areActivitiesFiltered: Boolean,
+    isSavedActivitiesFABVisible: Boolean,
     activitiesTabRowItems: List<ActivitiesTabRowItem>,
     onDrawerStateChange: () -> Unit,
     onTabChange: (tabIndex: Int) -> Unit,
@@ -177,10 +191,13 @@ private fun ActivitiesContent(
     onIntensityLevelActivitiesFetch: (intensityLevel: IntensityLevel, index: Int) -> Unit,
     onBottomBarNavigate: (NavigationBarItem) -> Unit,
     onActivityClick: (Activity) -> Unit,
+    onSavedActivityClick: (index: Int, isSelected: Boolean) -> Unit,
     onNavigateToAddActivityScreen: () -> Unit,
     onFilterActivities: (Boolean) -> Unit,
     onFilterQueryChange: (String) -> Unit,
     onFilterQueryClear: () -> Unit,
+    onSavedActivitiesPerform: (List<SavedActivity>) -> Unit,
+    onSavedActivitiesDelete: (List<SavedActivity>) -> Unit,
     onKeyboardHide: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -242,6 +259,16 @@ private fun ActivitiesContent(
                     }
                 },
                 actions = {
+                    if (isSavedActivitiesFABVisible && pagerState.currentPage == 0) {
+                        IconButton(onClick = {
+                            onSavedActivitiesDelete(savedActivities.filter { it.isSelected })
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = stringResource(id = R.string.delete_activities)
+                            )
+                        }
+                    }
                     IconButton(onClick = {
                         onFilterActivities(!areActivitiesFiltered)
                     }) {
@@ -265,6 +292,19 @@ private fun ActivitiesContent(
                 selectedItemIndex = 2,
                 onNavigate = onBottomBarNavigate
             )
+        },
+        floatingActionButton = {
+            if (isSavedActivitiesFABVisible && pagerState.currentPage == 0) {
+                ExtendedFloatingActionButton(onClick = {
+                    onSavedActivitiesPerform(savedActivities.filter { it.isSelected })
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.DoneAll,
+                        contentDescription = stringResource(id = R.string.save_button)
+                    )
+                    Text(text = stringResource(id = R.string.save_text))
+                }
+            }
         },
         modifier = modifier
     ) { paddingValues ->
@@ -291,7 +331,10 @@ private fun ActivitiesContent(
                 pageContent = { page ->
                     when (page) {
                         0 -> {
-                            SavedActivitiesScreen(savedActivities = savedActivities)
+                            SavedActivitiesScreen(
+                                savedActivities = savedActivities,
+                                onSavedActivityClick = onSavedActivityClick
+                            )
                         }
                         1 -> {
                             SearchActivityScreen(

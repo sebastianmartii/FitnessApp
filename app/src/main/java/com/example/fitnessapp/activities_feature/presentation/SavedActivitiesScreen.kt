@@ -1,5 +1,6 @@
 package com.example.fitnessapp.activities_feature.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,7 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,14 +25,15 @@ import com.example.fitnessapp.activities_feature.domain.model.SavedActivity
 
 @Composable
 fun SavedActivitiesScreen(
-    savedActivities: List<SavedActivity>
+    savedActivities: List<SavedActivity>,
+    onSavedActivityClick: (index: Int, isSelected: Boolean) -> Unit
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.Top,
         modifier = Modifier
             .fillMaxSize()
     ) {
-        items(savedActivities) { savedActivity ->
+        itemsIndexed(items = savedActivities) { index, savedActivity ->
             ListItem(
                 headlineContent = {
                     Text(text = savedActivity.name)
@@ -62,6 +64,10 @@ fun SavedActivitiesScreen(
                             )
                         )
                     }
+                },
+                tonalElevation = if (savedActivity.isSelected) 4.dp else 0.dp,
+                modifier = Modifier.clickable {
+                    onSavedActivityClick(index, savedActivity.isSelected)
                 }
             )
         }
