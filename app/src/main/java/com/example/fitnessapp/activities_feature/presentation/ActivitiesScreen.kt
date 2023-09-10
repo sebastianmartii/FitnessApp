@@ -13,8 +13,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.DoneAll
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.PostAdd
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -299,10 +299,10 @@ private fun ActivitiesContent(
                     onSavedActivitiesPerform(savedActivities.filter { it.isSelected })
                 }) {
                     Icon(
-                        imageVector = Icons.Default.DoneAll,
+                        imageVector = Icons.Default.PostAdd,
                         contentDescription = stringResource(id = R.string.save_button)
                     )
-                    Text(text = stringResource(id = R.string.save_text))
+                    Text(text = stringResource(id = R.string.add))
                 }
             }
         },
