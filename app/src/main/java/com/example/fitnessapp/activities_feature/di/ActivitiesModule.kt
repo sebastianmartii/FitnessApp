@@ -7,6 +7,7 @@ import com.example.fitnessapp.activities_feature.domain.repository.ActivitiesRep
 import com.example.fitnessapp.core.database.FitnessDatabase
 import com.example.fitnessapp.core.database.dao.CurrentUserDao
 import com.example.fitnessapp.core.util.Endpoints
+import com.example.fitnessapp.daily_overview_feature.data.local.dao.DailyActivitiesDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,9 +33,10 @@ object ActivitiesModule {
     fun provideActivitiesRepository(
         activitiesApi: ActivitiesApi,
         savedActivitiesDao: SavedActivitiesDao,
-        currentUserDao: CurrentUserDao
+        currentUserDao: CurrentUserDao,
+        dailyActivitiesDao: DailyActivitiesDao
     ): ActivitiesRepository {
-        return ActivitiesRepositoryImpl(activitiesApi, savedActivitiesDao, currentUserDao)
+        return ActivitiesRepositoryImpl(activitiesApi, savedActivitiesDao, currentUserDao, dailyActivitiesDao)
     }
 
     @Provides

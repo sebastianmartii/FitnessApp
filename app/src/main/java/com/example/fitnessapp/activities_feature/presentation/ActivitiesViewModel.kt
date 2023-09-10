@@ -223,7 +223,11 @@ class ActivitiesViewModel @Inject constructor(
                 }
             }
             is ActivitiesEvent.OnSavedActivitiesPerform -> {
-
+                viewModelScope.launch {
+                    repo.performSavedActivities(
+                        event.performedActivities
+                    )
+                }
             }
         }
     }
