@@ -13,9 +13,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.PostAdd
 import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalNavigationDrawer
@@ -46,9 +48,11 @@ import com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_pla
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_plan.MealPlanState
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_plan.MealPlanViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.CalculatorTopBarActions
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.MealSelectionDialog
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.NutritionCalculatorEvent
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.NutritionCalculatorScreen
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.NutritionCalculatorState
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.NutritionCalculatorViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchEvent
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchScreen
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchState
@@ -61,6 +65,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun NutritionScreen(
     nutritionTabRowItems: List<NutritionTabRowItem>,
     bottomNavBarItems: List<NavigationBarItem>,
+    mealSelectionDialogMealList: List<String>?,
     mealPlanState: MealPlanState,
     selectedDrawerItem: DrawerItem?,
     mealPlanEventFlow: Flow<MealPlanViewModel.UiEvent>,
@@ -68,6 +73,7 @@ fun NutritionScreen(
     drawerState: DrawerState,
     pagerState: PagerState,
     pagerFlow: Flow<Int>,
+    nutritionCalculatorEventFlow: Flow<NutritionCalculatorViewModel.UiEvent>,
     drawerEventFlow: Flow<DrawerAction>,
     nutritionCalculatorState: NutritionCalculatorState,
     recipeSearchState: RecipeSearchState,
@@ -100,6 +106,30 @@ fun NutritionScreen(
             pagerState.animateScrollToPage(page)
         }
     }
+    LaunchedEffect(key1 = true) {
+        nutritionCalculatorEventFlow.collectLatest { event ->
+            when(event) {
+                NutritionCalculatorViewModel.UiEvent.NavigateToMealPlanScreen -> {
+                    pagerState.animateScrollToPage(2)
+                }
+            }
+        }
+    }
+    if (pagerState.currentPage == 0 && nutritionCalculatorState.isMealSelectionDialogVisible) {
+        MealSelectionDialog(
+            mealList = mealSelectionDialogMealList,
+            selectedMeal = nutritionCalculatorState.selectedMeal,
+            onMealSelectionDialogDismiss = {
+                onNutritionCalculatorEvent(NutritionCalculatorEvent.OnMealSelectionDialogDismiss)
+            },
+            onMealSelectionDialogConfirm = { meal ->
+                onNutritionCalculatorEvent(NutritionCalculatorEvent.OnMealSelectionDialogConfirm(meal))
+            },
+            onMealSelect = { meal ->
+                onNutritionCalculatorEvent(NutritionCalculatorEvent.OnMealSelectionDialogMealSelect(meal))
+            }
+        )
+    }
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -117,6 +147,7 @@ fun NutritionScreen(
                 pagerState = pagerState,
                 nutritionTabRowItems = nutritionTabRowItems,
                 bottomNavBarItems = bottomNavBarItems,
+                mealSelectionDialogMealList = mealSelectionDialogMealList,
                 mealPlanState = mealPlanState,
                 mealPlanEventFlow = mealPlanEventFlow,
                 mealPlanBottomSheetScaffoldState = mealPlanBottomSheetScaffoldState,
@@ -145,6 +176,7 @@ fun NutritionScreen(
 private fun NutritionScreenContent(
     nutritionTabRowItems: List<NutritionTabRowItem>,
     bottomNavBarItems: List<NavigationBarItem>,
+    mealSelectionDialogMealList: List<String>?,
     mealPlanEventFlow: Flow<MealPlanViewModel.UiEvent>,
     mealPlanBottomSheetScaffoldState: BottomSheetScaffoldState,
     mealPlanState: MealPlanState,
@@ -251,6 +283,19 @@ private fun NutritionScreenContent(
                 selectedItemIndex = 1,
                 onNavigate = onBottomBarNavigate
             )
+        },
+        floatingActionButton = {
+            if (pagerState.currentPage == 0 && nutritionCalculatorState.isFABVisible) {
+                ExtendedFloatingActionButton(onClick = {
+                    onNutritionCalculatorEvent(NutritionCalculatorEvent.OnFoodItemsAdd(mealSelectionDialogMealList?.isEmpty() ?: true))
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.PostAdd,
+                        contentDescription = stringResource(id = R.string.add)
+                    )
+                    Text(text = stringResource(id = R.string.add))
+                }
+            }
         },
         modifier = modifier
     ) { paddingValues ->

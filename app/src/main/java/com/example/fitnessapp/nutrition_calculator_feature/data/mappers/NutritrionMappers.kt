@@ -1,6 +1,7 @@
 package com.example.fitnessapp.nutrition_calculator_feature.data.mappers
 
 import androidx.core.text.isDigitsOnly
+import com.example.fitnessapp.daily_overview_feature.data.local.entity.DailyNutritionEntity
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.entity.FoodItemEntity
 import com.example.fitnessapp.nutrition_calculator_feature.data.remote.nutrition.dto.Item
 import com.example.fitnessapp.nutrition_calculator_feature.domain.model.FoodItem
@@ -14,19 +15,6 @@ fun NutritionTabRowItem.toTabTitle(): String {
     }
 }
 
-fun Item.toFoodItemEntity(): FoodItemEntity {
-    return FoodItemEntity(
-        name = name,
-        servingSize = servingSize,
-        calories = calories,
-        carbs = carbs,
-        protein = protein,
-        saturatedFat = saturatedFat,
-        fat = totalFat,
-        sugar = sugar,
-        fiber = fiber
-    )
-}
 fun Item.toFoodItem(): FoodItem {
     return FoodItem(
         name = name,
@@ -80,4 +68,16 @@ fun String.toCalories(): Double {
         return 0.0
     }
     return this.toDouble()
+}
+
+fun FoodItem.toDailyNutrition(meal: String): DailyNutritionEntity {
+    return DailyNutritionEntity(
+        name = this.name,
+        servingSize = this.servingSize,
+        calories = this.calories,
+        carbs = this.carbs,
+        protein = this.protein,
+        fat = this.totalFat,
+        meal = meal
+    )
 }

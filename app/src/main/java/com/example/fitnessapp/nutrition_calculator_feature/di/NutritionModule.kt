@@ -2,6 +2,7 @@ package com.example.fitnessapp.nutrition_calculator_feature.di
 
 import com.example.fitnessapp.core.database.FitnessDatabase
 import com.example.fitnessapp.core.util.Endpoints
+import com.example.fitnessapp.daily_overview_feature.data.local.dao.DailyNutritionDao
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.FoodItemDao
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.MealDao
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.RecipesDao
@@ -48,9 +49,11 @@ object NutritionModule {
     @Singleton
     fun provideNutritionCalculatorRepository(
         foodItemDao: FoodItemDao,
-        nutritionCalculatorApi: NutritionCalculatorApi
+        nutritionCalculatorApi: NutritionCalculatorApi,
+        dailyNutritionDao: DailyNutritionDao,
+        mealDao: MealDao
     ): NutritionCalculatorRepository {
-        return NutritionCalculatorRepositoryImpl(foodItemDao, nutritionCalculatorApi)
+        return NutritionCalculatorRepositoryImpl(foodItemDao, nutritionCalculatorApi, dailyNutritionDao, mealDao)
     }
 
 
