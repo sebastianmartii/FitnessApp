@@ -18,4 +18,7 @@ interface MealDao {
 
     @Query("SELECT * FROM MealPlanEntity WHERE id = 1")
     fun getMealPlan(): Flow<MealPlanEntity>
+
+    @Query("SELECT meals FROM MealPlanEntity WHERE id = 1")
+    fun getMeals(): Flow<String>
 }
