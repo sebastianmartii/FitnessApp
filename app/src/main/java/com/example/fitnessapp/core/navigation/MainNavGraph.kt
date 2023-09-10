@@ -31,8 +31,8 @@ import com.example.fitnessapp.core.util.sharedViewModel
 import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewScreen
 import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionScreen
-import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionTabRowItem
+import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_plan.MealPlanViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.NutritionCalculatorState
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.NutritionCalculatorViewModel
@@ -82,14 +82,14 @@ fun NavGraphBuilder.mainNavGraph(
             val selectedDrawerItem by viewModel.selectedDrawerItem.collectAsStateWithLifecycle()
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-            val pagerState = rememberPagerState(pageCount = {
-                3
-            })
+            val pagerState = rememberPagerState(pageCount = {3})
 
             val nutritionCalculatorViewModel = hiltViewModel<NutritionCalculatorViewModel>()
             val nutritionCalculatorState by nutritionCalculatorViewModel.state.collectAsStateWithLifecycle(
                 NutritionCalculatorState()
             )
+            
+            val meals by nutritionCalculatorViewModel.meals.collectAsStateWithLifecycle(initialValue = emptyList())
 
             val recipeSearchViewModel = entry.sharedViewModel<RecipeSearchViewModel>(navController)
             val recipeSearchState by recipeSearchViewModel.state.collectAsStateWithLifecycle()
@@ -106,6 +106,7 @@ fun NavGraphBuilder.mainNavGraph(
 
             NutritionScreen(
                 pagerState = pagerState,
+                mealSelectionDialogMealList = meals,
                 nutritionTabRowItems = listOf(
                     NutritionTabRowItem.CALCULATOR,
                     NutritionTabRowItem.RECIPES,
@@ -118,6 +119,7 @@ fun NavGraphBuilder.mainNavGraph(
                 selectedDrawerItem = selectedDrawerItem,
                 drawerState = drawerState,
                 drawerEventFlow = viewModel.drawerEventFlow,
+                nutritionCalculatorEventFlow = nutritionCalculatorViewModel.eventFlow,
                 pagerFlow = viewModel.pagerFlow,
                 nutritionCalculatorState = nutritionCalculatorState,
                 recipeSearchState = recipeSearchState,

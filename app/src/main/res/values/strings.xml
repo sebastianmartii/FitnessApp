@@ -118,4 +118,6 @@
     <string name="activity_calories_burned_error_text">Provide Correct Calories Burned While Performing Activity</string>
     <string name="activity_name_error_text">Activity Name Must Be Longer Then 3 Characters</string>
     <string name="delete_activities">Delete Saved Activities</string>
+    <string name="meal_selection_dialog_title">Choose Meal</string>
+    <string name="add">Add</string>
 </resources>
