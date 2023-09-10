@@ -3,5 +3,8 @@ package com.example.fitnessapp.nutrition_calculator_feature.presentation.nutriti
 import com.example.fitnessapp.nutrition_calculator_feature.domain.model.FoodItem
 
 data class NutritionCalculatorState(
-    val cachedProducts: List<FoodItem> = emptyList(),
+    val isMealSelectionDialogVisible: Boolean = false,
+    val isFABVisible: Boolean = false,
+    val selectedMeal: String? = null,
+    val cachedProducts: List<FoodItem> = emptyList()
 )

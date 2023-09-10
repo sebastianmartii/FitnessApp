@@ -5,17 +5,21 @@ import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.nutrition_calculator_feature.data.mappers.toFoodItem
 import com.example.fitnessapp.nutrition_calculator_feature.domain.repository.NutritionCalculatorRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NutritionCalculatorViewModel @Inject constructor(
-    private val repo: NutritionCalculatorRepository
+    private val repo: NutritionCalculatorRepository,
 ) :ViewModel() {
+
+    val meals = repo.getMeals()
 
     private val _state = MutableStateFlow(NutritionCalculatorState())
     val state = _state.asStateFlow()
@@ -34,17 +38,22 @@ class NutritionCalculatorViewModel @Inject constructor(
         }
     }
 
+    private val _eventChannel = Channel<UiEvent>()
+    val eventFlow = _eventChannel.receiveAsFlow()
+
     fun onEvent(event: NutritionCalculatorEvent) {
         when(event) {
             is NutritionCalculatorEvent.OnFoodItemSelectedChange -> {
-                val currentState = _state.value
-                val updatedItems = currentState.cachedProducts.toMutableList()
+                viewModelScope.launch {
+                    val updatedItems = _state.value.cachedProducts.toMutableList()
+                    updatedItems[event.itemIndex] = event.foodItem.copy(isSelected = !event.foodItem.isSelected)
 
-                val itemIndex = updatedItems.indexOf(event.foodItem)
-                if (itemIndex != -1) {
-                    updatedItems[itemIndex] = event.foodItem.copy(isSelected = !event.foodItem.isSelected)
-                    val updatedState = currentState.copy(cachedProducts = updatedItems)
-                    _state.value = updatedState
+                    _state.update {
+                        it.copy(
+                            cachedProducts = updatedItems,
+                            isFABVisible = updatedItems.any { foodItem ->  foodItem.isSelected }
+                        )
+                    }
                 }
             }
             is NutritionCalculatorEvent.OnFoodItemDelete -> {
@@ -52,6 +61,45 @@ class NutritionCalculatorViewModel @Inject constructor(
                     repo.deleteFoodItem(event.foodItem)
                 }
             }
+            is NutritionCalculatorEvent.OnFoodItemsAdd -> {
+                if (event.areMealsEmpty) {
+                    viewModelScope.launch {
+                        _eventChannel.send(UiEvent.NavigateToMealPlanScreen)
+                    }
+                } else {
+                    _state.update {
+                        it.copy(
+                            isMealSelectionDialogVisible = true
+                        )
+                    }
+                }
+            }
+            is NutritionCalculatorEvent.OnMealSelectionDialogConfirm -> {
+                viewModelScope.launch {
+                    repo.addFoodItemsToDailyNutrition(
+                        _state.value.cachedProducts.filter { it.isSelected },
+                        event.meal!!
+                    )
+                }
+            }
+            NutritionCalculatorEvent.OnMealSelectionDialogDismiss -> {
+                _state.update {
+                    it.copy(
+                        isMealSelectionDialogVisible = false
+                    )
+                }
+            }
+            is NutritionCalculatorEvent.OnMealSelectionDialogMealSelect -> {
+                _state.update {
+                    it.copy(
+                        selectedMeal = event.meal
+                    )
+                }
+            }
         }
+    }
+
+    sealed class UiEvent {
+        object NavigateToMealPlanScreen : UiEvent()
     }
 }
