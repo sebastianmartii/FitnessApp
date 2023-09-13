@@ -1,23 +1,28 @@
 package com.example.fitnessapp.daily_overview_feature.presentation
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,11 +45,13 @@ import androidx.compose.ui.unit.dp
 import com.example.fitnessapp.R
 import com.example.fitnessapp.core.navigation.BottomNavBar
 import com.example.fitnessapp.core.navigation.NavigationBarItem
-import com.example.fitnessapp.core.navigation_drawer.DrawerContent
 import com.example.fitnessapp.core.navigation_drawer.DrawerAction
+import com.example.fitnessapp.core.navigation_drawer.DrawerContent
 import com.example.fitnessapp.core.navigation_drawer.DrawerEvent
 import com.example.fitnessapp.core.navigation_drawer.DrawerItem
 import com.example.fitnessapp.core.util.drawerItemList
+import com.example.fitnessapp.daily_overview_feature.data.mappers.toDailyNutritionCaloriesString
+import com.example.fitnessapp.daily_overview_feature.domain.model.MealDetails
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -90,13 +97,18 @@ fun DailyOverviewScreen(
                 caloriesGoal = state.caloriesGoal,
                 currentCaloriesCount = state.currentCaloriesCount,
                 progress = state.progress,
+                mealPlan = state.mealPlan,
+                mealDetails = state.mealDetails,
                 bottomNavBarItems = bottomNavBarItems,
                 onDrawerOpen = {
                     onDrawerEvent(DrawerEvent.OpenDrawer)
                 },
-                onMealAdd = {
-                    onEvent(OverviewEvent.OnAddMeal)
-                    onNavigateToNutritionScreen()
+                onMealAdd = onNavigateToNutritionScreen,
+                onMealReset = { index ->
+                    onEvent(OverviewEvent.OnMealReset(index))
+                },
+                onMealExpand = { index ->
+                    onEvent(OverviewEvent.OnMealDetailsExpand(index))
                 },
                 onBottomBarNavigate = onBottomBarNavigate
             )
@@ -110,10 +122,14 @@ fun DailyOverviewScreen(
 private fun DailyOverviewContent(
     caloriesGoal: Int,
     currentCaloriesCount: Int,
+    mealPlan: List<String>,
+    mealDetails: List<MealDetails>,
     bottomNavBarItems: List<NavigationBarItem>,
     progress: Dp,
     onDrawerOpen: () -> Unit,
     onMealAdd: () -> Unit,
+    onMealExpand: (meal: String) -> Unit,
+    onMealReset: (Int) -> Unit,
     onBottomBarNavigate: (NavigationBarItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -150,27 +166,145 @@ private fun DailyOverviewContent(
             CustomLinearCaloriesProgressBar(
                 progress = progress
             )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .padding(horizontal = 32.dp)
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            ) {
-                Text(
-                    text = stringResource(id = R.string.meals_text),
-                    style = MaterialTheme.typography.titleLarge
+            Spacer(modifier = Modifier.height(128.dp))
+            DailyNutritionSection(
+                mealPlan = mealPlan,
+                mealDetails = mealDetails,
+                onMealAdd = onMealAdd,
+                onMealReset = onMealReset,
+                onMealExpand = onMealExpand
+            )
+        }
+    }
+}
+
+@Composable
+private fun DailyNutritionSection(
+    mealPlan: List<String>,
+    mealDetails: List<MealDetails>,
+    onMealAdd: () -> Unit,
+    onMealExpand: (meal: String) -> Unit,
+    onMealReset: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = stringResource(id = R.string.meals_text),
+                style = MaterialTheme.typography.headlineSmall
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = onMealAdd) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(id = R.string.add_meal_button)
                 )
-                IconButton(onClick = onMealAdd) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = stringResource(id = R.string.add_meal_button)
+            }
+        }
+        mealPlan.onEachIndexed { index, meal ->
+            val details = mealDetails.find { it.meal == meal }
+            Column(
+                modifier = Modifier
+                    .animateContentSize()
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
+                ) {
+                    Text(
+                        text = meal,
+                        style = MaterialTheme.typography.titleLarge
                     )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = details.toDailyNutritionCaloriesString(),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    IconButton(
+                        onClick = {
+                            onMealReset(index)
+                        },
+                        modifier = Modifier
+                            .size(28.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = stringResource(id = R.string.delete_meal)
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            onMealExpand(meal)
+                        },
+                        modifier = Modifier
+                            .size(28.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (details?.areVisible != true) Icons.Default.ExpandMore else Icons.Default.ExpandLess,
+                            contentDescription = stringResource(id = R.string.expand)
+                        )
+                    }
+                }
+                if (details?.areVisible == true) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(id = R.string.ingredients_headline),
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp)
+                    )
+                    Text(
+                        text = details.ingredients.joinToString(separator = ", "),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontStyle = FontStyle.Italic
+                        ),
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp)
+
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = stringResource(id = R.string.daily_nutrition_nutritional_value_headline),
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp)
+                    )
+                    Text(
+                        text = stringResource(
+                            id = R.string.daily_nutrition_details_nutritional_value,
+                            details.servingSize,
+                            details.carbs,
+                            details.fat,
+                            details.protein
+                        ),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontStyle = FontStyle.Italic
+                        ),
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
     }
+}
+
+@Composable
+private fun DailyActivitiesSection(
+    modifier: Modifier = Modifier
+) {
+
 }
 
 @Composable
@@ -213,6 +347,7 @@ private fun CustomLinearCaloriesProgressBar(
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
