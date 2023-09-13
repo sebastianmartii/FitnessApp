@@ -21,7 +21,6 @@ interface DailyNutritionDao {
     @Query("DELETE FROM DailyNutritionEntity WHERE name = :name AND servingSize = :size AND calories = :calories " +
             "AND carbs = :carbs AND protein = :protein AND fat = :fat AND meal = :meal")
     suspend fun deleteFoodItem(name: String, size: Double, calories: Double, carbs: Double, protein: Double, fat: Double, meal: String)
-
     @Query("SELECT * FROM DailyNutritionEntity")
     fun getDailyNutrition(): Flow<List<DailyNutritionEntity>>
 }

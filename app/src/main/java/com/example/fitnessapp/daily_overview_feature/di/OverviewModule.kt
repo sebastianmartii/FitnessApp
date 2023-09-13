@@ -6,6 +6,7 @@ import com.example.fitnessapp.daily_overview_feature.data.local.dao.DailyActivit
 import com.example.fitnessapp.daily_overview_feature.data.local.dao.DailyNutritionDao
 import com.example.fitnessapp.daily_overview_feature.data.repository.OverviewRepositoryImpl
 import com.example.fitnessapp.daily_overview_feature.domain.repository.OverviewRepository
+import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.MealDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,8 +33,11 @@ object OverviewModule {
     @Provides
     @Singleton
     fun provideOverviewRepository(
-        currentUserDao: CurrentUserDao
+        currentUserDao: CurrentUserDao,
+        dailyNutritionDao: DailyNutritionDao,
+        dailyActivitiesDao: DailyActivitiesDao,
+        mealDao: MealDao
     ): OverviewRepository {
-        return OverviewRepositoryImpl(currentUserDao)
+        return OverviewRepositoryImpl(currentUserDao, dailyNutritionDao, dailyActivitiesDao, mealDao)
     }
 }
