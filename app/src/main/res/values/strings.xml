@@ -120,4 +120,8 @@
     <string name="delete_activities">Delete Saved Activities</string>
     <string name="meal_selection_dialog_title">Choose Meal</string>
     <string name="add">Add</string>
+    <string name="daily_nutrition_nutritional_value_headline">Nutritional Value</string>
+    <string name="daily_nutrition_details_nutritional_value">
+        Nutrition per %1$.0fg: Carbs %2$.0f, Fat %3$.0f, Protein %4$.0f
+    </string>
 </resources>
