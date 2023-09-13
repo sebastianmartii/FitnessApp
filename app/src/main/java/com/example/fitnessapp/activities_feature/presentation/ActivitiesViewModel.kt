@@ -228,6 +228,12 @@ class ActivitiesViewModel @Inject constructor(
                         event.performedActivities
                     )
                 }
+                _savedActivities.value = _savedActivities.value.map { it.copy(isSelected = false) }
+                _state.update {
+                    it.copy(
+                        isSavedActivitiesFABVisible = false
+                    )
+                }
             }
         }
     }

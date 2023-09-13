@@ -85,7 +85,13 @@ class NutritionCalculatorViewModel @Inject constructor(
             NutritionCalculatorEvent.OnMealSelectionDialogDismiss -> {
                 _state.update {
                     it.copy(
-                        isMealSelectionDialogVisible = false
+                        isMealSelectionDialogVisible = false,
+                        cachedProducts = _state.value.cachedProducts.map { foodItem ->
+                            foodItem.copy(
+                                isSelected = false
+                            )
+                        },
+                        isFABVisible = false
                     )
                 }
             }
