@@ -59,16 +59,26 @@ fun NavGraphBuilder.mainNavGraph(
             val state by viewModel.state.collectAsStateWithLifecycle()
             val selectedDrawerItem by viewModel.selectedDrawerItem.collectAsStateWithLifecycle()
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+            val snackbarHostState = remember {
+                SnackbarHostState()
+            }
+
             DailyOverviewScreen(
                 drawerState = drawerState,
                 state = state,
                 selectedDrawerItem = selectedDrawerItem,
                 bottomNavBarItems = bottomNavBarItems,
                 eventFlow = viewModel.drawerEventFlow,
+                snackbarFlow = viewModel.snackbarFlow,
+                snackbarHostState = snackbarHostState,
                 onEvent = viewModel::onEvent,
                 onDrawerEvent = viewModel::onDrawerEvent,
                 onNavigateToNutritionScreen = {
                     navController.navigate(BottomNavBarDestinations.Nutrition.route)
+                },
+                onNavigateToActivitiesScreen = {
+                    navController.navigate(BottomNavBarDestinations.Activities.route)
                 },
                 onBottomBarNavigate = { navigationBarItem ->
                     navController.navigate(navigationBarItem.route)
