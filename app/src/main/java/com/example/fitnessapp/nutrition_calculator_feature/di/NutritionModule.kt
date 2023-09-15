@@ -67,9 +67,10 @@ object NutritionModule {
     @Provides
     @Singleton
     fun provideCustomMealPlanCreatorRepository(
-        mealDao: MealDao
+        mealDao: MealDao,
+        dailyNutritionDao: DailyNutritionDao
     ): CustomMealPlanCreatorRepository {
-        return CustomMealPlanCreatorRepositoryImpl(mealDao)
+        return CustomMealPlanCreatorRepositoryImpl(mealDao, dailyNutritionDao)
     }
 
 

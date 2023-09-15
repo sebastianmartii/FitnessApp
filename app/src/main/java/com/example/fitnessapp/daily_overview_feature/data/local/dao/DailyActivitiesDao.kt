@@ -12,8 +12,8 @@ interface DailyActivitiesDao {
     @Upsert
     suspend fun addActivities(activities: List<DailyActivitiesEntity>)
 
-    @Query("DELETE FROM DailyActivitiesEntity WHERE name = :name AND caloriesBurned = :caloriesBurned AND duration = :duration")
-    suspend fun deleteActivity(name: String, caloriesBurned: String, duration: Double)
+    @Query("DELETE FROM DailyActivitiesEntity WHERE name = :name")
+    suspend fun deleteActivity(name: String)
 
     @Query("DELETE FROM DailyActivitiesEntity")
     suspend fun resetDailyActivities()
