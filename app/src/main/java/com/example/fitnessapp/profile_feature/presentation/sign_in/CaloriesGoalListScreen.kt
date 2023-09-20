@@ -11,16 +11,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.TrendingDown
+import androidx.compose.material.icons.automirrored.filled.TrendingFlat
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.North
 import androidx.compose.material.icons.filled.NorthEast
 import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material.icons.filled.South
 import androidx.compose.material.icons.filled.SouthEast
-import androidx.compose.material.icons.filled.TrendingDown
-import androidx.compose.material.icons.filled.TrendingFlat
-import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -61,7 +61,7 @@ fun CaloriesGoalListScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = stringResource(
                                 id = R.string.back_button
                             )
@@ -190,10 +190,10 @@ private fun LeadingCaloriesItemIcon(
    Icon(
        imageVector = when(typeOfGoal) {
            TypeOfGoal.MAINTAIN_WEIGHT -> {
-               Icons.Default.TrendingFlat
+               Icons.AutoMirrored.Default.TrendingFlat
            }
            TypeOfGoal.MILD_WEIGHT_LOSE -> {
-               Icons.Default.TrendingDown
+               Icons.AutoMirrored.Default.TrendingDown
            }
            TypeOfGoal.WEIGHT_LOSE -> {
                Icons.Default.SouthEast
@@ -202,7 +202,7 @@ private fun LeadingCaloriesItemIcon(
                Icons.Default.South
            }
            TypeOfGoal.MILD_WEIGHT_GAIN -> {
-               Icons.Default.TrendingUp
+               Icons.AutoMirrored.Default.TrendingUp
            }
            TypeOfGoal.WEIGHT_GAIN -> {
                Icons.Default.NorthEast

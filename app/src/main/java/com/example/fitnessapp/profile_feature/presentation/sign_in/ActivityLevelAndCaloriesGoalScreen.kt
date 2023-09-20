@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
@@ -25,11 +25,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RichTooltipBox
+import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,7 +62,7 @@ fun ActivityLevelAndCaloriesGoalScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = stringResource(
                                 id = R.string.back_button
                             )
@@ -124,13 +127,19 @@ fun ActivityLevelAndCaloriesGoalScreen(
                         .fillMaxWidth()
                 ) {
                     activityLevels.onEach {
-                        RichTooltipBox(
-                            title = {
-                                Text(text = it.toActivityLevelString())
+                        TooltipBox(
+                            positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
+                            tooltip = {
+                                RichTooltip(
+                                    title = {
+                                        Text(text = it.toActivityLevelString())
+                                    },
+                                    text = {
+                                        Text(text = it.toActivityLevelToolTipHint())
+                                    }
+                                )
                             },
-                            text = {
-                                Text(text = it.toActivityLevelToolTipHint())
-                            }
+                            state = rememberTooltipState()
                         ) {
                             FilterChip(
                                 selected = activityLevel == it,
@@ -142,7 +151,6 @@ fun ActivityLevelAndCaloriesGoalScreen(
                                 },
                                 modifier = Modifier
                                     .padding(end = 8.dp)
-                                    .tooltipTrigger()
                             )
                         }
                     }

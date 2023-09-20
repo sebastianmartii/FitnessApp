@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.OpenInBrowser
 import androidx.compose.material.icons.outlined.BookmarkBorder
@@ -33,14 +33,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.fitnessapp.R
 import com.example.fitnessapp.core.util.DOT_SEPARATOR_TEXT
 import com.example.fitnessapp.core.util.DotSeparator
 import com.example.fitnessapp.nutrition_calculator_feature.domain.model.Recipe
-import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -58,7 +56,7 @@ fun RecipeDetailsScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = stringResource(id = R.string.back_button)
                         )
                     }
@@ -164,56 +162,5 @@ fun RecipeDetailsScreen(
             }
             Spacer(modifier = Modifier.height(256.dp))
         }
-    }
-}
-
-@Preview
-@Composable
-private fun RecipeDetailsScreenPreview() {
-    FitnessAppTheme {
-        RecipeDetailsScreen(
-            recipe = Recipe(
-                label= "Protein Oats",
-                smallImage = "",
-                bigImage = "",
-                dietLabels = listOf(
-                    "low calorie",
-                    "high protein",
-                    "diary free",
-                    "high fiber",
-                    "low fat",
-                    "low sugar",
-                    "healthy",
-                    "sweet",
-                    "filling",
-                ),
-                servingSize = 350.0,
-                calories = 700.0,
-                carbs = 50.0,
-                protein = 40.0,
-                fat = 4.0,
-                saturatedFat = 0.0,
-                fiber = 12.0,
-                sugar = 5.0,
-                externalUrl = "",
-                ingredients = listOf(
-                    "200ml milk",
-                    "45g rolled oats",
-                    "10g chia seeds",
-                    "30g vanilla protein powder",
-                    "30g of different nuts",
-                    "15g cereals of choice",
-                    "1 cut banana",
-                    "10g peanut butter",
-                    "3g ground cinnamon",
-                ),
-            ),
-            isRecipeSaved = false,
-            onIsRecipeSavedChange = { recipe, isSaved ->
-
-            },
-            onNavigateBack = {},
-            onExternalUrlOpen = {}
-        )
     }
 }

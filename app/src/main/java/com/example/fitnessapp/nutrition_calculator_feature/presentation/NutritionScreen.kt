@@ -10,7 +10,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PostAdd
@@ -206,7 +206,7 @@ private fun NutritionScreenContent(
                             onKeyboardHide()
                         }) {
                             Icon(
-                                imageVector = Icons.Default.ArrowBack,
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
                                 contentDescription = stringResource(id = R.string.stop_search_button)
                             )
                         }
