@@ -10,6 +10,6 @@ data class OverviewState(
     val currentCaloriesCount: Int = 0,
     val progress: Dp = 0.dp,
     val activities: List<Activity> = emptyList(),
-    val mealPlan: List<String> = emptyList(),
+    val mealPlan: List<String>? = emptyList(),
     val mealDetails: List<MealDetails> = emptyList()
 )
