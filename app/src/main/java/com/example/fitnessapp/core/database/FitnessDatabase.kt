@@ -11,6 +11,10 @@ import com.example.fitnessapp.daily_overview_feature.data.local.dao.DailyActivit
 import com.example.fitnessapp.daily_overview_feature.data.local.dao.DailyNutritionDao
 import com.example.fitnessapp.daily_overview_feature.data.local.entity.DailyActivitiesEntity
 import com.example.fitnessapp.daily_overview_feature.data.local.entity.DailyNutritionEntity
+import com.example.fitnessapp.history_feature.data.local.dao.ActivityHistoryDao
+import com.example.fitnessapp.history_feature.data.local.dao.NutritionHistoryDao
+import com.example.fitnessapp.history_feature.data.local.entity.ActivityHistoryEntity
+import com.example.fitnessapp.history_feature.data.local.entity.NutritionHistoryEntity
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.MealPlanTypeConverters
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.RecipeConverters
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.FoodItemDao
@@ -28,7 +32,9 @@ import com.example.fitnessapp.nutrition_calculator_feature.data.local.entity.Rec
         RecipesEntity::class,
         SavedActivitiesEntity::class,
         DailyActivitiesEntity::class,
-        DailyNutritionEntity::class
+        DailyNutritionEntity::class,
+        NutritionHistoryEntity::class,
+        ActivityHistoryEntity::class,
     ],
     version = 1,
     exportSchema = false
@@ -49,4 +55,8 @@ abstract class FitnessDatabase : RoomDatabase() {
     abstract val dailyActivitiesDao: DailyActivitiesDao
 
     abstract val dailyNutritionDao: DailyNutritionDao
+
+    abstract val nutritionHistoryDao: NutritionHistoryDao
+
+    abstract val activityHistoryDao: ActivityHistoryDao
 }
