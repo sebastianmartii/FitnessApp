@@ -1,13 +1,26 @@
 package com.example.fitnessapp.core.util
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.Person
-import com.example.fitnessapp.core.navigation_drawer.DrawerItem
+val calendarYear = mapOf(
+    1 to "January",
+    2 to "February",
+    3 to "March",
+    4 to "April",
+    5 to "May",
+    6 to "June",
+    7 to "July",
+    8 to "August",
+    9 to "September",
+    10 to "October",
+    11 to "November",
+    12 to "December",
+)
 
-val drawerItemList = listOf(
-    DrawerItem(label = "Profile", icon = Icons.Default.Person),
-    DrawerItem(label = "Calendar", icon = Icons.Default.CalendarMonth),
-    DrawerItem(label = "Sign Out", icon = Icons.Default.Logout),
+val days = listOf(
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat",
+    "Sun"
 )
