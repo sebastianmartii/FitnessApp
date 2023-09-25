@@ -5,6 +5,7 @@ import com.example.fitnessapp.activities_feature.data.mappers.toSavedActivity
 import com.example.fitnessapp.activities_feature.domain.model.IntensityItem
 import com.example.fitnessapp.activities_feature.domain.model.SavedActivity
 import com.example.fitnessapp.activities_feature.domain.repository.ActivitiesRepository
+import com.example.fitnessapp.core.database.dao.CurrentUserDao
 import com.example.fitnessapp.core.navigation_drawer.NavigationDrawerViewModel
 import com.example.fitnessapp.core.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,8 +22,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ActivitiesViewModel @Inject constructor(
-    private val repo: ActivitiesRepository
-) : NavigationDrawerViewModel() {
+    private val repo: ActivitiesRepository,
+    currentUserDao: CurrentUserDao
+) : NavigationDrawerViewModel(currentUserDao) {
 
     private val _initialIntensityItems = listOf(
         IntensityItem(intensityLevel = IntensityLevel.INTENSITY_1),

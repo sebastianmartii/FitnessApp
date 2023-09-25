@@ -1,6 +1,7 @@
 package com.example.fitnessapp.nutrition_calculator_feature.presentation
 
 import androidx.lifecycle.viewModelScope
+import com.example.fitnessapp.core.database.dao.CurrentUserDao
 import com.example.fitnessapp.core.navigation_drawer.NavigationDrawerViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -9,7 +10,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NutritionViewModel @Inject constructor() : NavigationDrawerViewModel() {
+class NutritionViewModel @Inject constructor(
+    currentUserDao: CurrentUserDao
+) : NavigationDrawerViewModel(currentUserDao) {
 
     private val _channel = Channel<Int>()
     val pagerFlow = _channel.receiveAsFlow()

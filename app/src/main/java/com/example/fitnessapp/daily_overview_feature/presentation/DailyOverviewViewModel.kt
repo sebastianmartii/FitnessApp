@@ -2,6 +2,7 @@ package com.example.fitnessapp.daily_overview_feature.presentation
 
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
+import com.example.fitnessapp.core.database.dao.CurrentUserDao
 import com.example.fitnessapp.core.navigation_drawer.NavigationDrawerViewModel
 import com.example.fitnessapp.core.util.capitalizeEachWord
 import com.example.fitnessapp.daily_overview_feature.data.mappers.mapDailyActivitiesToActivity
@@ -18,11 +19,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.max
 
 @HiltViewModel
 class DailyOverviewViewModel @Inject constructor(
-    private val repo: OverviewRepository
-) : NavigationDrawerViewModel() {
+    private val repo: OverviewRepository,
+    currentUserDao: CurrentUserDao
+) : NavigationDrawerViewModel(currentUserDao) {
 
     private val _state = MutableStateFlow(OverviewState())
 
@@ -61,7 +64,7 @@ class DailyOverviewViewModel @Inject constructor(
 
     val state = combine(_state, _meals) { state, meals ->
         state.copy(
-            progress = 330.dp * state.currentCaloriesCount / state.caloriesGoal,
+            progress = 330.dp * state.currentCaloriesCount / max(1, state.caloriesGoal),
             mealPlan = meals
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), OverviewState())
