@@ -41,7 +41,6 @@ import com.example.fitnessapp.core.navigation_drawer.DrawerAction
 import com.example.fitnessapp.core.navigation_drawer.DrawerContent
 import com.example.fitnessapp.core.navigation_drawer.DrawerEvent
 import com.example.fitnessapp.core.navigation_drawer.DrawerItem
-import com.example.fitnessapp.core.util.drawerItemList
 import com.example.fitnessapp.nutrition_calculator_feature.data.mappers.toTabTitle
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_plan.MealPlanEvent
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_plan.MealPlanScreen
@@ -67,6 +66,7 @@ fun NutritionScreen(
     bottomNavBarItems: List<NavigationBarItem>,
     mealSelectionDialogMealList: List<String>?,
     mealPlanState: MealPlanState,
+    drawerItemList: List<DrawerItem>,
     selectedDrawerItem: DrawerItem?,
     mealPlanEventFlow: Flow<MealPlanViewModel.UiEvent>,
     mealPlanBottomSheetScaffoldState: BottomSheetScaffoldState,
@@ -85,6 +85,7 @@ fun NutritionScreen(
     onNavigateToFoodItemCreator: () -> Unit,
     onNavigateToSearchScreen: () -> Unit,
     onNavigateToRecipeDetails: () -> Unit,
+    onNavigateToNavigationDrawerDestination: (String) -> Unit,
     onKeyboardHide: () -> Unit,
     onFocusMove: () -> Unit,
     onBottomBarNavigate: (NavigationBarItem) -> Unit,
@@ -97,6 +98,9 @@ fun NutritionScreen(
                 }
                 DrawerAction.OpenNavigationDrawer -> {
                     drawerState.open()
+                }
+                is DrawerAction.NavigateToDrawerDestination -> {
+                    onNavigateToNavigationDrawerDestination(action.route)
                 }
             }
         }

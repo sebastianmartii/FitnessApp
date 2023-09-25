@@ -46,7 +46,6 @@ import com.example.fitnessapp.core.navigation_drawer.DrawerAction
 import com.example.fitnessapp.core.navigation_drawer.DrawerContent
 import com.example.fitnessapp.core.navigation_drawer.DrawerEvent
 import com.example.fitnessapp.core.navigation_drawer.DrawerItem
-import com.example.fitnessapp.core.util.drawerItemList
 import com.example.fitnessapp.core.util.duration
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -60,6 +59,7 @@ fun ActivitiesScreen(
     drawerState: DrawerState,
     pagerState: PagerState,
     selectedDrawerItem: DrawerItem?,
+    drawerItemList: List<DrawerItem>,
     drawerEventFlow: Flow<DrawerAction>,
     pagerFlow: Flow<Int>,
     onDrawerEvent: (DrawerEvent) -> Unit,
@@ -68,6 +68,7 @@ fun ActivitiesScreen(
     onFocusMove: () -> Unit,
     onKeyboardHide: () -> Unit,
     onNavigateToAddActivityScreen: () -> Unit,
+    onNavigateToNavigationDrawerDestination: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LaunchedEffect(key1 = true) {
@@ -78,6 +79,9 @@ fun ActivitiesScreen(
                 }
                 DrawerAction.OpenNavigationDrawer -> {
                     drawerState.open()
+                }
+                is DrawerAction.NavigateToDrawerDestination -> {
+                    onNavigateToNavigationDrawerDestination(action.route)
                 }
             }
         }

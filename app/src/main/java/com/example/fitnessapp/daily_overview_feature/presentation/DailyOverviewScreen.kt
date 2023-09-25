@@ -52,7 +52,6 @@ import com.example.fitnessapp.core.navigation_drawer.DrawerContent
 import com.example.fitnessapp.core.navigation_drawer.DrawerEvent
 import com.example.fitnessapp.core.navigation_drawer.DrawerItem
 import com.example.fitnessapp.core.util.capitalizeEachWord
-import com.example.fitnessapp.core.util.drawerItemList
 import com.example.fitnessapp.daily_overview_feature.data.mappers.toDailyNutritionCaloriesString
 import com.example.fitnessapp.daily_overview_feature.domain.model.Activity
 import com.example.fitnessapp.daily_overview_feature.domain.model.MealDetails
@@ -65,6 +64,7 @@ fun DailyOverviewScreen(
     state: OverviewState,
     bottomNavBarItems: List<NavigationBarItem>,
     selectedDrawerItem: DrawerItem?,
+    drawerItemList: List<DrawerItem>,
     eventFlow: Flow<DrawerAction>,
     snackbarFlow: Flow<String>,
     snackbarHostState: SnackbarHostState,
@@ -72,17 +72,20 @@ fun DailyOverviewScreen(
     onDrawerEvent: (DrawerEvent) -> Unit,
     onNavigateToNutritionScreen: () -> Unit,
     onNavigateToActivitiesScreen: () -> Unit,
+    onNavigateToNavigationDrawerDestination: (String) -> Unit,
     onBottomBarNavigate: (NavigationBarItem) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     LaunchedEffect(key1 = true) {
-        eventFlow.collectLatest { event ->
-            when(event) {
+        eventFlow.collectLatest { action ->
+            when(action) {
                 DrawerAction.CloseNavigationDrawer -> {
                     drawerState.close()
                 }
                 DrawerAction.OpenNavigationDrawer -> {
                     drawerState.open()
+                }
+                is DrawerAction.NavigateToDrawerDestination -> {
+                    onNavigateToNavigationDrawerDestination(action.route)
                 }
             }
         }
@@ -130,8 +133,7 @@ fun DailyOverviewScreen(
                 },
                 onBottomBarNavigate = onBottomBarNavigate
             )
-        },
-        modifier = modifier
+        }
     )
 }
 
@@ -140,7 +142,7 @@ fun DailyOverviewScreen(
 private fun DailyOverviewContent(
     caloriesGoal: Int,
     currentCaloriesCount: Int,
-    mealPlan: List<String>,
+    mealPlan: List<String>?,
     activities: List<Activity>,
     mealDetails: List<MealDetails>,
     bottomNavBarItems: List<NavigationBarItem>,
@@ -211,7 +213,7 @@ private fun DailyOverviewContent(
 
 @Composable
 private fun DailyNutritionSection(
-    mealPlan: List<String>,
+    mealPlan: List<String>?,
     mealDetails: List<MealDetails>,
     onMealAdd: () -> Unit,
     onMealExpand: (meal: String, areDetailsEmpty: Boolean) -> Unit,
@@ -239,7 +241,7 @@ private fun DailyNutritionSection(
                 )
             }
         }
-        mealPlan.onEach { meal ->
+        mealPlan?.onEach { meal ->
             val details = mealDetails.find { it.meal == meal }
             Column(
                 modifier = Modifier
