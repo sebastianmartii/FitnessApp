@@ -46,8 +46,11 @@ interface CurrentUserDao {
     @Query("SELECT * FROM CurrentUser")
     suspend fun getAllUsers(): List<CurrentUser>
 
-    @Query("UPDATE CurrentUser SET is_signed_in = :isSignedIn WHERE user_id = :userID")
-    suspend fun updateIsUserSignedIn(isSignedIn: Boolean, userID: Int)
+    @Query("UPDATE CurrentUser SET is_signed_in = 0 WHERE is_signed_in = 1")
+    suspend fun signOut()
+
+    @Query("UPDATE CurrentUser SET is_signed_in = 1 WHERE user_id = :userID")
+    suspend fun signIn(userID: Int)
 
     @Query("SELECT calories_goal FROM CurrentUser WHERE is_signed_in = 1")
     fun getCurrentUserCaloriesRequirements(): Flow<Int>

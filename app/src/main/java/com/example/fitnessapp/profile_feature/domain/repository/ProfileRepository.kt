@@ -16,7 +16,9 @@ interface ProfileRepository {
 
     fun getCaloriesGoals(age: Int, height: Int, weight: Int, gender: Gender, activityLevel: ActivityLevel): Flow<Resource<CaloriesRequirementsDto>>
 
-    suspend fun updateIsUserSignIn(isSignedIn: Boolean, userID: Int)
+    suspend fun signIn(userID: Int)
+
+    suspend fun signOut()
 
     fun getCurrentUser(): Flow<CurrentUser?>
 }

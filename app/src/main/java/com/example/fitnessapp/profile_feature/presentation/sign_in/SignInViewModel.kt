@@ -134,7 +134,7 @@ class SignInViewModel @Inject constructor(
             }
             is ProfileEvent.OnProfileChosen -> {
                 viewModelScope.launch {
-                    repo.updateIsUserSignIn(true, event.userID)
+                    repo.signIn(event.userID)
                 }
             }
         }
