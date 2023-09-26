@@ -128,4 +128,7 @@
     <string name="daily_activities_activities_supporting_text">
         Duration: %1$s, Calories Burned %2$.0f
     </string>
+    <string name="history_meal_calories">
+        %2$.0f kcal
+    </string>
 </resources>

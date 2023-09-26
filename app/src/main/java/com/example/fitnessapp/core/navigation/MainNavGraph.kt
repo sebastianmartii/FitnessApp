@@ -30,6 +30,9 @@ import com.example.fitnessapp.core.util.bottomNavBarItems
 import com.example.fitnessapp.core.util.sharedViewModel
 import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewScreen
 import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewViewModel
+import com.example.fitnessapp.history_feature.presentation.HistoryDetailsScreen
+import com.example.fitnessapp.history_feature.presentation.HistoryScreen
+import com.example.fitnessapp.history_feature.presentation.HistoryViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionScreen
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionTabRowItem
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionViewModel
@@ -68,6 +71,7 @@ fun NavGraphBuilder.mainNavGraph(
                 drawerState = drawerState,
                 state = state,
                 selectedDrawerItem = selectedDrawerItem,
+                drawerItemList = viewModel.drawerItemList,
                 bottomNavBarItems = bottomNavBarItems,
                 eventFlow = viewModel.drawerEventFlow,
                 snackbarFlow = viewModel.snackbarFlow,
@@ -79,6 +83,9 @@ fun NavGraphBuilder.mainNavGraph(
                 },
                 onNavigateToActivitiesScreen = {
                     navController.navigate(BottomNavBarDestinations.Activities.route)
+                },
+                onNavigateToNavigationDrawerDestination = { route ->
+                    navController.navigate(route)
                 },
                 onBottomBarNavigate = { navigationBarItem ->
                     navController.navigate(navigationBarItem.route)
@@ -127,6 +134,7 @@ fun NavGraphBuilder.mainNavGraph(
                 mealPlanBottomSheetScaffoldState = mealPlanBottomSheetScaffoldState,
                 mealPlanState = mealPlanState,
                 selectedDrawerItem = selectedDrawerItem,
+                drawerItemList = viewModel.drawerItemList,
                 drawerState = drawerState,
                 drawerEventFlow = viewModel.drawerEventFlow,
                 nutritionCalculatorEventFlow = nutritionCalculatorViewModel.eventFlow,
@@ -152,6 +160,9 @@ fun NavGraphBuilder.mainNavGraph(
                 },
                 onNavigateToRecipeDetails = {
                     navController.navigate(MainDestinations.RecipeDetails.route)
+                },
+                onNavigateToNavigationDrawerDestination = { route ->
+                    navController.navigate(route)
                 },
                 onBottomBarNavigate = { navigationBarItem ->
                     navController.navigate(navigationBarItem.route)
@@ -252,6 +263,7 @@ fun NavGraphBuilder.mainNavGraph(
                 bottomNavBarItems = bottomNavBarItems,
                 drawerState = drawerState,
                 pagerState = pagerState,
+                drawerItemList = viewModel.drawerItemList,
                 selectedDrawerItem = selectedDrawerItem,
                 drawerEventFlow = viewModel.drawerEventFlow,
                 pagerFlow = viewModel.pagerFlow,
@@ -268,6 +280,9 @@ fun NavGraphBuilder.mainNavGraph(
                 },
                 onNavigateToAddActivityScreen = {
                     navController.navigate(MainDestinations.ActivityCreator.route)
+                },
+                onNavigateToNavigationDrawerDestination = { route ->
+                    navController.navigate(route)
                 }
             )
         }
@@ -296,6 +311,47 @@ fun NavGraphBuilder.mainNavGraph(
                 },
                 onKeyboardHide = {
                     keyboardController?.hide()
+                }
+            )
+        }
+        composable(
+            route = NavigationDrawerDestinations.History.route
+        ) {entry ->
+            val viewModel = entry.sharedViewModel<HistoryViewModel>(navController)
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            val selectedDrawerItem by viewModel.selectedDrawerItem.collectAsStateWithLifecycle()
+            val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+            HistoryScreen(
+                state = state,
+                drawerState = drawerState,
+                drawerItemList = viewModel.drawerItemList,
+                selectedDrawerItem = selectedDrawerItem,
+                drawerEventFlow = viewModel.drawerEventFlow,
+                onDrawerEvent = viewModel::onDrawerEvent,
+                onNavigateToHistoryDetailsScreen = { page ->
+                    viewModel.setInitialPage(page)
+                    navController.navigate(MainDestinations.HistoryDetails.route)
+                },
+                onNavigateToNavigationDrawerDestination = { route ->
+                    navController.navigate(route)
+                }
+            )
+        }
+        composable(
+            route = MainDestinations.HistoryDetails.route
+        ) { entry ->
+            val viewModel = entry.sharedViewModel<HistoryViewModel>(navController)
+            val state by viewModel.state.collectAsStateWithLifecycle()
+
+            val initialPage by viewModel.initialPage.collectAsStateWithLifecycle()
+            val pagerState = rememberPagerState(pageCount = {state.currentMonthDaysNumber}, initialPage = initialPage)
+
+            HistoryDetailsScreen(
+                state = state,
+                pagerState = pagerState,
+                onNavigateBack = {
+                    navController.popBackStack()
                 }
             )
         }

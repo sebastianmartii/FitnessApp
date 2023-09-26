@@ -5,4 +5,5 @@ sealed class MainDestinations(val route: String) {
     object FoodNutritionSearch : MainDestinations(route = "food_nutrition_search")
     object RecipeDetails : MainDestinations(route = "recipe_details")
     object ActivityCreator : MainDestinations(route = "activity_creator")
+    object HistoryDetails : MainDestinations(route = "history_details")
 }
