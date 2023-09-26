@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
                         LaunchedEffect(key1 = true) {
                             dailyOverviewDataManager.savedDate.collectLatest { savedDate ->
                                 if (savedDate != currentDate) {
-                                    dailyOverviewDataManager.resetDailyOverview()
+                                    dailyOverviewDataManager.resetDailyOverview(day, month, year)
                                     dailyOverviewDataManager.saveCurrentDate(currentDate)
                                 }
                             }

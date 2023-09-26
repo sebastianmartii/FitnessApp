@@ -14,6 +14,8 @@ import com.example.fitnessapp.core.util.DailyOverviewDataManager
 import com.example.fitnessapp.core.util.GsonParser
 import com.example.fitnessapp.daily_overview_feature.data.local.dao.DailyActivitiesDao
 import com.example.fitnessapp.daily_overview_feature.data.local.dao.DailyNutritionDao
+import com.example.fitnessapp.history_feature.data.local.dao.ActivityHistoryDao
+import com.example.fitnessapp.history_feature.data.local.dao.NutritionHistoryDao
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.MealPlanTypeConverters
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.RecipeConverters
 import com.example.fitnessapp.nutrition_calculator_feature.data.remote.nutrition.NutritionCalculatorInterceptor
@@ -42,9 +44,11 @@ class CoreModule {
     fun provideDailyOverviewDataManager(
         dataStore: DataStore<Preferences>,
         dailyNutritionDao: DailyNutritionDao,
-        dailyActivitiesDao: DailyActivitiesDao
+        dailyActivitiesDao: DailyActivitiesDao,
+        nutritionHistoryDao: NutritionHistoryDao,
+        activityHistoryDao: ActivityHistoryDao
     ): DailyOverviewDataManager {
-        return DailyOverviewDataManager(dataStore, dailyNutritionDao, dailyActivitiesDao)
+        return DailyOverviewDataManager(dataStore, dailyNutritionDao, dailyActivitiesDao, nutritionHistoryDao, activityHistoryDao)
     }
 
 
