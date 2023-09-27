@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface OverviewRepository {
 
-    fun getCurrentUserCaloriesRequirements(): Flow<Int>
+    fun getCurrentUserCaloriesRequirements(): Flow<Int?>
     fun getMeals(): Flow<List<String>>
     fun getMealDetails(): Flow<List<DailyNutritionEntity>>
     fun getActivities(): Flow<List<DailyActivitiesEntity>>

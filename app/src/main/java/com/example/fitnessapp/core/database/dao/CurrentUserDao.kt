@@ -53,5 +53,5 @@ interface CurrentUserDao {
     suspend fun signIn(userID: Int)
 
     @Query("SELECT calories_goal FROM CurrentUser WHERE is_signed_in = 1")
-    fun getCurrentUserCaloriesRequirements(): Flow<Int>
+    fun getCurrentUserCaloriesRequirements(): Flow<Int?>
 }

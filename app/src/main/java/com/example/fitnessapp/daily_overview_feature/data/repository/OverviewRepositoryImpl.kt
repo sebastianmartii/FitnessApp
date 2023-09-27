@@ -20,9 +20,7 @@ class OverviewRepositoryImpl(
     private val mealDao: MealDao
 ) : OverviewRepository {
 
-    override fun getCurrentUserCaloriesRequirements(): Flow<Int> {
-        return currentUserDao.getCurrentUserCaloriesRequirements()
-    }
+    override fun getCurrentUserCaloriesRequirements(): Flow<Int?> = currentUserDao.getCurrentUserCaloriesRequirements()
 
     override fun getMeals(): Flow<List<String>> = mealDao.getMeals().map { json ->
         val listType = object : TypeToken<List<String>>() {}.type

@@ -34,10 +34,12 @@ class DailyOverviewViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             repo.getCurrentUserCaloriesRequirements().collect { caloriesGoal ->
-                _state.update {
-                    it.copy(
-                        caloriesGoal = caloriesGoal
-                    )
+                if (caloriesGoal != null) {
+                    _state.update {
+                        it.copy(
+                            caloriesGoal = caloriesGoal
+                        )
+                    }
                 }
             }
         }
