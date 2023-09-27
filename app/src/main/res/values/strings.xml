@@ -129,6 +129,7 @@
         Duration: %1$s, Calories Burned %2$.0f
     </string>
     <string name="history_meal_calories">
-        %2$.0f kcal
+        %1$.0f kcal
     </string>
+    <string name="history_details_empty_screen_text">Nothing to display here</string>
 </resources>
