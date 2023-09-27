@@ -28,12 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.fitnessapp.R
 import com.example.fitnessapp.profile_feature.domain.model.Gender
 import com.example.fitnessapp.profile_feature.domain.model.UserProfile
-import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -41,6 +39,7 @@ fun ProfileListScreen(
     profileList: List<UserProfile>,
     onEvent: (ProfileEvent) -> Unit,
     onNavigateBack: () -> Unit,
+    onNavigateToOverviewScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -77,6 +76,7 @@ fun ProfileListScreen(
                         gender = it.gender,
                         modifier = Modifier.clickable {
                             onEvent(ProfileEvent.OnProfileChosen(it.userID))
+                            onNavigateToOverviewScreen()
                         }
                     )
                 }
@@ -141,21 +141,5 @@ private fun ProfileItem(
                 fontWeight = FontWeight.SemiBold
             )
         }
-    }
-}
-
-@Preview
-@Composable
-private fun ProfileListScreenPreview() {
-    FitnessAppTheme {
-        ProfileListScreen(
-            profileList = listOf(
-                UserProfile(0,"Sebastian", Gender.MALE),
-                UserProfile(1,"Marek", Gender.MALE),
-                UserProfile(2,"Ania", Gender.FEMALE),
-            ),
-            onEvent = {},
-            onNavigateBack = {}
-        )
     }
 }

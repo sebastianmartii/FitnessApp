@@ -66,6 +66,7 @@ fun NavGraphBuilder.signInNavGraph(navController: NavController) {
         composable(route = SignInDestinations.ActivityLevelAndCaloriesGoal.route) { entry ->
             val viewModel = entry.sharedViewModel<SignInViewModel>(navController)
             val state by viewModel.state.collectAsStateWithLifecycle()
+
             ActivityLevelAndCaloriesGoalScreen(
                 activityLevel = state.activityLevel,
                 caloriesGoal = state.caloriesGoal,
@@ -84,6 +85,7 @@ fun NavGraphBuilder.signInNavGraph(navController: NavController) {
         composable(route = SignInDestinations.CalculatedCalories.route) { entry ->
             val viewModel = entry.sharedViewModel<SignInViewModel>(navController)
             val state by viewModel.state.collectAsStateWithLifecycle()
+
             CaloriesGoalListScreen(
                 calories = state.caloriesGoal,
                 calculatedCaloriesList = state.calculatedCalories,
@@ -97,11 +99,15 @@ fun NavGraphBuilder.signInNavGraph(navController: NavController) {
         composable(route = SignInDestinations.ProfileList.route) { entry ->
             val viewModel = entry.sharedViewModel<SignInViewModel>(navController)
             val state by viewModel.state.collectAsStateWithLifecycle()
+
             ProfileListScreen(
                 profileList = state.profileList,
                 onEvent = viewModel::onEvent,
                 onNavigateBack = {
                     navController.popBackStack()
+                },
+                onNavigateToOverviewScreen = {
+                    navController.navigate(NavGraphDestinations.MainNavGraph.route)
                 }
             )
         }
