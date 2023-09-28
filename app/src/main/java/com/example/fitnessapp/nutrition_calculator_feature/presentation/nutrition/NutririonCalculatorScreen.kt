@@ -4,10 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -55,16 +51,6 @@ fun NutritionCalculatorScreen(
                         ),
                         style = MaterialTheme.typography.bodySmall
                     )
-                },
-                trailingContent = {
-                    IconButton(onClick = {
-                        onEvent(NutritionCalculatorEvent.OnFoodItemDelete(foodItem))
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = stringResource(id = R.string.delete_food_item)
-                        )
-                    }
                 },
                 modifier = Modifier.clickable {
                     onEvent(NutritionCalculatorEvent.OnFoodItemSelectedChange(foodItem, index))
