@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 @HiltViewModel
 class DailyOverviewViewModel @Inject constructor(
@@ -48,7 +49,7 @@ class DailyOverviewViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         mealDetails = mapDailyNutritionEntityToMealDetails(dailyNutritionEntities),
-                        currentCaloriesCount = dailyNutritionEntities.sumOf { dailyNutritionEntity -> dailyNutritionEntity.calories.toInt() }
+                        currentCaloriesCount = dailyNutritionEntities.sumOf { dailyNutritionEntity -> dailyNutritionEntity.calories.roundToInt() }
                     )
                 }
             }
