@@ -58,11 +58,11 @@ class DailyOverviewDataManager(
 
     private suspend fun addDailyNutritionToHistory(day: Int, month: Int, year: Int) {
         val nutrition = dailyNutritionDao.getDailyNutrition().first()
-        nutritionHistoryDao.addToHistory(nutrition.map { it.toNutritionHistoryEntity(day, month, year) })
+        nutritionHistoryDao.addToHistory(nutrition.map { it.toNutritionHistoryEntity(day - 1, month, year) })
     }
 
     private suspend fun addDailyActivityToHistory(day: Int, month: Int, year: Int) {
         val activities = dailyActivitiesDao.getDailyActivities().first()
-        activityHistoryDao.addToHistory(activities.map { it.toActivityHistoryEntity(day, month, year) })
+        activityHistoryDao.addToHistory(activities.map { it.toActivityHistoryEntity(day - 1, month, year) })
     }
 }
