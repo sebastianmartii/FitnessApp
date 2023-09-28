@@ -1,5 +1,6 @@
 package com.example.fitnessapp.daily_overview_feature.presentation
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -266,17 +267,19 @@ private fun DailyNutritionSection(
                         style = MaterialTheme.typography.titleMedium
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    IconButton(
-                        onClick = {
-                            onMealReset(meal)
-                        },
-                        modifier = Modifier
-                            .size(28.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = stringResource(id = R.string.delete_meal)
-                        )
+                    AnimatedVisibility(visible = details?.areVisible == true) {
+                        IconButton(
+                            onClick = {
+                                onMealReset(meal)
+                            },
+                            modifier = Modifier
+                                .size(28.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = stringResource(id = R.string.delete_meal)
+                            )
+                        }
                     }
                 }
                 if (details?.areVisible == true) {
