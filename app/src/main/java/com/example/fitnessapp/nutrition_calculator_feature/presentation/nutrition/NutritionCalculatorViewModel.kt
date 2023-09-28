@@ -58,7 +58,12 @@ class NutritionCalculatorViewModel @Inject constructor(
             }
             is NutritionCalculatorEvent.OnFoodItemDelete -> {
                 viewModelScope.launch {
-                    repo.deleteFoodItem(event.foodItem)
+                    repo.deleteFoodItems(_state.value.cachedProducts.filter { it.isSelected })
+                    _state.update {
+                        it.copy(
+                            isFABVisible = false
+                        )
+                    }
                 }
             }
             is NutritionCalculatorEvent.OnFoodItemsAdd -> {
@@ -80,6 +85,11 @@ class NutritionCalculatorViewModel @Inject constructor(
                         _state.value.cachedProducts.filter { it.isSelected },
                         event.meal!!
                     )
+                    _state.update {
+                        it.copy(
+                            selectedMeal = null
+                        )
+                    }
                 }
             }
             NutritionCalculatorEvent.OnMealSelectionDialogDismiss -> {

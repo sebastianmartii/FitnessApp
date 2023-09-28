@@ -265,6 +265,10 @@ private fun NutritionScreenContent(
                         when(page) {
                             0 -> {
                                 CalculatorTopBarActions(
+                                    isDeleteFoodItemButtonVisible = pagerState.currentPage == 0 && nutritionCalculatorState.isFABVisible,
+                                    onDeleteSelectedFoodItems = {
+                                        onNutritionCalculatorEvent(NutritionCalculatorEvent.OnFoodItemDelete)
+                                    },
                                     onNavigateToFoodItemCreator = onNavigateToFoodItemCreator,
                                     onNavigateToSearchScreen = onNavigateToSearchScreen
                                 )
