@@ -13,7 +13,7 @@ interface NutritionCalculatorRepository {
 
     fun getFoodNutrition(query: String): Flow<Resource<List<FoodItem>>>
 
-    suspend fun deleteFoodItem(foodItem: FoodItem)
+    suspend fun deleteFoodItems(foodItems: List<FoodItem>)
 
     suspend fun cacheChosenProducts(products: List<FoodItem>)
 

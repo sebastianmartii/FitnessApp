@@ -49,18 +49,8 @@ class NutritionCalculatorRepositoryImpl(
         foodItemDao.insertAllFoodItems(products.map { it.toFoodItemEntity() })
     }
 
-    override suspend fun deleteFoodItem(foodItem: FoodItem) {
-        foodItemDao.deleteFoodItem(
-            name = foodItem.name,
-            servingSize = foodItem.servingSize,
-            calories = foodItem.calories,
-            carbs = foodItem.carbs,
-            protein = foodItem.protein,
-            fat = foodItem.totalFat,
-            saturatedFat = foodItem.saturatedFat,
-            fiber = foodItem.fiber,
-            sugar = foodItem.sugar
-        )
+    override suspend fun deleteFoodItems(foodItems: List<FoodItem>) {
+        foodItemDao.deleteFoodItems(foodItems)
     }
 
     override suspend fun addFoodItemsToDailyNutrition(list: List<FoodItem>, meal: String) {
