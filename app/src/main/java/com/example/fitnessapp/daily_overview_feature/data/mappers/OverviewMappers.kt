@@ -5,6 +5,7 @@ import com.example.fitnessapp.daily_overview_feature.data.local.entity.DailyActi
 import com.example.fitnessapp.daily_overview_feature.data.local.entity.DailyNutritionEntity
 import com.example.fitnessapp.daily_overview_feature.domain.model.Activity
 import com.example.fitnessapp.daily_overview_feature.domain.model.MealDetails
+import kotlin.math.roundToInt
 
 
 fun mapDailyNutritionEntityToMealDetails(entities: List<DailyNutritionEntity>): List<MealDetails> {
@@ -43,5 +44,5 @@ fun MealDetails?.toDailyNutritionCaloriesString(): String {
     if (this == null) {
         return ""
     }
-    return "${this.calories.toInt()}kcal"
+    return "${this.calories.roundToInt()}kcal"
 }

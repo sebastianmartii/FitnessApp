@@ -194,7 +194,7 @@ private fun DailyOverviewContent(
             CustomLinearCaloriesProgressBar(
                 progress = progress
             )
-            Spacer(modifier = Modifier.height(128.dp))
+            Spacer(modifier = Modifier.height(64.dp))
             DailyNutritionSection(
                 mealPlan = mealPlan,
                 mealDetails = mealDetails,
