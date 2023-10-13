@@ -18,7 +18,7 @@ fun mapDailyNutritionEntityToMealDetails(entities: List<DailyNutritionEntity>): 
             meal = meal,
             ingredients = mealEntities.map { it.name },
             servingSize = mealEntities.sumOf { it.servingSize },
-            calories = mealEntities.sumOf { it.calories },
+            calories = mealEntities.sumOf { it.calories.roundToInt() }.toDouble(),
             carbs = mealEntities.sumOf { it.carbs },
             protein = mealEntities.sumOf { it.protein },
             fat = mealEntities.sumOf { it.fat }
