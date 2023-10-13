@@ -3,17 +3,21 @@ package com.example.fitnessapp.history_feature.presentation
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.core.database.dao.CurrentUserDao
 import com.example.fitnessapp.core.navigation_drawer.NavigationDrawerViewModel
-import com.example.fitnessapp.core.util.calendarYear
 import com.example.fitnessapp.history_feature.data.mappers.toActivity
 import com.example.fitnessapp.history_feature.data.mappers.toMeal
 import com.example.fitnessapp.history_feature.domain.repository.HistoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,30 +27,24 @@ class HistoryViewModel @Inject constructor(
     currentUserDao: CurrentUserDao
 ) : NavigationDrawerViewModel(currentUserDao) {
 
-    private val _initialPage = MutableStateFlow(0)
-    val initialPage = _initialPage.asStateFlow()
+    private val _selectedTimeMillis = MutableStateFlow(System.currentTimeMillis())
+    private val _dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
-    private val _currentMonthDaysNumber = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-
-    private val _calendarPrefix = calculateCalendarPrefix(calendar.get(Calendar.DAY_OF_MONTH), toWeekday(calendar.get(Calendar.DAY_OF_WEEK)))
-
-    private val _state = MutableStateFlow(
-        HistoryState(
-            year = calendar.get(Calendar.YEAR),
-            currentMonth = calendarYear[calendar.get(Calendar.MONTH) + 1] ?: "",
-            currentMonthDaysNumber = _currentMonthDaysNumber,
-            calendarDaysPrefix = _calendarPrefix,
-            calendarDaysSuffix = calculateCalendarSuffix(_currentMonthDaysNumber, _calendarPrefix)
+    private val _state = MutableStateFlow(HistoryState())
+    val state = _state.combine(_selectedTimeMillis) { state, selectedTimeMillis ->
+        state.copy(
+            selectedTimeMillis = selectedTimeMillis,
+            selectedDateString = _dateFormat.format(Date(selectedTimeMillis)),
+            selectedDay = getSelectedDayFromTimeMillis(selectedTimeMillis)
         )
-    )
-    val state = _state.asStateFlow()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), HistoryState())
 
     init {
         viewModelScope.launch {
             repo.getMonthActivities(calendar.get(Calendar.MONTH)).collectLatest { activityHistoryEntities ->
                 _state.update {
                     it.copy(
-                        currentMonthActivities = activityHistoryEntities.map { entity -> entity.toActivity() }
+                        activities = activityHistoryEntities.map { entity -> entity.toActivity() }
                     )
                 }
             }
@@ -55,42 +53,44 @@ class HistoryViewModel @Inject constructor(
             repo.getMonthNutrition(calendar.get(Calendar.MONTH)).collectLatest { nutritionHistoryEntities ->
                 _state.update {
                     it.copy(
-                        currentMonthNutrition = nutritionHistoryEntities.map { entities -> entities.toMeal() }
+                        nutrition = nutritionHistoryEntities.map { entities -> entities.toMeal() }
                     )
                 }
             }
         }
     }
 
-    fun setInitialPage(page: Int) {
-        _initialPage.value = page
-    }
-
-    private fun calculateCalendarSuffix(monthDaysNumber: Int, calendarOffset: Int): Int {
-        return 7 - ((monthDaysNumber + calendarOffset)%7)
-    }
-
-    private fun calculateCalendarPrefix(monthDay: Int, weekday: Int): Int {
-        var dayOfTheMonth = monthDay
-        while(dayOfTheMonth>7) {
-            dayOfTheMonth -= 7
+    fun onEvent(event: HistoryEvent) {
+        when(event) {
+            is HistoryEvent.OnDatePickerDialogDateConfirm -> {
+                if (event.selectedDateMillis != null) {
+                    _selectedTimeMillis.value = event.selectedDateMillis
+                }
+                _state.update {
+                    it.copy(
+                        isDatePickerDialogVisible = false
+                    )
+                }
+            }
+            is HistoryEvent.OnDatePickerDialogDismiss -> {
+                _state.update {
+                    it.copy(
+                        isDatePickerDialogVisible = false
+                    )
+                }
+            }
+            is HistoryEvent.OnDatePickerDialogShow -> {
+                _state.update {
+                    it.copy(
+                        isDatePickerDialogVisible = true
+                    )
+                }
+            }
         }
-        return when {
-            dayOfTheMonth == weekday -> {
-                0
-            }
-            dayOfTheMonth < weekday -> {
-                weekday - dayOfTheMonth
-            }
-            else -> {
-                7 - (dayOfTheMonth - weekday)
-            }
-        }
     }
 
-    private fun toWeekday(day: Int): Int {
-        return if (day == 1) {
-            7
-        } else day - 1
+    private fun getSelectedDayFromTimeMillis(selectedTimeMillis: Long): Int {
+        calendar.timeInMillis = selectedTimeMillis
+        return calendar.get(Calendar.DAY_OF_MONTH)
     }
 }

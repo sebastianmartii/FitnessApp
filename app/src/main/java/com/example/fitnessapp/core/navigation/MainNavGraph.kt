@@ -1,12 +1,16 @@
 package com.example.fitnessapp.core.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.getValue
@@ -30,7 +34,6 @@ import com.example.fitnessapp.core.util.bottomNavBarItems
 import com.example.fitnessapp.core.util.sharedViewModel
 import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewScreen
 import com.example.fitnessapp.daily_overview_feature.presentation.DailyOverviewViewModel
-import com.example.fitnessapp.history_feature.presentation.HistoryDetailsScreen
 import com.example.fitnessapp.history_feature.presentation.HistoryScreen
 import com.example.fitnessapp.history_feature.presentation.HistoryViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.NutritionScreen
@@ -46,7 +49,9 @@ import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutritio
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeDetailsScreen
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchEvent
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchViewModel
+import java.time.Instant
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 fun NavGraphBuilder.mainNavGraph(
     navController: NavController
@@ -316,42 +321,28 @@ fun NavGraphBuilder.mainNavGraph(
         }
         composable(
             route = NavigationDrawerDestinations.History.route
-        ) {entry ->
-            val viewModel = entry.sharedViewModel<HistoryViewModel>(navController)
+        ) {
+            val viewModel = hiltViewModel<HistoryViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
             val selectedDrawerItem by viewModel.selectedDrawerItem.collectAsStateWithLifecycle()
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
+            val datePickerState = rememberDatePickerState(
+                initialSelectedDateMillis = Instant.now().toEpochMilli(),
+                initialDisplayMode = DisplayMode.Picker,
+            )
+
             HistoryScreen(
                 state = state,
+                datePickerState = datePickerState,
                 drawerState = drawerState,
                 drawerItemList = viewModel.drawerItemList,
                 selectedDrawerItem = selectedDrawerItem,
                 drawerEventFlow = viewModel.drawerEventFlow,
                 onDrawerEvent = viewModel::onDrawerEvent,
-                onNavigateToHistoryDetailsScreen = { page ->
-                    viewModel.setInitialPage(page)
-                    navController.navigate(MainDestinations.HistoryDetails.route)
-                },
+                onEvent = viewModel::onEvent,
                 onNavigateToNavigationDrawerDestination = { route ->
                     navController.navigate(route)
-                }
-            )
-        }
-        composable(
-            route = MainDestinations.HistoryDetails.route
-        ) { entry ->
-            val viewModel = entry.sharedViewModel<HistoryViewModel>(navController)
-            val state by viewModel.state.collectAsStateWithLifecycle()
-
-            val initialPage by viewModel.initialPage.collectAsStateWithLifecycle()
-            val pagerState = rememberPagerState(pageCount = {state.currentMonthDaysNumber}, initialPage = initialPage)
-
-            HistoryDetailsScreen(
-                state = state,
-                pagerState = pagerState,
-                onNavigateBack = {
-                    navController.popBackStack()
                 }
             )
         }

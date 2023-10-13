@@ -1,6 +1,5 @@
 package com.example.fitnessapp.history_feature.presentation
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,19 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,51 +28,10 @@ import com.example.fitnessapp.activities_feature.data.mappers.toDurationString
 import com.example.fitnessapp.core.util.capitalizeEachWord
 import com.example.fitnessapp.core.util.toDuration
 import com.example.fitnessapp.daily_overview_feature.domain.model.MealDetails
-import com.example.fitnessapp.history_feature.data.mappers.mapMealToMealDetails
 import com.example.fitnessapp.history_feature.domain.model.Activity
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HistoryDetailsScreen(
-    state: HistoryState,
-    pagerState: PagerState,
-    onNavigateBack: () -> Unit
-) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = "${pagerState.currentPage + 1} ${state.currentMonth}")
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = stringResource(id = R.string.back_button)
-                        )
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
-        HorizontalPager(
-            state = pagerState,
-            pageContent = {page ->
-                HistoryDetailsPageContent(
-                    performedActivities = state.currentMonthActivities.filter { it.day == (page + 1) },
-                    nutrition = mapMealToMealDetails(state.currentMonthNutrition, (page + 1))
-                )
-            },
-            verticalAlignment = Alignment.Top,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        )
-    }
-}
-
-@Composable
-private fun HistoryDetailsPageContent(
     performedActivities: List<Activity>,
     nutrition: List<MealDetails>,
     modifier: Modifier = Modifier
