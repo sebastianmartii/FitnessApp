@@ -47,7 +47,7 @@ import com.example.fitnessapp.ui.theme.FitnessAppTheme
 fun CaloriesGoalListScreen(
     calories: String,
     calculatedCaloriesList: List<CalculatedCalories>,
-    onEvent: (ProfileEvent) -> Unit,
+    onEvent: (SignInEvent) -> Unit,
     calculate: () -> Unit,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier
@@ -89,7 +89,7 @@ fun CaloriesGoalListScreen(
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .clickable {
-                            onEvent(ProfileEvent.OnCaloriesGoalChange(it.calories.toCaloriesString()))
+                            onEvent(SignInEvent.OnCaloriesGoalChange(it.calories.toCaloriesString()))
                         }
                 )
                 HorizontalDivider(

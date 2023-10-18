@@ -50,7 +50,7 @@ import com.example.fitnessapp.ui.theme.FitnessAppTheme
 fun ActivityLevelAndCaloriesGoalScreen(
     activityLevel: ActivityLevel,
     caloriesGoal: String,
-    onEvent: (ProfileEvent) -> Unit,
+    onEvent: (SignInEvent) -> Unit,
     onNavigateToOverviewScreen: () -> Unit,
     onNavigateToCalculatedCaloriesScreen: () -> Unit,
     onNavigateBack: () -> Unit,
@@ -144,7 +144,7 @@ fun ActivityLevelAndCaloriesGoalScreen(
                             FilterChip(
                                 selected = activityLevel == it,
                                 onClick = {
-                                    onEvent(ProfileEvent.OnActivityLevelChange(it))
+                                    onEvent(SignInEvent.OnActivityLevelChange(it))
                                 },
                                 label = {
                                     Text(text = it.toActivityLevelString())
@@ -174,7 +174,7 @@ fun ActivityLevelAndCaloriesGoalScreen(
                 OutlinedTextField(
                     value = caloriesGoal,
                     onValueChange = {
-                        onEvent(ProfileEvent.OnCaloriesGoalChange(it))
+                        onEvent(SignInEvent.OnCaloriesGoalChange(it))
                     },
                     trailingIcon = {
                         TextButton(onClick = onNavigateToCalculatedCaloriesScreen) {
@@ -207,7 +207,7 @@ fun ActivityLevelAndCaloriesGoalScreen(
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Button(
                         onClick = {
-                            onEvent(ProfileEvent.OnSignInComplete)
+                            onEvent(SignInEvent.OnSignInComplete)
                             onNavigateToOverviewScreen()
                         },
                         enabled = Validators.areCaloriesValid(caloriesGoal) && activityLevel != ActivityLevel.LEVEL_0,

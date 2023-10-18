@@ -57,58 +57,58 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: ProfileEvent) {
+    fun onEvent(event: SignInEvent) {
         when(event) {
-            is ProfileEvent.OnNameChange -> {
+            is SignInEvent.OnNameChange -> {
                 _state.update {
                     it.copy(
                         name = event.name
                     )
                 }
             }
-            is ProfileEvent.OnGenderChange -> {
+            is SignInEvent.OnGenderChange -> {
                 _state.update {
                     it.copy(
                         gender = event.gender
                     )
                 }
             }
-            is ProfileEvent.OnAgeChange -> {
+            is SignInEvent.OnAgeChange -> {
                 _state.update {
                     it.copy(
                         age = event.age
                     )
                 }
             }
-            is ProfileEvent.OnHeightChange -> {
+            is SignInEvent.OnHeightChange -> {
                 _state.update {
                     it.copy(
                         height = event.height
                     )
                 }
             }
-            is ProfileEvent.OnWeightChange -> {
+            is SignInEvent.OnWeightChange -> {
                 _state.update {
                     it.copy(
                         weight = event.weight
                     )
                 }
             }
-            is ProfileEvent.OnActivityLevelChange -> {
+            is SignInEvent.OnActivityLevelChange -> {
                 _state.update {
                     it.copy(
                         activityLevel = event.activityLevel
                     )
                 }
             }
-            is ProfileEvent.OnCaloriesGoalChange -> {
+            is SignInEvent.OnCaloriesGoalChange -> {
                 _state.update {
                     it.copy(
                         caloriesGoal = event.caloriesGoal
                     )
                 }
             }
-            ProfileEvent.OnSignInComplete -> {
+            SignInEvent.OnSignInComplete -> {
                 viewModelScope.launch {
                     repo.addUser(
                         _state.value.name,
@@ -121,7 +121,7 @@ class SignInViewModel @Inject constructor(
                     )
                 }
             }
-            ProfileEvent.OnProfileSelect -> {
+            SignInEvent.OnSignInSelect -> {
                 viewModelScope.launch {
                     repo.getUserProfiles().also { userProfileList ->
                         _state.update {
@@ -132,7 +132,7 @@ class SignInViewModel @Inject constructor(
                     }
                 }
             }
-            is ProfileEvent.OnProfileChosen -> {
+            is SignInEvent.OnSignInChosen -> {
                 viewModelScope.launch {
                     repo.signIn(event.userID)
                 }

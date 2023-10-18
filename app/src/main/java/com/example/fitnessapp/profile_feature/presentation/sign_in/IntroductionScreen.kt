@@ -41,7 +41,7 @@ import com.example.fitnessapp.ui.theme.FitnessAppTheme
 fun IntroductionScreen(
     name: String,
     gender: Gender,
-    onEvent: (ProfileEvent) -> Unit,
+    onEvent: (SignInEvent) -> Unit,
     onNavigateToMeasurementsScreen: () -> Unit,
     onNavigateToProfileListScreen: () -> Unit,
     modifier: Modifier = Modifier
@@ -71,7 +71,7 @@ fun IntroductionScreen(
                 OutlinedTextField(
                     value = name,
                     onValueChange = {
-                        onEvent(ProfileEvent.OnNameChange(it))
+                        onEvent(SignInEvent.OnNameChange(it))
                     },
                     label = {
                         Text(text = stringResource(id = R.string.username))
@@ -96,7 +96,7 @@ fun IntroductionScreen(
                         FilterChip(
                             selected = gender == it,
                             onClick = {
-                                onEvent(ProfileEvent.OnGenderChange(it))
+                                onEvent(SignInEvent.OnGenderChange(it))
                             },
                             label = {
                                 Text(text = it.toGenderString())
@@ -114,7 +114,7 @@ fun IntroductionScreen(
                         FilterChip(
                             selected = gender == it,
                             onClick = {
-                                onEvent(ProfileEvent.OnGenderChange(it))
+                                onEvent(SignInEvent.OnGenderChange(it))
                             },
                             label = {
                                 Text(text = it.toGenderString())
@@ -144,7 +144,7 @@ fun IntroductionScreen(
                         .fillMaxWidth()
                         .padding(bottom = 8.dp)
                         .clickable {
-                            onEvent(ProfileEvent.OnProfileSelect)
+                            onEvent(SignInEvent.OnSignInSelect)
                             onNavigateToProfileListScreen()
                         }
                 )

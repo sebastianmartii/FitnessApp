@@ -39,7 +39,7 @@ fun MeasurementsScreen(
     age: String,
     height: String,
     weight: String,
-    onEvent: (ProfileEvent) -> Unit,
+    onEvent: (SignInEvent) -> Unit,
     onNavigateToActivityLevelAndCaloriesGoalScreen: () -> Unit,
     onNavigateBack: () -> Unit,
     onFocusMove: () -> Unit,
@@ -93,7 +93,7 @@ fun MeasurementsScreen(
                 OutlinedTextField(
                     value = height,
                     onValueChange = {
-                        onEvent(ProfileEvent.OnHeightChange(it))
+                        onEvent(SignInEvent.OnHeightChange(it))
                     },
                     label = {
                         Text(text = stringResource(id = R.string.height))
@@ -126,7 +126,7 @@ fun MeasurementsScreen(
                 OutlinedTextField(
                     value = weight,
                     onValueChange = {
-                        onEvent(ProfileEvent.OnWeightChange(it))
+                        onEvent(SignInEvent.OnWeightChange(it))
                     },
                     label = {
                         Text(text = stringResource(id = R.string.weight))
@@ -166,7 +166,7 @@ fun MeasurementsScreen(
                 OutlinedTextField(
                     value = age,
                     onValueChange = {
-                        onEvent(ProfileEvent.OnAgeChange(it))
+                        onEvent(SignInEvent.OnAgeChange(it))
                     },
                     label = {
                         Text(text = stringResource(id = R.string.age))
