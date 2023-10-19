@@ -29,6 +29,7 @@ abstract class NavigationDrawerViewModel(
         DrawerItem(
             label = "Profile",
             icon = Icons.Default.Person,
+            route = NavigationDrawerDestinations.Profile.route
         ),
         DrawerItem(
             label = "History",
