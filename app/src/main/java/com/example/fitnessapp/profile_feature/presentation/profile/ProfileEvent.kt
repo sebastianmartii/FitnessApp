@@ -13,4 +13,6 @@ sealed interface ProfileEvent {
     data class OnCaloriesGoalChange(val newCaloriesGoal: String) : ProfileEvent
     object OnCaloriesGoalCalculate : ProfileEvent
     data class OnCaloriesGoalSelect(val selectedCaloriesGoal: String) : ProfileEvent
+    data class OnGenderExpandedChange(val expanded: Boolean) : ProfileEvent
+    data class OnActivityLevelExpandedChange(val expanded: Boolean) : ProfileEvent
 }

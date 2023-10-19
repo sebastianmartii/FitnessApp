@@ -11,4 +11,6 @@ data class ProfileState(
     val weight: String = "",
     val height: String = "",
     val activityLevel: ActivityLevel = ActivityLevel.LEVEL_0,
+    val genderExpanded: Boolean = false,
+    val activityLevelExpanded: Boolean = false
 )
