@@ -16,26 +16,26 @@ interface CurrentUserDao {
     @Delete
     suspend fun deleteUser(user: CurrentUser)
 
-    @Query("UPDATE CurrentUser SET name = :newName WHERE user_id = :userID")
-    suspend fun updateName(newName: String, userID: Int)
+    @Query("UPDATE CurrentUser SET name = :newName WHERE is_signed_in = 1")
+    suspend fun updateName(newName: String)
 
-    @Query("UPDATE CurrentUser SET age = :newAge WHERE user_id = :userID")
-    suspend fun updateAge(newAge: Int, userID: Int)
+    @Query("UPDATE CurrentUser SET age = :newAge WHERE  is_signed_in = 1")
+    suspend fun updateAge(newAge: Int)
 
-    @Query("UPDATE CurrentUser SET gender = :newGender WHERE user_id = :userID")
-    suspend fun updateGender(newGender: String, userID: Int)
+    @Query("UPDATE CurrentUser SET gender = :newGender WHERE is_signed_in = 1")
+    suspend fun updateGender(newGender: String)
 
-    @Query("UPDATE CurrentUser SET height = :newHeight WHERE user_id = :userID")
-    suspend fun updateHeight(newHeight: Float, userID: Int)
+    @Query("UPDATE CurrentUser SET height = :newHeight WHERE is_signed_in = 1")
+    suspend fun updateHeight(newHeight: Float)
 
-    @Query("UPDATE CurrentUser SET weight = :newWeight WHERE user_id = :userID")
-    suspend fun updateWeight(newWeight: Float, userID: Int)
+    @Query("UPDATE CurrentUser SET weight = :newWeight WHERE is_signed_in = 1")
+    suspend fun updateWeight(newWeight: Float)
 
-    @Query("UPDATE CurrentUser SET calories_goal = :newCaloriesGoal WHERE user_id = :userID")
-    suspend fun updateCaloriesGoal(newCaloriesGoal: Int, userID: Int)
+    @Query("UPDATE CurrentUser SET calories_goal = :newCaloriesGoal WHERE is_signed_in = 1")
+    suspend fun updateCaloriesGoal(newCaloriesGoal: Int)
 
-    @Query("UPDATE CurrentUser SET activity_level = :newActivityLevel WHERE user_id = :userID")
-    suspend fun updateActivityLevel(newActivityLevel: String, userID: Int)
+    @Query("UPDATE CurrentUser SET activity_level = :newActivityLevel WHERE is_signed_in = 1")
+    suspend fun updateActivityLevel(newActivityLevel: String)
 
     @Query("SELECT * FROM CurrentUser WHERE is_signed_in = 1")
     fun getCurrentUser(): Flow<CurrentUser?>
