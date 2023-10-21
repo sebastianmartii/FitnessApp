@@ -21,4 +21,18 @@ interface ProfileRepository {
     suspend fun signOut()
 
     fun getCurrentUser(): Flow<CurrentUser?>
+
+    suspend fun changeUserName(userName: String)
+
+    suspend fun changeAge(age: String)
+
+    suspend fun changeGender(gender: Gender)
+
+    suspend fun changeWeight(weight: String)
+
+    suspend fun changeHeight(height: String)
+
+    suspend fun changeActivityLevel(activityLevel: ActivityLevel)
+
+    suspend fun changeCaloriesGoal(caloriesGoal: String)
 }

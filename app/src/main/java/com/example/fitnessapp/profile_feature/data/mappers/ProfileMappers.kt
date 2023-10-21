@@ -18,7 +18,8 @@ fun CurrentUser.toUserProfile(): UserProfile {
 fun String.toGender(): Gender {
     return when(this) {
         "male" -> Gender.MALE
-        else -> Gender.FEMALE
+        "female" -> Gender.FEMALE
+        else -> Gender.NONE
     }
 }
 

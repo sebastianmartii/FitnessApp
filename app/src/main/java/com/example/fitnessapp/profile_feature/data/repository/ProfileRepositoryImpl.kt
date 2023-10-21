@@ -11,7 +11,6 @@ import com.example.fitnessapp.profile_feature.domain.model.Gender
 import com.example.fitnessapp.profile_feature.domain.model.UserProfile
 import com.example.fitnessapp.profile_feature.domain.repository.ProfileRepository
 import com.example.fitnessapp.profile_feature.presentation.sign_in.ActivityLevel
-import com.example.fitnessapp.profile_feature.presentation.sign_in.toActivityLevelString
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -36,8 +35,8 @@ class ProfileRepositoryImpl(
                 height = height,
                 weight = weight,
                 caloriesGoal = caloriesGoal,
-                activityLevel = activityLevel.toActivityLevelString(),
-                gender = gender.toGenderString()
+                activityLevel = activityLevel.name,
+                gender = gender.name
             )
         )
     }
@@ -82,4 +81,32 @@ class ProfileRepositoryImpl(
     }
 
     override fun getCurrentUser(): Flow<CurrentUser?> = currentUserDao.getCurrentUser()
+
+    override suspend fun changeUserName(userName: String) {
+        currentUserDao.updateName(userName)
+    }
+
+    override suspend fun changeAge(age: String) {
+        currentUserDao.updateAge(age.toInt())
+    }
+
+    override suspend fun changeGender(gender: Gender) {
+        currentUserDao.updateGender(gender.name)
+    }
+
+    override suspend fun changeWeight(weight: String) {
+        currentUserDao.updateWeight(weight.toFloat())
+    }
+
+    override suspend fun changeHeight(height: String) {
+        currentUserDao.updateHeight(height.toFloat())
+    }
+
+    override suspend fun changeActivityLevel(activityLevel: ActivityLevel) {
+        currentUserDao.updateActivityLevel(activityLevel.name)
+    }
+
+    override suspend fun changeCaloriesGoal(caloriesGoal: String) {
+        currentUserDao.updateCaloriesGoal(caloriesGoal.toInt())
+    }
 }
