@@ -3,12 +3,9 @@ package com.example.fitnessapp.profile_feature.presentation.profile
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -140,7 +137,7 @@ fun CurrentUserProfileScreen(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CurrentUserProfileScreenContent(
     state: ProfileState,
@@ -187,120 +184,133 @@ private fun CurrentUserProfileScreenContent(
                 name = state.userName,
                 gender = state.gender
             )
-            FlowRow(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .padding(horizontal = 32.dp)
-                    .fillMaxWidth()
+                    .fillMaxSize()
             ) {
-                InputItem(
-                    value = state.age,
-                    onValueChange = onAgeChange,
-                    onFocusMove = onFocusMove,
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Numbers,
-                            contentDescription = stringResource(id = R.string.age)
-                        )
-                    }
-                )
-                Box(
+                Column(
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .wrapContentSize(Alignment.TopStart)
+                        .weight(1f)
                 ) {
-                    Row {
-                        Text(text = state.gender.toGenderString())
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = stringResource(id = R.string.expand)
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = state.genderExpanded,
-                        onDismissRequest = onGenderExpandedChange
-                    ) {
-                        genderItems.onEach { item ->
-                            DropdownMenuItem(
-                                text = {
-                                    Text(text = item.toGenderString())
-                                },
-                                onClick = {
-                                    onGenderChange(item)
-                                }
+                    InputItem(
+                        value = state.age,
+                        onValueChange = onAgeChange,
+                        onFocusMove = onFocusMove,
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Numbers,
+                                contentDescription = stringResource(id = R.string.age)
                             )
+                        }
+                    )
+                    InputItem(
+                        value = state.weight,
+                        onValueChange = onWeightChange,
+                        onFocusMove = onFocusMove,
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.MonitorWeight,
+                                contentDescription = stringResource(id = R.string.weight)
+                            )
+                        }
+                    )
+                    Box(
+                        modifier = Modifier
+                            .wrapContentSize(Alignment.TopStart)
+                    ) {
+                        Row {
+                            Text(text = state.activityLevel.toActivityLevelString())
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = stringResource(id = R.string.expand)
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = state.activityLevelExpanded,
+                            onDismissRequest = onActivityLevelExpandedChange
+                        ) {
+                            activityLevelItems.onEach { item ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(text = item.toActivityLevelString())
+                                    },
+                                    onClick = {
+                                        onActivityLevelChange(item)
+                                    }
+                                )
+                            }
                         }
                     }
                 }
-                InputItem(
-                    value = state.weight,
-                    onValueChange = onWeightChange,
-                    onFocusMove = onFocusMove,
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.MonitorWeight,
-                            contentDescription = stringResource(id = R.string.weight)
-                        )
-                    }
-                )
-                InputItem(
-                    value = state.height,
-                    onValueChange = onHeightChange,
-                    onFocusMove = onFocusMove,
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Height,
-                            contentDescription = stringResource(id = R.string.height)
-                        )
-                    }
-                )
-                Box(
+                Column(
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .wrapContentSize(Alignment.TopStart)
+                        .weight(1f)
                 ) {
-                    Row {
-                        Text(text = state.activityLevel.toActivityLevelString())
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = stringResource(id = R.string.expand)
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = state.activityLevelExpanded,
-                        onDismissRequest = onActivityLevelExpandedChange
+                    Box(
+                        modifier = Modifier
+                            .wrapContentSize(Alignment.TopStart)
                     ) {
-                        activityLevelItems.onEach { item ->
-                            DropdownMenuItem(
-                                text = {
-                                    Text(text = item.toActivityLevelString())
-                                },
-                                onClick = {
-                                    onActivityLevelChange(item)
-                                }
+                        Row {
+                            Text(text = state.gender.toGenderString())
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = stringResource(id = R.string.expand)
                             )
                         }
-                    }
-                }
-                InputItem(
-                    value = state.caloriesGoal,
-                    onValueChange = onCaloriesGoalChange,
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            onKeyboardHide()
+                        DropdownMenu(
+                            expanded = state.genderExpanded,
+                            onDismissRequest = onGenderExpandedChange
+                        ) {
+                            genderItems.onEach { item ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(text = item.toGenderString())
+                                    },
+                                    onClick = {
+                                        onGenderChange(item)
+                                    }
+                                )
+                            }
                         }
-                    ),
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.SetMeal,
-                            contentDescription = stringResource(id = R.string.calories)
-                        )
                     }
-                )
+                    InputItem(
+                        value = state.height,
+                        onValueChange = onHeightChange,
+                        onFocusMove = onFocusMove,
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Height,
+                                contentDescription = stringResource(id = R.string.height)
+                            )
+                        }
+                    )
+                    InputItem(
+                        value = state.caloriesGoal,
+                        onValueChange = onCaloriesGoalChange,
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                onKeyboardHide()
+                            }
+                        ),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.SetMeal,
+                                contentDescription = stringResource(id = R.string.calories)
+                            )
+                        }
+                    )
+                }
             }
         }   
     }
