@@ -54,12 +54,11 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate(NavGraphDestinations.SignInNavGraph.route)
                                 }
                             }
-                        }
-                        LaunchedEffect(key1 = true) {
                             dailyOverviewDataManager.savedDate.collectLatest { savedDate ->
                                 if (savedDate != currentDate) {
-                                    dailyOverviewDataManager.resetDailyOverview(day, month, year)
+                                    dailyOverviewDataManager.resetDailyOverview(month, year)
                                     dailyOverviewDataManager.saveCurrentDate(currentDate)
+                                    dailyOverviewDataManager.saveDayOfMonth(day)
                                 }
                             }
                         }
