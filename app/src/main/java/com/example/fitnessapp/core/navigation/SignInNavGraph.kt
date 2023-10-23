@@ -25,6 +25,9 @@ fun NavGraphBuilder.signInNavGraph(navController: NavController) {
         composable(route = SignInDestinations.Introduction.route) { entry ->
             val viewModel = entry.sharedViewModel<SignInViewModel>(navController)
             val state by viewModel.state.collectAsStateWithLifecycle()
+
+            val keyboardController = LocalSoftwareKeyboardController.current
+
             IntroductionScreen(
                 name = state.name,
                 gender = state.gender,
@@ -34,6 +37,9 @@ fun NavGraphBuilder.signInNavGraph(navController: NavController) {
                 },
                 onNavigateToProfileListScreen = {
                     navController.navigate(SignInDestinations.ProfileList.route)
+                },
+                onKeyboardHide = {
+                    keyboardController?.hide()
                 }
             )
         }

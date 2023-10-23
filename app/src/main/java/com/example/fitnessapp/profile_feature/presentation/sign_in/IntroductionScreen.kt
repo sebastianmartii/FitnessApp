@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Female
@@ -27,14 +29,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.fitnessapp.R
 import com.example.fitnessapp.profile_feature.data.mappers.toGenderString
 import com.example.fitnessapp.profile_feature.domain.model.Gender
-import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,6 +46,7 @@ fun IntroductionScreen(
     onEvent: (SignInEvent) -> Unit,
     onNavigateToMeasurementsScreen: () -> Unit,
     onNavigateToProfileListScreen: () -> Unit,
+    onKeyboardHide: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -85,6 +88,15 @@ fun IntroductionScreen(
                             )
                         }
                     },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            onKeyboardHide()
+                        }
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
                 )
@@ -166,20 +178,5 @@ fun IntroductionScreen(
                 }
             }
         }
-    }
-}
-
-
-@Preview
-@Composable
-private fun IntroductionScreenPreview() {
-    FitnessAppTheme {
-        IntroductionScreen(
-            name = "",
-            gender = Gender.NONE,
-            onEvent = {},
-            onNavigateToMeasurementsScreen = {},
-            onNavigateToProfileListScreen = {},
-            )
     }
 }
