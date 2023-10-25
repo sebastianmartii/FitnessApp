@@ -47,18 +47,23 @@ class MainActivity : ComponentActivity() {
                 ) {
                     composable(route = NavGraphDestinations.StartDestination.route) {
                         LaunchedEffect(key1 = true) {
+                            dailyOverviewDataManager.savedDate.collectLatest { savedDate ->
+                                if (savedDate == "") {
+                                    dailyOverviewDataManager.saveDayOfMonth(day)
+                                    dailyOverviewDataManager.saveCurrentDate(currentDate)
+                                } else if (savedDate != currentDate) {
+                                    dailyOverviewDataManager.resetDailyOverview(month, year)
+                                    dailyOverviewDataManager.saveCurrentDate(currentDate)
+                                    dailyOverviewDataManager.saveDayOfMonth(day)
+                                }
+                            }
+                        }
+                        LaunchedEffect(key1 = true) {
                             currentUserDao.getCurrentUser().collectLatest {
                                 if (it != null) {
                                     navController.navigate(NavGraphDestinations.MainNavGraph.route)
                                 } else {
                                     navController.navigate(NavGraphDestinations.SignInNavGraph.route)
-                                }
-                            }
-                            dailyOverviewDataManager.savedDate.collectLatest { savedDate ->
-                                if (savedDate != currentDate) {
-                                    dailyOverviewDataManager.resetDailyOverview(month, year)
-                                    dailyOverviewDataManager.saveCurrentDate(currentDate)
-                                    dailyOverviewDataManager.saveDayOfMonth(day)
                                 }
                             }
                         }
