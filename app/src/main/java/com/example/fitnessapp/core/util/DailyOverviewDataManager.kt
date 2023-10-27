@@ -12,7 +12,6 @@ import com.example.fitnessapp.history_feature.data.local.dao.ActivityHistoryDao
 import com.example.fitnessapp.history_feature.data.local.dao.NutritionHistoryDao
 import com.example.fitnessapp.history_feature.data.mappers.toActivityHistoryEntity
 import com.example.fitnessapp.history_feature.data.mappers.toNutritionHistoryEntity
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -58,7 +57,6 @@ class DailyOverviewDataManager(
     suspend fun resetDailyOverview(month: Int, year: Int) {
         addDailyActivityToHistory(month, year)
         addDailyNutritionToHistory(month, year)
-        delay(500L)
         dailyActivitiesDao.resetDailyActivities()
         dailyNutritionDao.resetDailyNutrition()
     }
