@@ -6,6 +6,7 @@ import com.example.fitnessapp.profile_feature.domain.model.CalculatedCalories
 import com.example.fitnessapp.profile_feature.domain.model.Gender
 import com.example.fitnessapp.profile_feature.domain.model.TypeOfGoal
 import com.example.fitnessapp.profile_feature.domain.model.UserProfile
+import com.example.fitnessapp.profile_feature.presentation.sign_in.ActivityLevel
 
 fun CurrentUser.toUserProfile(): UserProfile {
     return UserProfile(
@@ -72,4 +73,42 @@ fun CaloriesRequirementsDto.toCalculatedCaloriesList(): List<CalculatedCalories>
 
 fun Double.toCaloriesString(): String {
     return this.toInt().toString()
+}
+
+fun ActivityLevel.toActivityLevelString(): String {
+    return when(this) {
+        ActivityLevel.LEVEL_1 -> "Inactive"
+        ActivityLevel.LEVEL_2 -> "Lightly Active"
+        ActivityLevel.LEVEL_3 -> "Moderately Active"
+        ActivityLevel.LEVEL_4 -> "Active"
+        ActivityLevel.LEVEL_5 -> "Very Active"
+        ActivityLevel.LEVEL_6 -> "Extremely Active"
+        ActivityLevel.LEVEL_0 -> ""
+    }
+}
+
+fun String.toDropDownMenuString(): String {
+    return when(this) {
+        "LEVEL_1" -> "Inactive"
+        "LEVEL_2" -> "Lightly Active"
+        "LEVEL_3" -> "Moderately Active"
+        "LEVEL_4" -> "Active"
+        "LEVEL_5" -> "Very Active"
+        "LEVEL_6" -> "Extremely Active"
+        "MALE" -> "male"
+        "FEMALE" -> "female"
+        else -> ""
+    }
+}
+
+fun ActivityLevel.toActivityLevelToolTipHint(): String {
+    return when(this) {
+        ActivityLevel.LEVEL_1 -> "Little or no exercise"
+        ActivityLevel.LEVEL_2 -> "Exercise 1-3 times/week"
+        ActivityLevel.LEVEL_3 -> "Exercise 4-6 times/week"
+        ActivityLevel.LEVEL_4 -> "Daily or intense exercise 3-4 times/week"
+        ActivityLevel.LEVEL_5 -> "Intense exercise 6-7 times/week"
+        ActivityLevel.LEVEL_6 -> "Very intense exercise daily or physical job"
+        ActivityLevel.LEVEL_0 -> ""
+    }
 }
