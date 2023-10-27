@@ -17,6 +17,7 @@ import com.example.fitnessapp.core.util.currentDate
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -47,23 +48,25 @@ class MainActivity : ComponentActivity() {
                 ) {
                     composable(route = NavGraphDestinations.StartDestination.route) {
                         LaunchedEffect(key1 = true) {
-                            dailyOverviewDataManager.savedDate.collectLatest { savedDate ->
-                                if (savedDate == "") {
-                                    dailyOverviewDataManager.saveDayOfMonth(day)
-                                    dailyOverviewDataManager.saveCurrentDate(currentDate)
-                                } else if (savedDate != currentDate) {
-                                    dailyOverviewDataManager.resetDailyOverview(month, year)
-                                    dailyOverviewDataManager.saveCurrentDate(currentDate)
-                                    dailyOverviewDataManager.saveDayOfMonth(day)
+                            launch {
+                                dailyOverviewDataManager.savedDate.collectLatest { savedDate ->
+                                    if (savedDate == "") {
+                                        dailyOverviewDataManager.saveDayOfMonth(day)
+                                        dailyOverviewDataManager.saveCurrentDate(currentDate)
+                                    } else if (savedDate != currentDate) {
+                                        dailyOverviewDataManager.resetDailyOverview(month, year)
+                                        dailyOverviewDataManager.saveCurrentDate(currentDate)
+                                        dailyOverviewDataManager.saveDayOfMonth(day)
+                                    }
                                 }
                             }
-                        }
-                        LaunchedEffect(key1 = true) {
-                            currentUserDao.getCurrentUser().collectLatest {
-                                if (it != null) {
-                                    navController.navigate(NavGraphDestinations.MainNavGraph.route)
-                                } else {
-                                    navController.navigate(NavGraphDestinations.SignInNavGraph.route)
+                            launch {
+                                currentUserDao.getCurrentUser().collectLatest {
+                                    if (it != null) {
+                                        navController.navigate(NavGraphDestinations.MainNavGraph.route)
+                                    } else {
+                                        navController.navigate(NavGraphDestinations.SignInNavGraph.route)
+                                    }
                                 }
                             }
                         }
