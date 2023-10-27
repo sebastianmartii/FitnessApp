@@ -49,10 +49,8 @@ import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutritio
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeDetailsScreen
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchEvent
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchViewModel
-import com.example.fitnessapp.profile_feature.domain.model.Gender
 import com.example.fitnessapp.profile_feature.presentation.profile.CurrentUserProfileScreen
 import com.example.fitnessapp.profile_feature.presentation.profile.ProfileViewModel
-import com.example.fitnessapp.profile_feature.presentation.sign_in.activityLevels
 import java.time.Instant
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -363,20 +361,14 @@ fun NavGraphBuilder.mainNavGraph(
 
             CurrentUserProfileScreen(
                 state = state,
-                activityLevelItems = activityLevels,
-                genderItems = listOf(
-                    Gender.NONE,
-                    Gender.FEMALE,
-                    Gender.MALE
-                ),
                 drawerState = drawerState,
                 drawerItemList = viewModel.drawerItemList,
                 selectedDrawerItem = selectedDrawerItem,
                 drawerEventFlow = viewModel.drawerEventFlow,
                 onDrawerEvent = viewModel::onDrawerEvent,
                 onEvent = viewModel::onEvent,
-                onFocusMove = {
-                    focusManager.moveFocus(FocusDirection.Next)
+                onFocusClear = {
+                    focusManager.clearFocus(true)
                 },
                 onKeyboardHide = {
                     keyboardController?.hide()
