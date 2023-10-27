@@ -133,4 +133,8 @@
     </string>
     <string name="history_details_empty_screen_text">Nothing to display here</string>
     <string name="profile_screen_title">Profile</string>
+    <string name="suffix_age">yrs</string>
+    <string name="gender">Gender</string>
+    <string name="suffix_weight">kgs</string>
+    <string name="suffix_height">cm</string>
 </resources>
