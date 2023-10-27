@@ -43,6 +43,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.fitnessapp.R
+import com.example.fitnessapp.core.util.activityLevels
+import com.example.fitnessapp.profile_feature.data.mappers.toActivityLevelString
+import com.example.fitnessapp.profile_feature.data.mappers.toActivityLevelToolTipHint
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
