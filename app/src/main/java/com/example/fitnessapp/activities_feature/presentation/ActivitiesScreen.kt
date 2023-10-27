@@ -24,9 +24,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -317,7 +317,9 @@ private fun ActivitiesContent(
             modifier = Modifier
                 .padding(paddingValues)
         ) {
-            TabRow(selectedTabIndex = pagerState.currentPage) {
+            PrimaryTabRow(
+                selectedTabIndex = pagerState.currentPage
+            ) {
                 activitiesTabRowItems.onEachIndexed { index, tabRowItem ->
                     Tab(
                         selected = pagerState.currentPage == index,
