@@ -1,25 +1,17 @@
 package com.example.fitnessapp.profile_feature.presentation.profile
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Height
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MonitorWeight
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Numbers
-import androidx.compose.material.icons.filled.SetMeal
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -31,26 +23,31 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.fitnessapp.R
 import com.example.fitnessapp.core.navigation_drawer.DrawerAction
 import com.example.fitnessapp.core.navigation_drawer.DrawerContent
 import com.example.fitnessapp.core.navigation_drawer.DrawerEvent
 import com.example.fitnessapp.core.navigation_drawer.DrawerItem
+import com.example.fitnessapp.profile_feature.data.mappers.toActivityLevelString
+import com.example.fitnessapp.profile_feature.data.mappers.toDropDownMenuString
 import com.example.fitnessapp.profile_feature.data.mappers.toGenderString
 import com.example.fitnessapp.profile_feature.domain.model.Gender
 import com.example.fitnessapp.profile_feature.presentation.ProfileItem
 import com.example.fitnessapp.profile_feature.presentation.sign_in.ActivityLevel
-import com.example.fitnessapp.profile_feature.presentation.sign_in.toActivityLevelString
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -58,10 +55,8 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun CurrentUserProfileScreen(
     state: ProfileState,
-    activityLevelItems: List<ActivityLevel>,
-    genderItems: List<Gender>,
     drawerState: DrawerState,
-    onFocusMove: () -> Unit,
+    onFocusClear: () -> Unit,
     onKeyboardHide: () -> Unit,
     drawerItemList: List<DrawerItem>,
     selectedDrawerItem: DrawerItem?,
@@ -100,8 +95,6 @@ fun CurrentUserProfileScreen(
         content = {
             CurrentUserProfileScreenContent(
                 state = state,
-                activityLevelItems = activityLevelItems,
-                genderItems = genderItems,
                 onDrawerStateChange = {
                     onDrawerEvent(DrawerEvent.OpenDrawer)
                 },
@@ -117,11 +110,11 @@ fun CurrentUserProfileScreen(
                 onCaloriesGoalChange = { caloriesGoal ->
                     onEvent(ProfileEvent.OnCaloriesGoalChange(caloriesGoal))
                 },
-                onGenderExpandedChange = {
-                    onEvent(ProfileEvent.OnGenderExpandedChange(false))
+                onGenderExpandedChange = { expanded ->
+                    onEvent(ProfileEvent.OnGenderExpandedChange(expanded))
                 },
-                onActivityLevelExpandedChange = {
-                    onEvent(ProfileEvent.OnActivityLevelExpandedChange(false))
+                onActivityLevelExpandedChange = { expanded ->
+                    onEvent(ProfileEvent.OnActivityLevelExpandedChange(expanded))
                 },
                 onActivityLevelChange = { activityLevel ->
                     onEvent(ProfileEvent.OnActivityLevelChange(activityLevel))
@@ -129,7 +122,7 @@ fun CurrentUserProfileScreen(
                 onGenderChange = { gender ->
                     onEvent(ProfileEvent.OnGenderChange(gender))
                 },
-                onFocusMove = onFocusMove,
+                onFocusClear = onFocusClear,
                 onKeyboardHide = onKeyboardHide
             )
         }
@@ -141,18 +134,16 @@ fun CurrentUserProfileScreen(
 @Composable
 private fun CurrentUserProfileScreenContent(
     state: ProfileState,
-    activityLevelItems: List<ActivityLevel>,
-    genderItems: List<Gender>,
     onDrawerStateChange: () -> Unit,
     onAgeChange: (String) -> Unit,
     onWeightChange: (String) -> Unit,
     onHeightChange: (String) -> Unit,
     onCaloriesGoalChange: (String) -> Unit,
-    onGenderExpandedChange: () -> Unit,
-    onActivityLevelExpandedChange: () -> Unit,
+    onGenderExpandedChange: (expanded: Boolean) -> Unit,
+    onActivityLevelExpandedChange: (expanded: Boolean) -> Unit,
     onActivityLevelChange: (ActivityLevel) -> Unit,
     onGenderChange: (Gender) -> Unit,
-    onFocusMove: () -> Unit,
+    onFocusClear: () -> Unit,
     onKeyboardHide: () -> Unit
 ) {
     Scaffold(
@@ -178,136 +169,110 @@ private fun CurrentUserProfileScreenContent(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
         ) {
             ProfileItem(
                 name = state.userName,
                 gender = state.gender
             )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            LazyVerticalGrid(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(32.dp),
+                columns = GridCells.Fixed(2),
                 modifier = Modifier
-                    .padding(horizontal = 32.dp)
                     .fillMaxSize()
+                    .padding(horizontal = 32.dp, vertical = 16.dp)
             ) {
-                Column(
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .weight(1f)
-                ) {
-                    InputItem(
-                        value = state.age,
-                        onValueChange = onAgeChange,
-                        onFocusMove = onFocusMove,
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Numbers,
-                                contentDescription = stringResource(id = R.string.age)
-                            )
+                item {
+                    UserInfoItem(
+                        valueText = state.age,
+                        labelText = stringResource(id = R.string.age),
+                        onKeyboardHide = onKeyboardHide,
+                        onFocusClear = onFocusClear,
+                        suffix = stringResource(id = R.string.suffix_age),
+                        onValueChange = { age ->
+                            onAgeChange(age)
                         }
                     )
-                    InputItem(
-                        value = state.weight,
-                        onValueChange = onWeightChange,
-                        onFocusMove = onFocusMove,
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.MonitorWeight,
-                                contentDescription = stringResource(id = R.string.weight)
-                            )
-                        }
-                    )
-                    Box(
-                        modifier = Modifier
-                            .wrapContentSize(Alignment.TopStart)
-                    ) {
-                        Row {
-                            Text(text = state.activityLevel.toActivityLevelString())
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Icon(
-                                imageVector = Icons.Default.MoreVert,
-                                contentDescription = stringResource(id = R.string.expand)
-                            )
-                        }
-                        DropdownMenu(
-                            expanded = state.activityLevelExpanded,
-                            onDismissRequest = onActivityLevelExpandedChange
-                        ) {
-                            activityLevelItems.onEach { item ->
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(text = item.toActivityLevelString())
-                                    },
-                                    onClick = {
-                                        onActivityLevelChange(item)
-                                    }
-                                )
-                            }
-                        }
-                    }
                 }
-                Column(
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .weight(1f)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .wrapContentSize(Alignment.TopStart)
-                    ) {
-                        Row {
-                            Text(text = state.gender.toGenderString())
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Icon(
-                                imageVector = Icons.Default.MoreVert,
-                                contentDescription = stringResource(id = R.string.expand)
-                            )
-                        }
-                        DropdownMenu(
-                            expanded = state.genderExpanded,
-                            onDismissRequest = onGenderExpandedChange
-                        ) {
-                            genderItems.onEach { item ->
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(text = item.toGenderString())
-                                    },
-                                    onClick = {
-                                        onGenderChange(item)
-                                    }
-                                )
-                            }
-                        }
-                    }
-                    InputItem(
-                        value = state.height,
-                        onValueChange = onHeightChange,
-                        onFocusMove = onFocusMove,
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Height,
-                                contentDescription = stringResource(id = R.string.height)
-                            )
+                item {
+                    UserInfoItem(
+                        valueText = state.gender.toGenderString(),
+                        labelText = stringResource(id = R.string.gender),
+                        dropDownMenuItems = listOf(
+                            Gender.FEMALE.name,
+                            Gender.MALE.name
+                        ),
+                        isDropDownMenu = true,
+                        isDropDownMenuExpanded = state.genderExpanded,
+                        onMenuExpand = {
+                            onGenderExpandedChange(true)
+                        },
+                        onMenuDismiss = {
+                            onGenderExpandedChange(false)
+                        },
+                        onValueChange = { gender ->
+                            onGenderChange(Gender.valueOf(gender))
                         }
                     )
-                    InputItem(
-                        value = state.caloriesGoal,
-                        onValueChange = onCaloriesGoalChange,
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Done
+                }
+                item {
+                    UserInfoItem(
+                        valueText = state.weight,
+                        labelText = stringResource(id = R.string.weight),
+                        onKeyboardHide = onKeyboardHide,
+                        onFocusClear = onFocusClear,
+                        suffix = stringResource(id = R.string.suffix_weight),
+                        onValueChange = { weight ->
+                            onWeightChange(weight)
+                        }
+                    )
+                }
+                item {
+                    UserInfoItem(
+                        valueText = state.height,
+                        labelText = stringResource(id =R.string.height),
+                        onKeyboardHide = onKeyboardHide,
+                        onFocusClear = onFocusClear,
+                        suffix = stringResource(id = R.string.suffix_height),
+                        onValueChange = { height ->
+                            onHeightChange(height)
+                        }
+                    )
+                }
+                item {
+                    UserInfoItem(
+                        valueText = state.caloriesGoal,
+                        labelText = stringResource(id =R.string.calories),
+                        onKeyboardHide = onKeyboardHide,
+                        onFocusClear = onFocusClear,
+                        suffix = stringResource(id = R.string.suffix_calories),
+                        onValueChange = { calories ->
+                            onCaloriesGoalChange(calories)
+                        }
+                    )
+                }
+                item {
+                    UserInfoItem(
+                        valueText = state.activityLevel.toActivityLevelString(),
+                        labelText = stringResource(id = R.string.activity_level),
+                        dropDownMenuItems = listOf(
+                            ActivityLevel.LEVEL_1.name,
+                            ActivityLevel.LEVEL_2.name,
+                            ActivityLevel.LEVEL_3.name,
+                            ActivityLevel.LEVEL_4.name,
+                            ActivityLevel.LEVEL_5.name,
+                            ActivityLevel.LEVEL_6.name,
                         ),
-                        keyboardActions = KeyboardActions(
-                            onDone = {
-                                onKeyboardHide()
-                            }
-                        ),
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.SetMeal,
-                                contentDescription = stringResource(id = R.string.calories)
-                            )
+                        isDropDownMenu = true,
+                        isDropDownMenuExpanded = state.activityLevelExpanded,
+                        onMenuExpand = {
+                            onActivityLevelExpandedChange(true)
+                        },
+                        onMenuDismiss = {
+                            onActivityLevelExpandedChange(false)
+                        },
+                        onValueChange = { activityLevel ->
+                            onActivityLevelChange(ActivityLevel.valueOf(activityLevel))
                         }
                     )
                 }
@@ -316,41 +281,96 @@ private fun CurrentUserProfileScreenContent(
     }
 }
 
-
 @Composable
-private fun InputItem(
-    value: String,
+private fun UserInfoItem(
+    valueText: String,
+    labelText: String,
     onValueChange: (String) -> Unit,
-    onFocusMove: () -> Unit = {},
-    keyboardOptions: KeyboardOptions = KeyboardOptions(
-        imeAction = ImeAction.Next
-    ),
-    keyboardActions: KeyboardActions = KeyboardActions(
-        onNext = {
-            onFocusMove()
-        }
-    ),
-    leadingIcon: @Composable () -> Unit
+    modifier: Modifier = Modifier,
+    dropDownMenuItems: List<String> = emptyList(),
+    suffix: String = "",
+    isDropDownMenu: Boolean = false,
+    isDropDownMenuExpanded: Boolean = false,
+    onKeyboardHide: () -> Unit = {},
+    onFocusClear: () -> Unit = {},
+    onMenuExpand: () -> Unit = {},
+    onMenuDismiss: () -> Unit = {},
 ) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        colors = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = Color.Transparent,
-            focusedBorderColor = Color.Transparent,
-            errorBorderColor = Color.Transparent,
-            disabledBorderColor = Color.Transparent,
-            disabledContainerColor = MaterialTheme.colorScheme.background,
-            errorContainerColor = MaterialTheme.colorScheme.background,
-            focusedContainerColor = MaterialTheme.colorScheme.background,
-            unfocusedContainerColor = MaterialTheme.colorScheme.background,
-            unfocusedLeadingIconColor = MaterialTheme.colorScheme.onBackground,
-            disabledLeadingIconColor = MaterialTheme.colorScheme.onBackground,
-            errorLeadingIconColor = MaterialTheme.colorScheme.onBackground,
-            focusedLeadingIconColor = MaterialTheme.colorScheme.onBackground
-        ),
-        leadingIcon = leadingIcon,
-        keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions
-    )
+    Surface(
+        shape = MaterialTheme.shapes.medium,
+        shadowElevation = 1.dp,
+        tonalElevation = 2.dp,
+        modifier = modifier
+            .wrapContentSize()
+    ) {
+        Column {
+            Text(
+                text = labelText,
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontStyle = FontStyle.Italic
+                ),
+                modifier = Modifier
+                    .padding(start = 4.dp, top = 4.dp)
+            )
+            OutlinedTextField(
+                value = valueText,
+                onValueChange = onValueChange,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = Color.Transparent,
+                    errorBorderColor = Color.Transparent,
+                    disabledBorderColor = Color.Transparent,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
+                    errorContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
+                ),
+                readOnly = isDropDownMenu,
+                trailingIcon = {
+                    if (isDropDownMenu) {
+                        IconButton(onClick = onMenuExpand) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = stringResource(
+                                    id = R.string.expand
+                                )
+                            )
+                        }
+                    } else {
+                        Text(
+                            text = suffix,
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
+                },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Decimal
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        onKeyboardHide()
+                        onFocusClear()
+                    }
+                )
+            )
+            if (isDropDownMenu) {
+                DropdownMenu(
+                    expanded = isDropDownMenuExpanded,
+                    onDismissRequest = onMenuDismiss
+                ) {
+                    dropDownMenuItems.onEach { item ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(text = item.toDropDownMenuString())
+                            },
+                            onClick = {
+                                onValueChange(item)
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
