@@ -2,13 +2,18 @@ package com.example.fitnessapp.profile_feature.presentation.profile
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
@@ -20,23 +25,29 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import com.example.fitnessapp.R
 import com.example.fitnessapp.core.navigation_drawer.DrawerAction
 import com.example.fitnessapp.core.navigation_drawer.DrawerContent
@@ -98,6 +109,9 @@ fun CurrentUserProfileScreen(
                 onDrawerStateChange = {
                     onDrawerEvent(DrawerEvent.OpenDrawer)
                 },
+                onNameChange = { name ->
+                    onEvent(ProfileEvent.OnUserNameChange(name))
+                },
                 onAgeChange = { age ->
                     onEvent(ProfileEvent.OnAgeChange(age))
                 },
@@ -136,6 +150,7 @@ private fun CurrentUserProfileScreenContent(
     state: ProfileState,
     onDrawerStateChange: () -> Unit,
     onAgeChange: (String) -> Unit,
+    onNameChange: (String) -> Unit,
     onWeightChange: (String) -> Unit,
     onHeightChange: (String) -> Unit,
     onCaloriesGoalChange: (String) -> Unit,
@@ -169,115 +184,108 @@ private fun CurrentUserProfileScreenContent(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
             ProfileItem(
                 name = state.userName,
-                gender = state.gender
+                gender = state.gender,
+                isNameVisible = false,
+                hasBorder = false
             )
-            LazyVerticalGrid(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(32.dp),
-                columns = GridCells.Fixed(2),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 32.dp, vertical = 16.dp)
-            ) {
-                item {
-                    UserInfoItem(
-                        valueText = state.age,
-                        labelText = stringResource(id = R.string.age),
-                        onKeyboardHide = onKeyboardHide,
-                        onFocusClear = onFocusClear,
-                        suffix = stringResource(id = R.string.suffix_age),
-                        onValueChange = { age ->
-                            onAgeChange(age)
-                        }
-                    )
+            UserInfoItem(
+                valueText = state.userName,
+                labelText = stringResource(id = R.string.username),
+                onKeyboardHide = onKeyboardHide,
+                onFocusClear = onFocusClear,
+                onValueChange = { name ->
+                    onNameChange(name)
                 }
-                item {
-                    UserInfoItem(
-                        valueText = state.gender.toGenderString(),
-                        labelText = stringResource(id = R.string.gender),
-                        dropDownMenuItems = listOf(
-                            Gender.FEMALE.name,
-                            Gender.MALE.name
-                        ),
-                        isDropDownMenu = true,
-                        isDropDownMenuExpanded = state.genderExpanded,
-                        onMenuExpand = {
-                            onGenderExpandedChange(true)
-                        },
-                        onMenuDismiss = {
-                            onGenderExpandedChange(false)
-                        },
-                        onValueChange = { gender ->
-                            onGenderChange(Gender.valueOf(gender))
-                        }
-                    )
+            )
+            UserInfoItem(
+                valueText = state.age,
+                labelText = stringResource(id = R.string.age),
+                onKeyboardHide = onKeyboardHide,
+                onFocusClear = onFocusClear,
+                suffix = stringResource(id = R.string.suffix_age),
+                onValueChange = { age ->
+                    onAgeChange(age)
                 }
-                item {
-                    UserInfoItem(
-                        valueText = state.weight,
-                        labelText = stringResource(id = R.string.weight),
-                        onKeyboardHide = onKeyboardHide,
-                        onFocusClear = onFocusClear,
-                        suffix = stringResource(id = R.string.suffix_weight),
-                        onValueChange = { weight ->
-                            onWeightChange(weight)
-                        }
-                    )
+            )
+            UserInfoItem(
+                valueText = state.gender.toGenderString(),
+                labelText = stringResource(id = R.string.gender),
+                dropDownMenuItems = listOf(
+                    Gender.FEMALE.name,
+                    Gender.MALE.name
+                ),
+                isDropDownMenu = true,
+                isDropDownMenuExpanded = state.genderExpanded,
+                onMenuExpand = {
+                    onGenderExpandedChange(true)
+                },
+                onMenuDismiss = {
+                    onGenderExpandedChange(false)
+                },
+                onValueChange = { gender ->
+                    onGenderChange(Gender.valueOf(gender))
                 }
-                item {
-                    UserInfoItem(
-                        valueText = state.height,
-                        labelText = stringResource(id =R.string.height),
-                        onKeyboardHide = onKeyboardHide,
-                        onFocusClear = onFocusClear,
-                        suffix = stringResource(id = R.string.suffix_height),
-                        onValueChange = { height ->
-                            onHeightChange(height)
-                        }
-                    )
+            )
+            UserInfoItem(
+                valueText = state.weight,
+                labelText = stringResource(id = R.string.weight),
+                onKeyboardHide = onKeyboardHide,
+                onFocusClear = onFocusClear,
+                suffix = stringResource(id = R.string.suffix_weight),
+                onValueChange = { weight ->
+                    onWeightChange(weight)
                 }
-                item {
-                    UserInfoItem(
-                        valueText = state.caloriesGoal,
-                        labelText = stringResource(id =R.string.calories),
-                        onKeyboardHide = onKeyboardHide,
-                        onFocusClear = onFocusClear,
-                        suffix = stringResource(id = R.string.suffix_calories),
-                        onValueChange = { calories ->
-                            onCaloriesGoalChange(calories)
-                        }
-                    )
+            )
+            UserInfoItem(
+                valueText = state.height,
+                labelText = stringResource(id =R.string.height),
+                onKeyboardHide = onKeyboardHide,
+                onFocusClear = onFocusClear,
+                suffix = stringResource(id = R.string.suffix_height),
+                onValueChange = { height ->
+                    onHeightChange(height)
                 }
-                item {
-                    UserInfoItem(
-                        valueText = state.activityLevel.toActivityLevelString(),
-                        labelText = stringResource(id = R.string.activity_level),
-                        dropDownMenuItems = listOf(
-                            ActivityLevel.LEVEL_1.name,
-                            ActivityLevel.LEVEL_2.name,
-                            ActivityLevel.LEVEL_3.name,
-                            ActivityLevel.LEVEL_4.name,
-                            ActivityLevel.LEVEL_5.name,
-                            ActivityLevel.LEVEL_6.name,
-                        ),
-                        isDropDownMenu = true,
-                        isDropDownMenuExpanded = state.activityLevelExpanded,
-                        onMenuExpand = {
-                            onActivityLevelExpandedChange(true)
-                        },
-                        onMenuDismiss = {
-                            onActivityLevelExpandedChange(false)
-                        },
-                        onValueChange = { activityLevel ->
-                            onActivityLevelChange(ActivityLevel.valueOf(activityLevel))
-                        }
-                    )
+            )
+            UserInfoItem(
+                valueText = state.caloriesGoal,
+                labelText = stringResource(id =R.string.calories),
+                onKeyboardHide = onKeyboardHide,
+                onFocusClear = onFocusClear,
+                isCaloriesGoal = true,
+                suffix = stringResource(id = R.string.suffix_calories),
+                onValueChange = { calories ->
+                    onCaloriesGoalChange(calories)
                 }
-            }
-        }   
+            )
+            UserInfoItem(
+                valueText = state.activityLevel.toActivityLevelString(),
+                labelText = stringResource(id = R.string.activity_level),
+                dropDownMenuItems = listOf(
+                    ActivityLevel.LEVEL_1.name,
+                    ActivityLevel.LEVEL_2.name,
+                    ActivityLevel.LEVEL_3.name,
+                    ActivityLevel.LEVEL_4.name,
+                    ActivityLevel.LEVEL_5.name,
+                    ActivityLevel.LEVEL_6.name,
+                ),
+                isDropDownMenu = true,
+                isDropDownMenuExpanded = state.activityLevelExpanded,
+                onMenuExpand = {
+                    onActivityLevelExpandedChange(true)
+                },
+                onMenuDismiss = {
+                    onActivityLevelExpandedChange(false)
+                },
+                onValueChange = { activityLevel ->
+                    onActivityLevelChange(ActivityLevel.valueOf(activityLevel))
+                }
+            )
+            Spacer(modifier = Modifier.height(404.dp))
+        }
     }
 }
 
@@ -290,85 +298,103 @@ private fun UserInfoItem(
     dropDownMenuItems: List<String> = emptyList(),
     suffix: String = "",
     isDropDownMenu: Boolean = false,
+    isCaloriesGoal: Boolean = false,
+    isNumeric: Boolean = true,
     isDropDownMenuExpanded: Boolean = false,
     onKeyboardHide: () -> Unit = {},
     onFocusClear: () -> Unit = {},
     onMenuExpand: () -> Unit = {},
     onMenuDismiss: () -> Unit = {},
 ) {
-    Surface(
-        shape = MaterialTheme.shapes.medium,
-        shadowElevation = 1.dp,
-        tonalElevation = 2.dp,
+
+    var dropDownMenuSize by remember {
+        mutableStateOf(Size.Zero)
+    }
+
+    Column(
         modifier = modifier
-            .wrapContentSize()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .fillMaxWidth()
+            .wrapContentSize(Alignment.TopStart)
     ) {
-        Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(horizontal = 4.dp)
+                .fillMaxWidth()
+        ) {
             Text(
                 text = labelText,
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontStyle = FontStyle.Italic
-                ),
-                modifier = Modifier
-                    .padding(start = 4.dp, top = 4.dp)
-            )
-            OutlinedTextField(
-                value = valueText,
-                onValueChange = onValueChange,
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent,
-                    errorBorderColor = Color.Transparent,
-                    disabledBorderColor = Color.Transparent,
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
-                    errorContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
-                ),
-                readOnly = isDropDownMenu,
-                trailingIcon = {
-                    if (isDropDownMenu) {
-                        IconButton(onClick = onMenuExpand) {
-                            Icon(
-                                imageVector = Icons.Default.MoreVert,
-                                contentDescription = stringResource(
-                                    id = R.string.expand
-                                )
-                            )
-                        }
-                    } else {
-                        Text(
-                            text = suffix,
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    }
-                },
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done,
-                    keyboardType = KeyboardType.Decimal
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        onKeyboardHide()
-                        onFocusClear()
-                    }
                 )
             )
-            if (isDropDownMenu) {
-                DropdownMenu(
-                    expanded = isDropDownMenuExpanded,
-                    onDismissRequest = onMenuDismiss
-                ) {
-                    dropDownMenuItems.onEach { item ->
-                        DropdownMenuItem(
-                            text = {
-                                Text(text = item.toDropDownMenuString())
-                            },
-                            onClick = {
-                                onValueChange(item)
-                            }
+            Spacer(modifier = Modifier.weight(1f))
+            if (isCaloriesGoal) {
+                Text(
+                    text = stringResource(id = R.string.calculate),
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        color = MaterialTheme.colorScheme.tertiary,
+                        fontWeight = FontWeight.SemiBold,
+                        textDecoration = TextDecoration.Underline
+                    )
+                )
+            }
+        }
+        TextField(
+            value = valueText,
+            onValueChange = onValueChange,
+            readOnly = isDropDownMenu,
+            trailingIcon = {
+                if (isDropDownMenu) {
+                    IconButton(onClick = onMenuExpand) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = stringResource(
+                                id = R.string.expand
+                            )
                         )
                     }
+                } else {
+                    Text(
+                        text = suffix,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+            },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done,
+                keyboardType = if (isNumeric) KeyboardType.Decimal else KeyboardType.Text
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    onKeyboardHide()
+                    onFocusClear()
+                }
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .onGloballyPositioned { layoutCoordinates ->
+                    dropDownMenuSize = layoutCoordinates.size.toSize()
+                }
+        )
+        if (isDropDownMenu) {
+            DropdownMenu(
+                expanded = isDropDownMenuExpanded,
+                onDismissRequest = onMenuDismiss,
+                modifier = Modifier
+                    .width(with(LocalDensity.current) { dropDownMenuSize.width.toDp() })
+            ) {
+                dropDownMenuItems.onEach { item ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(text = item.toDropDownMenuString())
+                        },
+                        onClick = {
+                            onValueChange(item)
+                            onMenuDismiss()
+                        }
+                    )
                 }
             }
         }
