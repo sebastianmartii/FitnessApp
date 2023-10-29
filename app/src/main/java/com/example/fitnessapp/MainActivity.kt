@@ -16,6 +16,7 @@ import com.example.fitnessapp.core.util.DailyOverviewDataManager
 import com.example.fitnessapp.core.util.currentDate
 import com.example.fitnessapp.ui.theme.FitnessAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -54,13 +55,15 @@ class MainActivity : ComponentActivity() {
                                         dailyOverviewDataManager.saveDayOfMonth(day)
                                         dailyOverviewDataManager.saveCurrentDate(currentDate)
                                     } else if (savedDate != currentDate) {
-                                        dailyOverviewDataManager.resetDailyOverview(month, year)
+                                        dailyOverviewDataManager.addDailyOverviewToHistory(month, year)
+                                        dailyOverviewDataManager.resetDailyOverview()
                                         dailyOverviewDataManager.saveCurrentDate(currentDate)
                                         dailyOverviewDataManager.saveDayOfMonth(day)
                                     }
                                 }
                             }
                             launch {
+                                delay(1000)
                                 currentUserDao.getCurrentUser().collectLatest {
                                     if (it != null) {
                                         navController.navigate(NavGraphDestinations.MainNavGraph.route)
