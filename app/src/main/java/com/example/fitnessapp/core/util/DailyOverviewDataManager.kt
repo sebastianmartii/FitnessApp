@@ -54,9 +54,12 @@ class DailyOverviewDataManager(
             preferences[DAY_OF_MONTH] ?: 0
         }
 
-    suspend fun resetDailyOverview(month: Int, year: Int) {
+    suspend fun addDailyOverviewToHistory(month: Int, year: Int) {
         addDailyActivityToHistory(month, year)
         addDailyNutritionToHistory(month, year)
+    }
+
+    suspend fun resetDailyOverview() {
         dailyActivitiesDao.resetDailyActivities()
         dailyNutritionDao.resetDailyNutrition()
     }
