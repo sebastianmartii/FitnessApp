@@ -28,10 +28,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.fitnessapp.R
-import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -211,22 +209,5 @@ fun MeasurementsScreen(
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-private fun MeasurementsScreenPreview() {
-    FitnessAppTheme {
-        MeasurementsScreen(
-            age = "",
-            height = "",
-            weight = "",
-            onEvent = {},
-            onNavigateToActivityLevelAndCaloriesGoalScreen = {},
-            onNavigateBack = {},
-            onFocusMove = {},
-            onKeyboardHide = {}
-        )
     }
 }
