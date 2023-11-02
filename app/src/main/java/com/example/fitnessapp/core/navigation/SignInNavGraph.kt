@@ -10,11 +10,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.fitnessapp.core.util.sharedViewModel
+import com.example.fitnessapp.profile_feature.data.mappers.toCaloriesString
 import com.example.fitnessapp.profile_feature.presentation.sign_in.ActivityLevelAndCaloriesGoalScreen
 import com.example.fitnessapp.profile_feature.presentation.sign_in.CaloriesGoalListScreen
 import com.example.fitnessapp.profile_feature.presentation.sign_in.IntroductionScreen
 import com.example.fitnessapp.profile_feature.presentation.sign_in.MeasurementsScreen
 import com.example.fitnessapp.profile_feature.presentation.sign_in.ProfileListScreen
+import com.example.fitnessapp.profile_feature.presentation.sign_in.SignInEvent
 import com.example.fitnessapp.profile_feature.presentation.sign_in.SignInViewModel
 
 fun NavGraphBuilder.signInNavGraph(navController: NavController) {
@@ -95,7 +97,9 @@ fun NavGraphBuilder.signInNavGraph(navController: NavController) {
             CaloriesGoalListScreen(
                 calories = state.caloriesGoal,
                 calculatedCaloriesList = state.calculatedCalories,
-                onEvent = viewModel::onEvent,
+                onCaloriesGoalSelect = { calculatedCaloriesItem ->
+                    viewModel.onEvent(SignInEvent.OnCaloriesGoalChange(calculatedCaloriesItem.calories.toCaloriesString()))
+                },
                 calculate = viewModel::calculateCalories,
                 onNavigateBack = {
                     navController.popBackStack()
