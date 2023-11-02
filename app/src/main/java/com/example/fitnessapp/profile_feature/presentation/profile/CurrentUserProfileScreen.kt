@@ -1,5 +1,6 @@
 package com.example.fitnessapp.profile_feature.presentation.profile
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DoneAll
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DrawerState
@@ -26,6 +28,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
@@ -59,6 +63,7 @@ import com.example.fitnessapp.profile_feature.data.mappers.toGenderString
 import com.example.fitnessapp.profile_feature.domain.model.Gender
 import com.example.fitnessapp.profile_feature.presentation.ProfileItem
 import com.example.fitnessapp.profile_feature.presentation.sign_in.ActivityLevel
+import com.example.fitnessapp.profile_feature.presentation.sign_in.Validators
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -66,6 +71,8 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun CurrentUserProfileScreen(
     state: ProfileState,
+    snackbarHostState: SnackbarHostState,
+    eventFlow: Flow<ProfileViewModel.UiEvent>,
     drawerState: DrawerState,
     onFocusClear: () -> Unit,
     onKeyboardHide: () -> Unit,
@@ -75,6 +82,7 @@ fun CurrentUserProfileScreen(
     onDrawerEvent: (DrawerEvent) -> Unit,
     onEvent: (ProfileEvent) -> Unit,
     onNavigateToNavigationDrawerDestination: (String) -> Unit,
+    onNavigateToCaloriesGoalListScreen: () -> Unit
 ) {
     LaunchedEffect(key1 = true) {
         drawerEventFlow.collectLatest {  action ->
@@ -91,6 +99,37 @@ fun CurrentUserProfileScreen(
             }
         }
     }
+    LaunchedEffect(key1 = true) {
+        eventFlow.collectLatest { event ->
+            when(event) {
+                is ProfileViewModel.UiEvent.Navigate -> {
+                    onNavigateToNavigationDrawerDestination(event.route)
+                }
+                is ProfileViewModel.UiEvent.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message)
+                }
+            }
+        }
+    }
+    if (state.isUserUpdateDialogVisible) {
+        UserUpdateDialog(
+            onUserUpdateDialogDismiss = {
+                onEvent(ProfileEvent.OnUserUpdateDialogDismiss)
+            },
+            onUserUpdateDialogDecline = {
+                onEvent(ProfileEvent.OnUserUpdateDialogDecline)
+            },
+            onUserUpdateDialogConfirm = {
+                onEvent(ProfileEvent.OnUserUpdate(
+                    state,
+                    Validators.isAgeValid(state.age),
+                    Validators.isHeightValid(state.height),
+                    Validators.isWeightValid(state.weight),
+                    Validators.areCaloriesValid(state.caloriesGoal)
+                ))
+            }
+        )
+    }
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -98,31 +137,36 @@ fun CurrentUserProfileScreen(
                 selectedDrawerItem = selectedDrawerItem,
                 drawerItemList = drawerItemList,
                 onDrawerItemSelect = { selectedDrawerItem ->
-                    onDrawerEvent(DrawerEvent.OnDrawerItemSelect(selectedDrawerItem))
-                    onDrawerEvent(DrawerEvent.CloseDrawer)
+                    if (state.isSaveUserActionVisible && selectedDrawerItem.label != "Sign Out") {
+                        onEvent(ProfileEvent.OnUserUpdateDialogShow(selectedDrawerItem.route ?: ""))
+                    } else {
+                        onDrawerEvent(DrawerEvent.OnDrawerItemSelect(selectedDrawerItem))
+                        onDrawerEvent(DrawerEvent.CloseDrawer)
+                    }
                 }
             )
         },
         content = {
             CurrentUserProfileScreenContent(
                 state = state,
+                snackbarHostState = snackbarHostState,
                 onDrawerStateChange = {
                     onDrawerEvent(DrawerEvent.OpenDrawer)
                 },
                 onNameChange = { name ->
                     onEvent(ProfileEvent.OnUserNameChange(name))
                 },
-                onAgeChange = { age ->
-                    onEvent(ProfileEvent.OnAgeChange(age))
+                onAgeChange = { age, isValid ->
+                    onEvent(ProfileEvent.OnAgeChange(age, isValid))
                 },
-                onWeightChange = { weight ->
-                    onEvent(ProfileEvent.OnWeightChange(weight))
+                onWeightChange = { weight, isValid ->
+                    onEvent(ProfileEvent.OnWeightChange(weight, isValid))
                 },
-                onHeightChange = { height ->
-                    onEvent(ProfileEvent.OnHeightChange(height))
+                onHeightChange = { height, isValid ->
+                    onEvent(ProfileEvent.OnHeightChange(height, isValid))
                 },
-                onCaloriesGoalChange = { caloriesGoal ->
-                    onEvent(ProfileEvent.OnCaloriesGoalChange(caloriesGoal))
+                onCaloriesGoalChange = { caloriesGoal, isValid ->
+                    onEvent(ProfileEvent.OnCaloriesGoalChange(caloriesGoal, isValid))
                 },
                 onGenderExpandedChange = { expanded ->
                     onEvent(ProfileEvent.OnGenderExpandedChange(expanded))
@@ -137,7 +181,17 @@ fun CurrentUserProfileScreen(
                     onEvent(ProfileEvent.OnGenderChange(gender))
                 },
                 onFocusClear = onFocusClear,
-                onKeyboardHide = onKeyboardHide
+                onKeyboardHide = onKeyboardHide,
+                onUserUpdate = { state ->
+                    onEvent(ProfileEvent.OnUserUpdate(
+                        state,
+                        Validators.isAgeValid(state.age),
+                        Validators.isHeightValid(state.height),
+                        Validators.isWeightValid(state.weight),
+                        Validators.areCaloriesValid(state.caloriesGoal)
+                    ))
+                },
+                onNavigateToCaloriesGoalListScreen = onNavigateToCaloriesGoalListScreen
             )
         }
     )
@@ -148,18 +202,21 @@ fun CurrentUserProfileScreen(
 @Composable
 private fun CurrentUserProfileScreenContent(
     state: ProfileState,
+    snackbarHostState: SnackbarHostState,
     onDrawerStateChange: () -> Unit,
-    onAgeChange: (String) -> Unit,
+    onAgeChange: (age: String, isValid: Boolean) -> Unit,
     onNameChange: (String) -> Unit,
-    onWeightChange: (String) -> Unit,
-    onHeightChange: (String) -> Unit,
-    onCaloriesGoalChange: (String) -> Unit,
+    onWeightChange: (weight: String, isValid: Boolean) -> Unit,
+    onHeightChange: (height: String, isValid: Boolean) -> Unit,
+    onCaloriesGoalChange: (caloriesGoal: String, isValid: Boolean) -> Unit,
     onGenderExpandedChange: (expanded: Boolean) -> Unit,
     onActivityLevelExpandedChange: (expanded: Boolean) -> Unit,
     onActivityLevelChange: (ActivityLevel) -> Unit,
     onGenderChange: (Gender) -> Unit,
     onFocusClear: () -> Unit,
-    onKeyboardHide: () -> Unit
+    onKeyboardHide: () -> Unit,
+    onUserUpdate: (ProfileState) -> Unit,
+    onNavigateToCaloriesGoalListScreen: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -174,8 +231,23 @@ private fun CurrentUserProfileScreenContent(
                             contentDescription = stringResource(id = R.string.navigation_drawer_icon)
                         )
                     }
+                },
+                actions = {
+                    if (state.isSaveUserActionVisible) {
+                        IconButton(onClick = {
+                            onUserUpdate(state)
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.DoneAll,
+                                contentDescription = stringResource(id = R.string.save_text)
+                            )
+                        }
+                    }
                 }
             )
+        },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
         }
     ) { paddingValues ->
         Column(
@@ -197,6 +269,7 @@ private fun CurrentUserProfileScreenContent(
                 labelText = stringResource(id = R.string.username),
                 onKeyboardHide = onKeyboardHide,
                 onFocusClear = onFocusClear,
+                isNumeric = false,
                 onValueChange = { name ->
                     onNameChange(name)
                 }
@@ -206,9 +279,10 @@ private fun CurrentUserProfileScreenContent(
                 labelText = stringResource(id = R.string.age),
                 onKeyboardHide = onKeyboardHide,
                 onFocusClear = onFocusClear,
+                isError = !state.isAgeValid,
                 suffix = stringResource(id = R.string.suffix_age),
                 onValueChange = { age ->
-                    onAgeChange(age)
+                    onAgeChange(age, state.isAgeValid)
                 }
             )
             UserInfoItem(
@@ -235,9 +309,10 @@ private fun CurrentUserProfileScreenContent(
                 labelText = stringResource(id = R.string.weight),
                 onKeyboardHide = onKeyboardHide,
                 onFocusClear = onFocusClear,
+                isError = !state.isWeightValid,
                 suffix = stringResource(id = R.string.suffix_weight),
                 onValueChange = { weight ->
-                    onWeightChange(weight)
+                    onWeightChange(weight, state.isWeightValid)
                 }
             )
             UserInfoItem(
@@ -245,9 +320,10 @@ private fun CurrentUserProfileScreenContent(
                 labelText = stringResource(id =R.string.height),
                 onKeyboardHide = onKeyboardHide,
                 onFocusClear = onFocusClear,
+                isError = !state.isHeightValid,
                 suffix = stringResource(id = R.string.suffix_height),
                 onValueChange = { height ->
-                    onHeightChange(height)
+                    onHeightChange(height, state.isHeightValid)
                 }
             )
             UserInfoItem(
@@ -256,10 +332,12 @@ private fun CurrentUserProfileScreenContent(
                 onKeyboardHide = onKeyboardHide,
                 onFocusClear = onFocusClear,
                 isCaloriesGoal = true,
+                isError = !state.isCaloriesGoalValid,
                 suffix = stringResource(id = R.string.suffix_calories),
                 onValueChange = { calories ->
-                    onCaloriesGoalChange(calories)
-                }
+                    onCaloriesGoalChange(calories, state.isCaloriesGoalValid)
+                },
+                onNavigateToCaloriesGoalListScreen = onNavigateToCaloriesGoalListScreen
             )
             UserInfoItem(
                 valueText = state.activityLevel.toActivityLevelString(),
@@ -298,6 +376,7 @@ private fun UserInfoItem(
     dropDownMenuItems: List<String> = emptyList(),
     suffix: String = "",
     isDropDownMenu: Boolean = false,
+    isError: Boolean = false,
     isCaloriesGoal: Boolean = false,
     isNumeric: Boolean = true,
     isDropDownMenuExpanded: Boolean = false,
@@ -305,6 +384,7 @@ private fun UserInfoItem(
     onFocusClear: () -> Unit = {},
     onMenuExpand: () -> Unit = {},
     onMenuDismiss: () -> Unit = {},
+    onNavigateToCaloriesGoalListScreen: () -> Unit = {}
 ) {
 
     var dropDownMenuSize by remember {
@@ -337,7 +417,10 @@ private fun UserInfoItem(
                         color = MaterialTheme.colorScheme.tertiary,
                         fontWeight = FontWeight.SemiBold,
                         textDecoration = TextDecoration.Underline
-                    )
+                    ),
+                    modifier = Modifier.clickable {
+                        onNavigateToCaloriesGoalListScreen()
+                    }
                 )
             }
         }
@@ -362,6 +445,8 @@ private fun UserInfoItem(
                     )
                 }
             },
+            isError = isError,
+            singleLine = true,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done,
                 keyboardType = if (isNumeric) KeyboardType.Decimal else KeyboardType.Text
