@@ -34,20 +34,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.fitnessapp.R
 import com.example.fitnessapp.profile_feature.data.mappers.toCaloriesString
 import com.example.fitnessapp.profile_feature.domain.model.CalculatedCalories
 import com.example.fitnessapp.profile_feature.domain.model.TypeOfGoal
-import com.example.fitnessapp.ui.theme.FitnessAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CaloriesGoalListScreen(
     calories: String,
     calculatedCaloriesList: List<CalculatedCalories>,
-    onEvent: (SignInEvent) -> Unit,
+    onCaloriesGoalSelect: (CalculatedCalories) -> Unit,
     calculate: () -> Unit,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier
@@ -81,15 +79,15 @@ fun CaloriesGoalListScreen(
             modifier = Modifier
                 .padding(paddingValues)
         ) {
-            calculatedCaloriesList.onEach {
+            calculatedCaloriesList.onEach { calculatedCaloriesItem ->
                 CalculatedCaloriesItem(
                     calories = calories,
-                    calculatedCaloriesItem = it,
+                    calculatedCaloriesItem = calculatedCaloriesItem,
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .clickable {
-                            onEvent(SignInEvent.OnCaloriesGoalChange(it.calories.toCaloriesString()))
+                            onCaloriesGoalSelect(calculatedCaloriesItem)
                         }
                 )
                 HorizontalDivider(
@@ -214,25 +212,4 @@ private fun LeadingCaloriesItemIcon(
        contentDescription = stringResource(id = R.string.calories_item_leading_icon),
        modifier = modifier
    )
-}
-
-@Preview
-@Composable
-private fun CaloriesGoalListScreenPreview() {
-    FitnessAppTheme {
-        CaloriesGoalListScreen(
-            calories = "0.0",
-            calculatedCaloriesList = listOf(
-                CalculatedCalories(TypeOfGoal.MAINTAIN_WEIGHT, 2106.0),
-                CalculatedCalories(TypeOfGoal.MILD_WEIGHT_LOSE, 1796.0, weightLose = "0.25 kg"),
-                CalculatedCalories(TypeOfGoal.WEIGHT_LOSE, 1546.0, weightLose = "0.5 kg"),
-                CalculatedCalories(TypeOfGoal.EXTREME_WEIGHT_LOSE, 1046.0, weightLose = "1 kg"),
-                CalculatedCalories(TypeOfGoal.MILD_WEIGHT_GAIN, 2296.0, weightGain = "0.25 kg"),
-                CalculatedCalories(TypeOfGoal.WEIGHT_GAIN, 2546.0, weightGain = "0.5 kg"),
-                CalculatedCalories(TypeOfGoal.EXTREME_WEIGHT_GAIN, 3046.0, weightGain = "1 kg"),
-            ),
-            onEvent = {},
-            calculate = {},
-            onNavigateBack = {})
-    }
 }
