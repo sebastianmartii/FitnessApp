@@ -137,4 +137,7 @@
     <string name="gender">Gender</string>
     <string name="suffix_weight">kgs</string>
     <string name="suffix_height">cm</string>
+    <string name="decline">Decline</string>
+    <string name="user_update_dialog_title">Oops…, Seems Like You Forgot To Save The Changes You\'ve Made</string>
+    <string name="user_update_dialog_text">Do You Still Want To Commit Those Changes?</string>
 </resources>
