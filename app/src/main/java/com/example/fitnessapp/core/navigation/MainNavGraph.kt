@@ -49,8 +49,11 @@ import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutritio
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeDetailsScreen
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchEvent
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchViewModel
+import com.example.fitnessapp.profile_feature.data.mappers.toCaloriesString
 import com.example.fitnessapp.profile_feature.presentation.profile.CurrentUserProfileScreen
+import com.example.fitnessapp.profile_feature.presentation.profile.ProfileEvent
 import com.example.fitnessapp.profile_feature.presentation.profile.ProfileViewModel
+import com.example.fitnessapp.profile_feature.presentation.sign_in.CaloriesGoalListScreen
 import java.time.Instant
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -350,17 +353,22 @@ fun NavGraphBuilder.mainNavGraph(
         }
         composable(
             route = NavigationDrawerDestinations.Profile.route
-        ) {
-            val viewModel = hiltViewModel<ProfileViewModel>()
+        ) { entry ->
+            val viewModel = entry.sharedViewModel<ProfileViewModel>(navController)
             val state by viewModel.state.collectAsStateWithLifecycle()
             val selectedDrawerItem by viewModel.selectedDrawerItem.collectAsStateWithLifecycle()
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
             val keyboardController = LocalSoftwareKeyboardController.current
             val focusManager = LocalFocusManager.current
+            val snackbarHostState = remember {
+                SnackbarHostState()
+            }
 
             CurrentUserProfileScreen(
                 state = state,
+                snackbarHostState = snackbarHostState,
+                eventFlow = viewModel.eventFlow,
                 drawerState = drawerState,
                 drawerItemList = viewModel.drawerItemList,
                 selectedDrawerItem = selectedDrawerItem,
@@ -375,6 +383,29 @@ fun NavGraphBuilder.mainNavGraph(
                 },
                 onNavigateToNavigationDrawerDestination = { route ->
                     navController.navigate(route)
+                },
+                onNavigateToCaloriesGoalListScreen = {
+                    navController.navigate(MainDestinations.CaloriesGoalCalculator.route)
+                }
+            )
+        }
+        composable(
+            route = MainDestinations.CaloriesGoalCalculator.route
+        ) { entry ->
+            val viewModel = entry.sharedViewModel<ProfileViewModel>(navController)
+            val state by viewModel.state.collectAsStateWithLifecycle()
+
+            CaloriesGoalListScreen(
+                calories = state.caloriesGoal,
+                calculatedCaloriesList = state.calculatedCalories,
+                onCaloriesGoalSelect = { calculatedCaloriesItem ->
+                    viewModel.onEvent(ProfileEvent.OnCaloriesGoalChange(calculatedCaloriesItem.calories.toCaloriesString(), true))
+                },
+                calculate = {
+                    viewModel.onEvent(ProfileEvent.OnCaloriesGoalCalculate)
+                },
+                onNavigateBack = {
+                    navController.popBackStack()
                 }
             )
         }
