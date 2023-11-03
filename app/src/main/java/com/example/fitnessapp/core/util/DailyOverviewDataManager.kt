@@ -4,7 +4,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.fitnessapp.daily_overview_feature.data.local.dao.DailyActivitiesDao
 import com.example.fitnessapp.daily_overview_feature.data.local.dao.DailyNutritionDao
@@ -27,7 +26,6 @@ class DailyOverviewDataManager(
 ) {
     private companion object {
         val SAVED_DATE = stringPreferencesKey("saved_date")
-        val DAY_OF_MONTH = intPreferencesKey("day_of_month")
     }
 
     val savedDate: Flow<String> = dataStore.data
@@ -42,26 +40,9 @@ class DailyOverviewDataManager(
             preferences[SAVED_DATE] ?: ""
         }
 
-    private val dayOfMonth: Flow<Int> = dataStore.data
-        .catch { exception ->
-            if (exception is IOException) {
-                emit(emptyPreferences())
-            } else {
-                throw exception
-            }
-        }
-        .map { preferences ->
-            preferences[DAY_OF_MONTH] ?: 0
-        }
-
-    suspend fun addDailyOverviewToHistory(month: Int, year: Int) {
-        addDailyActivityToHistory(month, year)
-        addDailyNutritionToHistory(month, year)
-    }
-
-    suspend fun resetDailyOverview() {
-        dailyActivitiesDao.resetDailyActivities()
-        dailyNutritionDao.resetDailyNutrition()
+    suspend fun saveAndResetDailyOverview(day: Int,month: Int, year: Int) {
+        saveAndResetDailyNutrition(day, month, year)
+        saveAndResetDailyActivity(day, month, year)
     }
 
     suspend fun saveCurrentDate(currentDate: String) {
@@ -70,19 +51,23 @@ class DailyOverviewDataManager(
         }
     }
 
-    suspend fun saveDayOfMonth(day: Int) {
-        dataStore.edit { preferences ->
-            preferences[DAY_OF_MONTH] = day
+    private suspend fun saveAndResetDailyNutrition(day: Int, month: Int, year: Int) {
+        val nutrition = dailyNutritionDao.getDailyNutrition().first()
+        nutritionHistoryDao.addToHistory(nutrition.map { it.toNutritionHistoryEntity(day, month, year) })
+        val savedNutritionPerMonth = nutritionHistoryDao.getMonthNutrition(month).first()
+        val isNutritionInHistory = savedNutritionPerMonth.any { it.day == day }
+        if (isNutritionInHistory) {
+            dailyNutritionDao.resetDailyNutrition()
         }
     }
 
-    private suspend fun addDailyNutritionToHistory(month: Int, year: Int) {
-        val nutrition = dailyNutritionDao.getDailyNutrition().first()
-        nutritionHistoryDao.addToHistory(nutrition.map { it.toNutritionHistoryEntity(dayOfMonth.first(), month, year) })
-    }
-
-    private suspend fun addDailyActivityToHistory(month: Int, year: Int) {
+    private suspend fun saveAndResetDailyActivity(day: Int, month: Int, year: Int) {
         val activities = dailyActivitiesDao.getDailyActivities().first()
-        activityHistoryDao.addToHistory(activities.map { it.toActivityHistoryEntity(dayOfMonth.first(), month, year) })
+        activityHistoryDao.addToHistory(activities.map { it.toActivityHistoryEntity(day, month, year) })
+        val savedActivityPerMonth = activityHistoryDao.getMonthActivities(month).first()
+        val areActivitiesInHistory = savedActivityPerMonth.any { it.day == day }
+        if (areActivitiesInHistory) {
+            dailyActivitiesDao.resetDailyActivities()
+        }
     }
 }
