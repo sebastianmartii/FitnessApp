@@ -20,5 +20,6 @@ data class ProfileState(
     val isAgeValid: Boolean = true,
     val isHeightValid: Boolean = true,
     val isWeightValid: Boolean = true,
-    val isCaloriesGoalValid: Boolean = true
+    val isCaloriesGoalValid: Boolean = true,
+    val shouldUseValidators: Boolean = false
 )
