@@ -138,6 +138,7 @@ fun CurrentUserProfileScreen(
                 drawerItemList = drawerItemList,
                 onDrawerItemSelect = { selectedDrawerItem ->
                     if (state.isSaveUserActionVisible && selectedDrawerItem.label != "Sign Out") {
+                        onDrawerEvent(DrawerEvent.CloseDrawer)
                         onEvent(ProfileEvent.OnUserUpdateDialogShow(selectedDrawerItem.route ?: ""))
                     } else {
                         onDrawerEvent(DrawerEvent.OnDrawerItemSelect(selectedDrawerItem))
@@ -279,10 +280,10 @@ private fun CurrentUserProfileScreenContent(
                 labelText = stringResource(id = R.string.age),
                 onKeyboardHide = onKeyboardHide,
                 onFocusClear = onFocusClear,
-                isError = !state.isAgeValid,
+                isError = if (state.shouldUseValidators) !state.isAgeValid else false,
                 suffix = stringResource(id = R.string.suffix_age),
                 onValueChange = { age ->
-                    onAgeChange(age, state.isAgeValid)
+                    onAgeChange(age, Validators.isAgeValid(age))
                 }
             )
             UserInfoItem(
@@ -309,10 +310,10 @@ private fun CurrentUserProfileScreenContent(
                 labelText = stringResource(id = R.string.weight),
                 onKeyboardHide = onKeyboardHide,
                 onFocusClear = onFocusClear,
-                isError = !state.isWeightValid,
+                isError = if (state.shouldUseValidators) !state.isWeightValid else false,
                 suffix = stringResource(id = R.string.suffix_weight),
                 onValueChange = { weight ->
-                    onWeightChange(weight, state.isWeightValid)
+                    onWeightChange(weight, Validators.isWeightValid(weight))
                 }
             )
             UserInfoItem(
@@ -320,10 +321,10 @@ private fun CurrentUserProfileScreenContent(
                 labelText = stringResource(id =R.string.height),
                 onKeyboardHide = onKeyboardHide,
                 onFocusClear = onFocusClear,
-                isError = !state.isHeightValid,
+                isError = if (state.shouldUseValidators) !state.isHeightValid else false,
                 suffix = stringResource(id = R.string.suffix_height),
                 onValueChange = { height ->
-                    onHeightChange(height, state.isHeightValid)
+                    onHeightChange(height, Validators.isHeightValid(height))
                 }
             )
             UserInfoItem(
@@ -332,10 +333,10 @@ private fun CurrentUserProfileScreenContent(
                 onKeyboardHide = onKeyboardHide,
                 onFocusClear = onFocusClear,
                 isCaloriesGoal = true,
-                isError = !state.isCaloriesGoalValid,
+                isError = if (state.shouldUseValidators) !state.isCaloriesGoalValid else false,
                 suffix = stringResource(id = R.string.suffix_calories),
                 onValueChange = { calories ->
-                    onCaloriesGoalChange(calories, state.isCaloriesGoalValid)
+                    onCaloriesGoalChange(calories, Validators.areCaloriesValid(calories))
                 },
                 onNavigateToCaloriesGoalListScreen = onNavigateToCaloriesGoalListScreen
             )
