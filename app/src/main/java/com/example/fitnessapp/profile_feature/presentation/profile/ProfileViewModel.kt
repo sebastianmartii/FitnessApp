@@ -24,8 +24,6 @@ class ProfileViewModel @Inject constructor(
     currentUserDao: CurrentUserDao
 ) : NavigationDrawerViewModel(currentUserDao) {
 
-    private val _shouldValidatorsUpdate = MutableStateFlow(false)
-
     private val _pendingNavigationRoute = MutableStateFlow("")
 
     private val _state = MutableStateFlow(ProfileState())
@@ -43,7 +41,8 @@ class ProfileViewModel @Inject constructor(
                             activityLevel = ActivityLevel.valueOf(currentUser.activityLevel),
                             weight = currentUser.weight.toString(),
                             height = currentUser.height.toString(),
-                            isSaveUserActionVisible = false
+                            isSaveUserActionVisible = false,
+                            shouldUseValidators = false
                         )
                     }
                 }
@@ -74,21 +73,12 @@ class ProfileViewModel @Inject constructor(
                 }
             }
             is ProfileEvent.OnAgeChange -> {
-                if (_shouldValidatorsUpdate.value) {
-                    _state.update {
-                        it.copy(
-                            age = event.newAge,
-                            isAgeValid = event.isAgeValid,
-                            isSaveUserActionVisible = true
-                        )
-                    }
-                } else {
-                    _state.update {
-                        it.copy(
-                            age = event.newAge,
-                            isSaveUserActionVisible = true
-                        )
-                    }
+                _state.update {
+                    it.copy(
+                        age = event.newAge,
+                        isAgeValid = event.isAgeValid,
+                        isSaveUserActionVisible = true
+                    )
                 }
             }
             is ProfileEvent.OnCaloriesGoalCalculate -> {
@@ -127,21 +117,12 @@ class ProfileViewModel @Inject constructor(
                 }
             }
             is ProfileEvent.OnCaloriesGoalChange -> {
-                if (_shouldValidatorsUpdate.value) {
-                    _state.update {
-                        it.copy(
-                            caloriesGoal = event.newCaloriesGoal,
-                            isCaloriesGoalValid = event.isCaloriesGoalValid,
-                            isSaveUserActionVisible = true
-                        )
-                    }
-                } else {
-                    _state.update {
-                        it.copy(
-                            caloriesGoal = event.newCaloriesGoal,
-                            isSaveUserActionVisible = true
-                        )
-                    }
+                _state.update {
+                    it.copy(
+                        caloriesGoal = event.newCaloriesGoal,
+                        isCaloriesGoalValid = event.isCaloriesGoalValid,
+                        isSaveUserActionVisible = true
+                    )
                 }
             }
             is ProfileEvent.OnGenderChange -> {
@@ -160,21 +141,12 @@ class ProfileViewModel @Inject constructor(
                 }
             }
             is ProfileEvent.OnHeightChange -> {
-                if (_shouldValidatorsUpdate.value) {
-                    _state.update {
-                        it.copy(
-                            height = event.newHeight,
-                            isHeightValid = event.isHeightValid,
-                            isSaveUserActionVisible = true
-                        )
-                    }
-                } else {
-                    _state.update {
-                        it.copy(
-                            height = event.newHeight,
-                            isSaveUserActionVisible = true
-                        )
-                    }
+                _state.update {
+                    it.copy(
+                        height = event.newHeight,
+                        isHeightValid = event.isHeightValid,
+                        isSaveUserActionVisible = true
+                    )
                 }
             }
             is ProfileEvent.OnUserNameChange -> {
@@ -186,21 +158,12 @@ class ProfileViewModel @Inject constructor(
                 }
             }
             is ProfileEvent.OnWeightChange -> {
-                if (_shouldValidatorsUpdate.value) {
-                    _state.update {
-                        it.copy(
-                            weight = event.newWeight,
-                            isWeightValid = event.isWeightValid,
-                            isSaveUserActionVisible = true
-                        )
-                    }
-                } else {
-                    _state.update {
-                        it.copy(
-                            weight = event.newWeight,
-                            isSaveUserActionVisible = true
-                        )
-                    }
+                _state.update {
+                    it.copy(
+                        weight = event.newWeight,
+                        isWeightValid = event.isWeightValid,
+                        isSaveUserActionVisible = true
+                    )
                 }
             }
             is ProfileEvent.OnUserUpdate -> {
@@ -225,10 +188,10 @@ class ProfileViewModel @Inject constructor(
                                 isAgeValid = event.isAgeValid,
                                 isHeightValid = event.isHeightValid,
                                 isWeightValid = event.isWeightValid,
-                                isCaloriesGoalValid = event.isCaloriesGoalValid
+                                isCaloriesGoalValid = event.isCaloriesGoalValid,
+                                shouldUseValidators = true
                             )
                         }
-                        _shouldValidatorsUpdate.value = true
                     }
                 }
             }
