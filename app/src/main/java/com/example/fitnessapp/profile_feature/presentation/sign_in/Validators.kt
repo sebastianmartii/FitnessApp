@@ -27,7 +27,7 @@ object Validators {
     }
 
     fun isAgeValid(age: String): Boolean {
-        if (age.isBlank() || age.isNotANumber()) {
+        if (age.isBlank() || age.isEmpty() || age.isNotANumber()) {
             return false
         }
         return !age.toFloat().isNaN() && age.toFloat() > 0 && age.toInt() < 81

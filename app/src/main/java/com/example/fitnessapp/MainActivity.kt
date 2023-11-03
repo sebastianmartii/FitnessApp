@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -52,18 +53,18 @@ class MainActivity : ComponentActivity() {
                             launch {
                                 dailyOverviewDataManager.savedDate.collectLatest { savedDate ->
                                     if (savedDate == "") {
-                                        dailyOverviewDataManager.saveDayOfMonth(day)
                                         dailyOverviewDataManager.saveCurrentDate(currentDate)
                                     } else if (savedDate != currentDate) {
-                                        dailyOverviewDataManager.addDailyOverviewToHistory(month, year)
-                                        dailyOverviewDataManager.resetDailyOverview()
+                                        val savedDay = savedDate.split(",")[0].toInt()
+                                        val savedMonth = savedDate.split(",")[1].toInt()
+                                        val savedYear = savedDate.split(",")[2].toInt()
+                                        dailyOverviewDataManager.saveAndResetDailyOverview(savedDay, savedMonth, savedYear)
                                         dailyOverviewDataManager.saveCurrentDate(currentDate)
-                                        dailyOverviewDataManager.saveDayOfMonth(day)
                                     }
                                 }
                             }
                             launch {
-                                delay(1000)
+                                delay(1.seconds)
                                 currentUserDao.getCurrentUser().collectLatest {
                                     if (it != null) {
                                         navController.navigate(NavGraphDestinations.MainNavGraph.route)
