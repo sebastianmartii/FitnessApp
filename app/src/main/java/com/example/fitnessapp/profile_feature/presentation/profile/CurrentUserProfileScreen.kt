@@ -1,5 +1,6 @@
 package com.example.fitnessapp.profile_feature.presentation.profile
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -82,7 +83,8 @@ fun CurrentUserProfileScreen(
     onDrawerEvent: (DrawerEvent) -> Unit,
     onEvent: (ProfileEvent) -> Unit,
     onNavigateToNavigationDrawerDestination: (String) -> Unit,
-    onNavigateToCaloriesGoalListScreen: () -> Unit
+    onNavigateToCaloriesGoalListScreen: () -> Unit,
+    onNavigateBack: () -> Unit
 ) {
     LaunchedEffect(key1 = true) {
         drawerEventFlow.collectLatest {  action ->
@@ -103,7 +105,11 @@ fun CurrentUserProfileScreen(
         eventFlow.collectLatest { event ->
             when(event) {
                 is ProfileViewModel.UiEvent.Navigate -> {
-                    onNavigateToNavigationDrawerDestination(event.route)
+                    if (event.route.isEmpty()) {
+                        onNavigateBack()
+                    } else {
+                        onNavigateToNavigationDrawerDestination(event.route)
+                    }
                 }
                 is ProfileViewModel.UiEvent.ShowSnackbar -> {
                     snackbarHostState.showSnackbar(event.message)
@@ -196,6 +202,13 @@ fun CurrentUserProfileScreen(
             )
         }
     )
+    BackHandler {
+        if (state.isSaveUserActionVisible) {
+            onEvent(ProfileEvent.OnUserUpdateDialogShow(""))
+        } else {
+            onNavigateBack()
+        }
+    }
 }
 
 
