@@ -386,6 +386,9 @@ fun NavGraphBuilder.mainNavGraph(
                 },
                 onNavigateToCaloriesGoalListScreen = {
                     navController.navigate(MainDestinations.CaloriesGoalCalculator.route)
+                },
+                onNavigateBack = {
+                    navController.popBackStack()
                 }
             )
         }
