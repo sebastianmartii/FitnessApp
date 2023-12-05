@@ -196,11 +196,9 @@ class ActivitiesViewModel @Inject constructor(
             }
             is ActivitiesEvent.OnFilterQueryChange -> {
                 _filterQuery.value = event.query
-
             }
             is ActivitiesEvent.OnFilterQueryClear -> {
                 _filterQuery.value = ""
-
             }
             is ActivitiesEvent.OnSavedActivityClick -> {
                 val updatedSavedActivities = state.value.savedActivities.toMutableList()
