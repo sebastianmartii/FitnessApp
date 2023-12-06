@@ -147,4 +147,13 @@ class ActivitiesViewModelTest {
             assertThat(emission.chosenActivity).isNull()
         }
     }
+
+    @Test
+    fun `Change activities tab, activities tab channelled correctly`() = runTest {
+        viewModel.onEvent(ActivitiesEvent.OnActivitiesTabChange(2))
+        viewModel.pagerFlow.test {
+            val emission = awaitItem()
+            assertThat(emission).isEqualTo(2)
+        }
+    }
 }
