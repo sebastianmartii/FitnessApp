@@ -62,10 +62,6 @@ class ActivityCreatorViewModel @Inject constructor(
             }
             is ActivityCreatorEvent.OnActivitySave -> {
                 viewModelScope.launch {
-                    println(event.name)
-                    println(event.description)
-                    println(event.duration)
-                    println(event.burnedCalories)
                     if (event.isActivityValid) {
                         repo.saveActivity(
                             event.name,
