@@ -17,9 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.OpenInBrowser
-import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,9 +42,7 @@ import com.example.fitnessapp.nutrition_calculator_feature.domain.model.Recipe
 @Composable
 fun RecipeDetailsScreen(
     recipe: Recipe,
-    isRecipeSaved: Boolean,
     onNavigateBack: () -> Unit,
-    onIsRecipeSavedChange: (recipe: Recipe, isSaved: Boolean) -> Unit,
     onExternalUrlOpen: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -65,14 +61,6 @@ fun RecipeDetailsScreen(
                     Text(text = recipe.label)
                 },
                 actions = {
-                    IconButton(onClick = {
-                        onIsRecipeSavedChange(recipe, isRecipeSaved)
-                    }) {
-                        Icon(
-                            imageVector = if (isRecipeSaved) Icons.Default.Bookmark else Icons.Outlined.BookmarkBorder,
-                            contentDescription = stringResource(id = R.string.save_text)
-                        )
-                    }
                     IconButton(onClick = {
                         onExternalUrlOpen(recipe.externalUrl)
                     }) {
