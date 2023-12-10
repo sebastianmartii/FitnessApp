@@ -6,5 +6,6 @@ data class RecipeSearchState(
     val query: String = "",
     val isLoading: Boolean = false,
     val recipes: List<Recipe> = emptyList(),
-    val isSearchBarActive: Boolean = false
+    val isSearchBarActive: Boolean = false,
+    val inspectedRecipe: Recipe? = null
 )
