@@ -238,7 +238,7 @@ private fun NutritionScreenContent(
                             ),
                             trailingIcon = {
                                 IconButton(onClick = {
-                                    onRecipeSearchEvent(RecipeSearchEvent.OnTextFieldClear)
+                                    onRecipeSearchEvent(RecipeSearchEvent.OnQueryClear)
                                 }) {
                                     Icon(
                                         imageVector = Icons.Default.Cancel,
@@ -337,8 +337,8 @@ private fun NutritionScreenContent(
                         1 -> {
                             RecipeSearchScreen(
                                 state = recipeSearchState,
-                                onNavigateToRecipeDetails = {
-                                    onRecipeSearchEvent(RecipeSearchEvent.OnNavigateToRecipeDetails(it))
+                                onNavigateToRecipeDetails = { recipe ->
+                                    onRecipeSearchEvent(RecipeSearchEvent.OnNavigateToRecipeDetails(recipe))
                                     onNavigateToRecipeDetails()
                                 },
                                 modifier = Modifier

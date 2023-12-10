@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -17,13 +17,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.fitnessapp.core.util.DotSeparator
+import com.example.fitnessapp.nutrition_calculator_feature.domain.model.Recipe
 
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RecipeSearchScreen(
     state: RecipeSearchState,
-    onNavigateToRecipeDetails: (Int) -> Unit,
+    onNavigateToRecipeDetails: (recipe: Recipe) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier) {
@@ -32,7 +33,7 @@ fun RecipeSearchScreen(
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             }
         }
-        itemsIndexed(state.recipes) { index, recipe ->
+        items(state.recipes) { recipe ->
             ListItem(
                 headlineContent = {
                     Text(text = recipe.label)
@@ -56,7 +57,7 @@ fun RecipeSearchScreen(
                     }
                 },
                 modifier = Modifier.clickable {
-                    onNavigateToRecipeDetails(index)
+                    onNavigateToRecipeDetails(recipe)
                 }
             )
         }
