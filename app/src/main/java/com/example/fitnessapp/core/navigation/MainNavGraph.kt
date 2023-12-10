@@ -47,7 +47,6 @@ import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutritio
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.food_nutrition_search.FoodNutritionSearchScreen
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.nutrition.food_nutrition_search.FoodNutritionSearchViewModel
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeDetailsScreen
-import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchEvent
 import com.example.fitnessapp.nutrition_calculator_feature.presentation.recipe.RecipeSearchViewModel
 import com.example.fitnessapp.profile_feature.data.mappers.toCaloriesString
 import com.example.fitnessapp.profile_feature.presentation.profile.CurrentUserProfileScreen
@@ -233,19 +232,14 @@ fun NavGraphBuilder.mainNavGraph(
             route = MainDestinations.RecipeDetails.route
         ) { entry ->
             val viewModel = entry.sharedViewModel<RecipeSearchViewModel>(navController)
-            val inspectedRecipe by viewModel.inspectedRecipe.collectAsStateWithLifecycle()
-            val isRecipeSaved by viewModel.isRecipeSaved.collectAsStateWithLifecycle()
+            val state by viewModel.state.collectAsStateWithLifecycle()
 
             val uriHandler = LocalUriHandler.current
 
             RecipeDetailsScreen(
-                recipe = inspectedRecipe!!,
-                isRecipeSaved = isRecipeSaved,
+                recipe = state.inspectedRecipe!!,
                 onNavigateBack = {
                     navController.popBackStack()
-                },
-                onIsRecipeSavedChange = { recipe, isSaved ->
-                    viewModel.onEvent(RecipeSearchEvent.OnIsRecipeSavedChange(recipe, isSaved))
                 },
                 onExternalUrlOpen = {
                     uriHandler.openUri(it)

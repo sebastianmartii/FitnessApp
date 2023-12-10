@@ -19,17 +19,14 @@ import com.example.fitnessapp.nutrition_calculator_feature.data.local.MealPlanTy
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.RecipeConverters
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.FoodItemDao
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.MealDao
-import com.example.fitnessapp.nutrition_calculator_feature.data.local.dao.RecipesDao
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.entity.FoodItemEntity
 import com.example.fitnessapp.nutrition_calculator_feature.data.local.entity.MealPlanEntity
-import com.example.fitnessapp.nutrition_calculator_feature.data.local.entity.RecipesEntity
 
 @Database(
     entities = [
         CurrentUser::class,
         MealPlanEntity::class,
         FoodItemEntity::class,
-        RecipesEntity::class,
         SavedActivitiesEntity::class,
         DailyActivitiesEntity::class,
         DailyNutritionEntity::class,
@@ -47,8 +44,6 @@ abstract class FitnessDatabase : RoomDatabase() {
     abstract val mealDao: MealDao
 
     abstract val foodItemDao: FoodItemDao
-
-    abstract val recipesDao: RecipesDao
 
     abstract val savedActivitiesDao: SavedActivitiesDao
 
