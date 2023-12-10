@@ -25,56 +25,6 @@ class RecipeSearchViewModelTest {
     }
 
     @Test
-    fun `Save recipe, recipe is saved correctly`() = runTest {
-        val recipe = Recipe(
-            label = "",
-            smallImage = "",
-            bigImage = "",
-            dietLabels = emptyList(),
-            ingredients = emptyList(),
-            calories = 0.0,
-            servingSize = 0.0,
-            carbs = 0.0,
-            fat = 0.0,
-            saturatedFat = 0.0,
-            protein = 0.0,
-            fiber = 0.0,
-            sugar = 0.0,
-            externalUrl = ""
-        )
-        viewModel.onEvent(RecipeSearchEvent.OnIsRecipeSavedChange(recipe, false))
-        viewModel.state.test {
-            val emission = awaitItem()
-            assertThat(emission.savedRecipes).contains(recipe)
-        }
-    }
-
-    @Test
-    fun `Delete recipe, recipe is deleted correctly`() = runTest {
-        val recipe = Recipe(
-            label = "",
-            smallImage = "",
-            bigImage = "",
-            dietLabels = emptyList(),
-            ingredients = emptyList(),
-            calories = 0.0,
-            servingSize = 0.0,
-            carbs = 0.0,
-            fat = 0.0,
-            saturatedFat = 0.0,
-            protein = 0.0,
-            fiber = 0.0,
-            sugar = 0.0,
-            externalUrl = ""
-        )
-        viewModel.onEvent(RecipeSearchEvent.OnIsRecipeSavedChange(recipe, true))
-        viewModel.state.test {
-            val emission = awaitItem()
-            assertThat(emission.savedRecipes).doesNotContain(recipe)
-        }
-    }
-
-    @Test
     fun `Change search query, query is changed correctly`() = runTest {
         viewModel.onEvent(RecipeSearchEvent.OnQueryChange("test query"))
         viewModel.state.test {
@@ -85,6 +35,7 @@ class RecipeSearchViewModelTest {
 
     @Test
     fun `Clear search query, query is cleared correctly`() = runTest {
+        viewModel.onEvent(RecipeSearchEvent.OnQueryChange("test query"))
         viewModel.onEvent(RecipeSearchEvent.OnQueryClear)
         viewModel.state.test {
             val emission = awaitItem()
@@ -119,11 +70,20 @@ class RecipeSearchViewModelTest {
             sugar = 0.0,
             externalUrl = ""
         )
-        viewModel.onEvent(RecipeSearchEvent.OnNavigateToRecipeDetails(1, true))
+        viewModel.onEvent(RecipeSearchEvent.OnNavigateToRecipeDetails(recipe))
         viewModel.state.test {
             val emission = awaitItem()
-            assertThat(emission.isRecipeSaved).isTrue()
             assertThat(emission.inspectedRecipe).isEqualTo(recipe)
+        }
+    }
+
+    @Test
+    fun `Search recipes by name, recipes are returned accordingly`() = runTest {
+        viewModel.onEvent(RecipeSearchEvent.OnQueryChange("dinner"))
+        viewModel.onEvent(RecipeSearchEvent.OnRecipeSearch)
+        viewModel.state.test {
+            val emission = awaitItem()
+            assertThat(emission.recipes.first().label).isEqualTo("dinner")
         }
     }
 }
