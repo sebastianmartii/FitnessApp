@@ -193,7 +193,7 @@ fun NavGraphBuilder.mainNavGraph(
             FoodItemCreatorScreen(
                 state = state,
                 onEvent = viewModel::onEvent,
-                snackbarFlow = viewModel.snackbarFlow,
+                snackbarFlow = viewModel.eventFlow,
                 snackbarHostState = snackbarHostState,
                 onFocusMove = {
                     focusManager.moveFocus(FocusDirection.Next)

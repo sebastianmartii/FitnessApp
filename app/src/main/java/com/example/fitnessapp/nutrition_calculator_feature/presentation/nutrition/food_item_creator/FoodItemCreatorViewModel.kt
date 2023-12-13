@@ -24,7 +24,7 @@ class FoodItemCreatorViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     private val _channel = Channel<UiEvent>()
-    val snackbarFlow = _channel.receiveAsFlow()
+    val eventFlow = _channel.receiveAsFlow()
 
     fun onEvent(event: FoodItemCreatorEvent) {
         when(event) {
