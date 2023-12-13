@@ -60,7 +60,6 @@ fun MealPlanScreen(
     onKeyboardHide: () -> Unit,
     onFocusMove: () -> Unit,
     onSheetClose: () -> Unit,
-    onSheetOpen: () -> Unit,
     onMealNameChange: (name: String, index: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -216,8 +215,7 @@ fun MealPlanScreen(
                 },
                 onMealPlanSelect = { type, plan ->
                     onMealPlanSelect(type, plan)
-                },
-                onSheetOpen = onSheetOpen
+                }
             )
         }
     }
@@ -230,8 +228,7 @@ private fun MealPlanSection(
     selectedMealPlan: MealPlanType?,
     onMealPlanExpand: (Boolean) -> Unit,
     onMealPlanSelect: (type: MealPlanType, plan: MealPlan) -> Unit,
-    modifier: Modifier = Modifier,
-    onSheetOpen: () -> Unit = {},
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
@@ -246,9 +243,6 @@ private fun MealPlanSection(
                 .fillMaxWidth()
                 .clickable {
                     onMealPlanSelect(mealPlan.type, mealPlan)
-                    if (mealPlan.type == MealPlanType.CUSTOM) {
-                        onSheetOpen()
-                    }
                 }
         ) {
             Box(
