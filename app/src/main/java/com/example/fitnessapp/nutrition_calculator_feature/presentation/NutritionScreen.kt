@@ -370,9 +370,6 @@ private fun NutritionScreenContent(
                                 onSheetClose = {
                                     onMealPlanEvent(MealPlanEvent.OnSheetClose)
                                 },
-                                onSheetOpen = {
-                                    onMealPlanEvent(MealPlanEvent.OnSheetOpen)
-                                },
                                 onCustomMealPlanSave = { plan ->
                                     onMealPlanEvent(MealPlanEvent.OnCustomMealPlanSave(plan))
                                 }

@@ -1,7 +1,7 @@
 package com.example.fitnessapp.nutrition_calculator_feature.presentation.meal_plan
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.HelpCenter
+import androidx.compose.material.icons.automirrored.filled.HelpCenter
 import androidx.compose.material.icons.filled.Looks3
 import androidx.compose.material.icons.filled.Looks4
 import androidx.compose.material.icons.filled.Looks5
@@ -75,7 +75,7 @@ class MealPlanViewModel @Inject constructor(
         name = "Custom Meal Plan",
         type = MealPlanType.CUSTOM,
         leadingIcon = Icons.Outlined.Quiz,
-        selectedLeadingIcon = Icons.Filled.HelpCenter,
+        selectedLeadingIcon = Icons.AutoMirrored.Filled.HelpCenter,
         isExpanded = false,
         meals = mutableListOf(
             "Meal"
@@ -153,13 +153,17 @@ class MealPlanViewModel @Inject constructor(
                 }
             }
             is MealPlanEvent.OnMealPlanSelectedChange -> {
-                _state.update {
-                    it.copy(
-                        selectedMealPlan = event.type
-                    )
-                }
                 viewModelScope.launch {
-                    repo.changeMealPlan(event.plan)
+                    if (event.type == MealPlanType.CUSTOM) {
+                        _channel.send(UiEvent.OnBottomSheetOpen)
+                    } else {
+                        _state.update {
+                            it.copy(
+                                selectedMealPlan = event.type
+                            )
+                        }
+                        repo.changeMealPlan(event.plan)
+                    }
                 }
             }
             MealPlanEvent.OnAddMeal -> {
@@ -188,12 +192,12 @@ class MealPlanViewModel @Inject constructor(
                     _channel.send(UiEvent.OnBottomSheetClose)
                 }
             }
-            MealPlanEvent.OnSheetOpen -> {
-                viewModelScope.launch {
-                    _channel.send(UiEvent.OnBottomSheetOpen)
-                }
-            }
             is MealPlanEvent.OnCustomMealPlanSave -> {
+                _state.update {
+                    it.copy(
+                        selectedMealPlan = MealPlanType.CUSTOM
+                    )
+                }
                 viewModelScope.launch {
                     repo.changeMealPlan(event.plan)
                 }
