@@ -65,7 +65,7 @@ fun ProfileListScreen(
                         name = it.name,
                         gender = it.gender,
                         modifier = Modifier.clickable {
-                            onEvent(SignInEvent.OnSignInChosen(it.userID))
+                            onEvent(SignInEvent.OnSignInWithExistingProfile(it.userID))
                             onNavigateToOverviewScreen()
                         }
                     )

@@ -11,7 +11,7 @@ sealed interface SignInEvent {
     data class OnWeightChange(val weight: String) : SignInEvent
     data class OnCaloriesGoalChange(val caloriesGoal: String) : SignInEvent
     data class OnActivityLevelChange(val activityLevel: ActivityLevel) : SignInEvent
-    data class OnSignInChosen(val userID: Int) : SignInEvent
+    data class OnSignInWithExistingProfile(val userID: Int) : SignInEvent
     object OnSignInComplete : SignInEvent
-    object OnSignInSelect : SignInEvent
+    object OnGetExistingProfiles : SignInEvent
 }

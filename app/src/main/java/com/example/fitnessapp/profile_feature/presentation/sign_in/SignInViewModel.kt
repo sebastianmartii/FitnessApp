@@ -121,7 +121,7 @@ class SignInViewModel @Inject constructor(
                     )
                 }
             }
-            SignInEvent.OnSignInSelect -> {
+            SignInEvent.OnGetExistingProfiles -> {
                 viewModelScope.launch {
                     repo.getUserProfiles().also { userProfileList ->
                         _state.update {
@@ -132,7 +132,7 @@ class SignInViewModel @Inject constructor(
                     }
                 }
             }
-            is SignInEvent.OnSignInChosen -> {
+            is SignInEvent.OnSignInWithExistingProfile -> {
                 viewModelScope.launch {
                     repo.signIn(event.userID)
                 }

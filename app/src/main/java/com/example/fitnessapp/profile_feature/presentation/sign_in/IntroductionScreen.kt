@@ -156,7 +156,7 @@ fun IntroductionScreen(
                         .fillMaxWidth()
                         .padding(bottom = 8.dp)
                         .clickable {
-                            onEvent(SignInEvent.OnSignInSelect)
+                            onEvent(SignInEvent.OnGetExistingProfiles)
                             onNavigateToProfileListScreen()
                         }
                 )
