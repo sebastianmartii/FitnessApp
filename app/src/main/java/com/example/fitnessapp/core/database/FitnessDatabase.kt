@@ -3,6 +3,8 @@ package com.example.fitnessapp.core.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.fitnessapp.activities_feature.data.local.dao.SavedActivitiesDao
 import com.example.fitnessapp.activities_feature.data.local.entity.SavedActivitiesEntity
 import com.example.fitnessapp.core.database.dao.CurrentUserDao
@@ -33,7 +35,7 @@ import com.example.fitnessapp.nutrition_calculator_feature.data.local.entity.Mea
         NutritionHistoryEntity::class,
         ActivityHistoryEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(RecipeConverters::class, MealPlanTypeConverters::class)
@@ -54,4 +56,12 @@ abstract class FitnessDatabase : RoomDatabase() {
     abstract val nutritionHistoryDao: NutritionHistoryDao
 
     abstract val activityHistoryDao: ActivityHistoryDao
+
+    companion object {
+        val MIGRATION_1_2 = object : Migration(1,2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("DROP TABLE IF EXISTS RecipesEntity")
+            }
+        }
+    }
 }

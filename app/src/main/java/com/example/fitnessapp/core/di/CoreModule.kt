@@ -102,6 +102,7 @@ class CoreModule {
         )
             .addTypeConverter(RecipeConverters(GsonParser(Gson())))
             .addTypeConverter(MealPlanTypeConverters())
+            .addMigrations(FitnessDatabase.MIGRATION_1_2)
             .build()
     }
 }
