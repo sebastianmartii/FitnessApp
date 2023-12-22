@@ -16,7 +16,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "com.example.randomanimegenerator.HiltTestRunner"
+        testInstrumentationRunner "com.example.fitnessapp.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary true
         }
